@@ -30,6 +30,9 @@ func _ready():
 func set_selected_set(tileSet: DragonbiteTileSet):
   selectedSet = tileSet
   for i in range(numberOfTiles):
+    if i >= selectedSet.tiles.size():
+      tileViewModels[i].hidden = true
+      continue
     tileViewModels[i].tile = selectedSet.tiles[i]
   update_buttons()
 

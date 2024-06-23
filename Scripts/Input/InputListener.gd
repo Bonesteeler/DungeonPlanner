@@ -3,7 +3,7 @@ extends Node3D
 signal rotate_left()
 signal rotate_right()
 
-func connect_context(context: PlanningContext):
+func connect_context(context: SceneContext):
 	rotate_left.connect(context.left_rotation)
 	rotate_right.connect(context.right_rotation)
  

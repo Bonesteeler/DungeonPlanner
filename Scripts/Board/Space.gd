@@ -4,17 +4,21 @@ signal space_hover_enter(Node3D)
 signal space_hover_exit(Node3D)
 signal space_clicked(Node3D, x, z)
 
-@onready var meshNode = $Area3D/MeshInstance3D
-var x = 0
-var z = 0
+const INT_MAX = 2147483647
 
-func update_context(context: PlanningContext.TileContext):
+@onready var meshNode = $Area3D/MeshInstance3D
+var x = INT_MAX
+var z = INT_MAX
+var context: TileContext
+
+func update_context(newContext: TileContext):
+  context = newContext
   meshNode.set_preview_context(context)
 
-func set_tile(tile: PlanningContext.TileContext):
+func set_tile(tile: TileContext):
   meshNode.set_tile(tile)
 
-func start_preview(tile: PlanningContext.TileContext):
+func start_preview(tile: TileContext):
   meshNode.start_preview(tile)
 
 func end_preview():
@@ -37,3 +41,6 @@ func _on_area_3d_mouse_exited():
 
 func set_empty():
   meshNode.set_empty()
+
+func get_coords() -> Vector2:
+  return Vector2(x, z)

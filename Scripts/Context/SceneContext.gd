@@ -1,11 +1,5 @@
+class_name SceneContext
 extends Node
-
-class_name PlanningSceneContext
-
-class TileContext:
-  var rotation: Vector3
-  var tile: Tile
-  var mesh: Mesh
 
 signal context_updated(TileContext)
 
@@ -24,8 +18,9 @@ var currentScene: SceneData
 func initialize():
   tileResources = tileResourcesClass.new()
   load_tileResources()
-  selectedTileContext = TileContext.new()
+  selectedTileContext = TileContext.new(0, 0)
   selectedTileContext.rotation = defaultRotation
+  selectedTileContext.tile.size = Tile.TileSize.T_2X2
   currentScene = SceneData.new()
   currentScene.sceneName = "New Scene"
 
@@ -38,16 +33,11 @@ func load_tileResources():
   setDefinitionsDir.list_dir_begin()
   var fileName = setDefinitionsDir.get_next()
   while fileName != "":
-    add_tile_set_at_path(setDefinitionsPath + fileName)
+    tileResources.add_set_from_path(setDefinitionsPath + fileName)
     fileName = setDefinitionsDir.get_next()
   var endTime = Time.get_ticks_msec()
   setDefinitionsDir.list_dir_end()
   print("Resources loaded in ", (endTime - startTime) / 1000.0, " sec")
-
-func add_tile_set_at_path(path: String):
-  var fileContents = FileAccess.get_file_as_string(path)
-  var parsedJson = JSON.parse_string(fileContents)
-  tileResources.add_set_from_json(parsedJson)
 
 func get_selected_mesh() -> Mesh:
   return selectedTileContext.mesh
@@ -59,16 +49,16 @@ func get_selected_tile_context() -> TileContext:
   return selectedTileContext
   
 func left_rotation():
-  selectedTileContext.rotation[1] += 90
+  selectedTileContext.rotate(90)
   context_updated.emit()
   
 func right_rotation():
-  selectedTileContext.rotation[1] -= 90
+  selectedTileContext.rotate(-90)
   context_updated.emit()
   
 func get_selected_rotation() -> Vector3:
   return selectedTileContext.rotation
-  
+   
 func update_selected_tile(newSelected: Tile) :
   selectedTileContext.tile = newSelected
   if newSelected.mesh != null:

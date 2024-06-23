@@ -5,13 +5,14 @@ var space_scene = preload("res://Scenes/Space.tscn")
 const startRows = 10
 const startCols = 10
 const spaceSize = 5
+const intMax = 2147483647
 
 var board:Array = []
 var hoveredSpace: Node3D
-var context: PlanningContext
+var context: SceneContext
 
 # Called when the node enters the scene tree for the first time.
-func connect_to_context(newContext: PlanningContext):
+func connect_to_context(newContext: SceneContext):
   context = newContext
   context.context_updated.connect(on_context_updated)
       
@@ -35,12 +36,27 @@ func create_board():
 
 func on_space_hover_enter(space: Node3D):
   hoveredSpace = space
+  var hoveredCoords = hoveredSpace.get_coords()
+  context.selectedTileContext.set_position(hoveredCoords[0], hoveredCoords[1])
   hoveredSpace.start_preview(context.selectedTileContext)
+  var occupiedSpaceCoords = context.selectedTileContext.get_other_occupied_space_coords()
+  for coords in occupiedSpaceCoords:
+    if coords[0] < 0 or coords[0] >= startRows or coords[1] < 0 or coords[1] >= startCols:
+      continue
+    board[coords[0]][coords[1]].set_visible(false)
+
 
 func on_space_hover_exit(space: Node3D):
-  if hoveredSpace == space:
-    hoveredSpace.end_preview()
-    hoveredSpace = null
+  if hoveredSpace != space:
+    return
+  var occupiedSpaceCoords = context.selectedTileContext.get_other_occupied_space_coords()
+  for coords in occupiedSpaceCoords:
+    if coords[0] < 0 or coords[0] >= startRows or coords[1] < 0 or coords[1] >= startCols:
+      continue
+    board[coords[0]][coords[1]].set_visible(true)
+  hoveredSpace.end_preview()
+  hoveredSpace = null
+  context.selectedTileContext.set_position(intMax, intMax)
       
 func on_space_clicked(space: Node3D, x: int, y: int):
   if context.get_selected_tile_context().tile == null:
@@ -51,10 +67,11 @@ func on_space_clicked(space: Node3D, x: int, y: int):
 func on_context_updated():
   if hoveredSpace != null:
     hoveredSpace.update_context(context.get_selected_tile_context())
-
-func rotate_degrees(degrees: int):
-  print(degrees)
-  pass
+    var prevCoords = context.selectedTileContext.get_prev_occupied_space_coords()
+    for coords in prevCoords:
+      if coords[0] < 0 or coords[0] >= startRows or coords[1] < 0 or coords[1] >= startCols:
+        continue
+      board[coords[0]][coords[1]].set_visible(true)
 
 func load_scene(scene:SceneData):
   var updated = []
@@ -65,7 +82,7 @@ func load_scene(scene:SceneData):
     updated.append(newRow)
   for tile in scene.tiles:
     var tileData = context.get_tile_from_id(tile.id)
-    var tileContext = PlanningContext.TileContext.new()
+    var tileContext = TileContext.new(intMax, intMax)
     tileContext.tile = tileData
     tileContext.rotation = tile.rotation
     tileContext.mesh = tileData.mesh

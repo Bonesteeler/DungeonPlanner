@@ -2,6 +2,7 @@ class_name Tile
 extends RefCounted
 
 enum TileStatus {CACHED, CREATED, NOT_FOUND}
+enum TileSize {T_2X2, T_2X4, T_4X4, T_6X6, T_8X8}
 
 const missingImagePath = "res://Images/Missing.png"
 
@@ -10,26 +11,45 @@ var imagePath = ""
 var stlPath = ""
 var mesh: Mesh
 var stlToMesh = StlToMesh.new()
+var size: TileSize
 
-func create_tile_from_json(json: Dictionary) -> TileStatus:
-  id = json.get("id", "")
-  if (id == ""):
-    print("Tile id is empty")
-  imagePath = json.get("imagePath", "")
+const ID_KEY = "id"
+const IMAGE_PATH_KEY = "imagePath"
+const SIZE_KEY = "size"
+const STL_PATH_KEY = "stlPath"
+
+func create_tile_from_json(json: Dictionary):
+  id = json.get(ID_KEY, "")
+  imagePath = json.get(IMAGE_PATH_KEY, "")
   if (imagePath == ""):
-    print("Tile imagePath is empty")
     imagePath = missingImagePath
+  stlPath = json.get(STL_PATH_KEY, "")
+  size = json.get(SIZE_KEY, TileSize.T_2X2) 
 
-  stlPath = json.get("stlPath", "")
+func to_dict() -> Dictionary:
+  return {
+    ID_KEY: id,
+    IMAGE_PATH_KEY: imagePath,
+    STL_PATH_KEY: stlPath,
+    SIZE_KEY: size
+  }
+
+func load_mesh() -> TileStatus:
   if stlPath != "":
     var resPath = stlPath.replace("stl", "res").replace("res://", "user://")
+    # Get mesh from cache
     if FileAccess.file_exists(resPath):
       mesh = load(resPath)
       return TileStatus.CACHED
+      
+    # Import mesh from STL file
     if FileAccess.file_exists(stlPath):
       var startTime = Time.get_ticks_msec()
-      mesh = stlToMesh.stlFileToArrayMesh(stlPath)
+      var imported = stlToMesh.stlFileToArrayMesh(stlPath)
+      mesh = imported.mesh
+      size = imported.size
       var endTime = Time.get_ticks_msec()
+
       print("Imported ", id, " in ", endTime - startTime, " ms")
       var dir = DirAccess.open("user://")
       if dir.dir_exists(resPath.get_base_dir()) == false:
@@ -41,4 +61,3 @@ func create_tile_from_json(json: Dictionary) -> TileStatus:
     else:
       print("STL file does not exist: ", stlPath) 
   return TileStatus.NOT_FOUND
-

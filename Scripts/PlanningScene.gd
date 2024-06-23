@@ -11,7 +11,7 @@ var viewport
 @onready var inputListener = $InputListener
 
 func _ready():
-  planningContext = PlanningSceneContext.new()
+  planningContext = SceneContext.new()
   saveManager = SaveManager.new()
 
   planningContext.initialize()

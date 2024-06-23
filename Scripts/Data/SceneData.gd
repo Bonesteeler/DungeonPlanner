@@ -60,7 +60,7 @@ func getTileAt(x:int, z:int) -> SavedTile:
       return tile
   return null
 
-func setTileAt(x:int, z:int, context:PlanningContext.TileContext):
+func setTileAt(x:int, z:int, context:TileContext):
   var savedTile: SavedTile
   if (hasTileAt(x, z)):
     savedTile = getTileAt(x, z)
