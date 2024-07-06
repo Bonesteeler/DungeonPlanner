@@ -18,8 +18,8 @@ func update_context(newContext: TileContext):
 func set_tile(tile: TileContext):
   meshNode.set_tile(tile)
 
-func start_preview(tile: TileContext):
-  meshNode.start_preview(tile)
+func start_preview(tile: TileContext, error: bool):
+  meshNode.start_preview(tile, error)
 
 func end_preview():
   meshNode.exit_preview()

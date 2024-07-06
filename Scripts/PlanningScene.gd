@@ -33,7 +33,7 @@ func resize_ui():
   uiCanvas.transform.y = Vector2(0, viewport.size[1] * UI_SCALE)
 
 func new_scene():
-  var newScene = SceneData.new()
+  var newScene = SceneData.new(10, 10)
   planningContext.currentScene = newScene
   board.load_scene(newScene)
 

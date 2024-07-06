@@ -38,13 +38,18 @@ func on_space_hover_enter(space: Node3D):
   hoveredSpace = space
   var hoveredCoords = hoveredSpace.get_coords()
   context.selectedTileContext.set_position(hoveredCoords[0], hoveredCoords[1])
-  hoveredSpace.start_preview(context.selectedTileContext)
   var occupiedSpaceCoords = context.selectedTileContext.get_other_occupied_space_coords()
+  var isChildSpaceOccupied = false
   for coords in occupiedSpaceCoords:
     if coords[0] < 0 or coords[0] >= startRows or coords[1] < 0 or coords[1] >= startCols:
       continue
-    board[coords[0]][coords[1]].set_visible(false)
-
+    var currentTile = context.currentScene.getTileAt(coords[0], coords[1])
+    print(currentTile.getFillState())
+    currentTile.setFillState(SavedTile.TileFillState.HOVERED)
+    if currentTile.getFillState() == SavedTile.TileFillState.OCCUPIED_CHILD || currentTile.getFillState() == SavedTile.TileFillState.OCCUPIED_ROOT:
+      isChildSpaceOccupied = true
+  print(isChildSpaceOccupied)
+  hoveredSpace.start_preview(context.selectedTileContext, isChildSpaceOccupied)
 
 func on_space_hover_exit(space: Node3D):
   if hoveredSpace != space:
@@ -53,7 +58,9 @@ func on_space_hover_exit(space: Node3D):
   for coords in occupiedSpaceCoords:
     if coords[0] < 0 or coords[0] >= startRows or coords[1] < 0 or coords[1] >= startCols:
       continue
-    board[coords[0]][coords[1]].set_visible(true)
+    var currentTile = context.currentScene.getTileAt(coords[0], coords[1])
+    if currentTile.getFillState() == SavedTile.TileFillState.HOVERED:
+      currentTile.setFillState(SavedTile.TileFillState.EMPTY) 
   hoveredSpace.end_preview()
   hoveredSpace = null
   context.selectedTileContext.set_position(intMax, intMax)
@@ -61,8 +68,8 @@ func on_space_hover_exit(space: Node3D):
 func on_space_clicked(space: Node3D, x: int, y: int):
   if context.get_selected_tile_context().tile == null:
     return
-  space.set_tile(context.get_selected_tile_context())
   context.set_tile(x, y, context.get_selected_tile_context())
+  space.set_tile(context.get_selected_tile_context())
 
 func on_context_updated():
   if hoveredSpace != null:
@@ -71,7 +78,9 @@ func on_context_updated():
     for coords in prevCoords:
       if coords[0] < 0 or coords[0] >= startRows or coords[1] < 0 or coords[1] >= startCols:
         continue
-      board[coords[0]][coords[1]].set_visible(true)
+      var coordContext = context.currentScene.getTileAt(coords[0], coords[1])
+      var isVisible = coordContext.getFillState() == SavedTile.TileFillState.EMPTY || coordContext.getFillState() == SavedTile.TileFillState.OCCUPIED_ROOT
+      board[coords[0]][coords[1]].set_visible(isVisible)
 
 func load_scene(scene:SceneData):
   var updated = []

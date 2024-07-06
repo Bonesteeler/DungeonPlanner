@@ -1,14 +1,20 @@
 class_name SceneData
 extends RefCounted
 
-class SavedTile:
-  var id = ""
-  var rotation: Vector3
-  var x = 0
-  var z = 0
-
 var sceneName = ""
 var tiles = []
+var sizeX = 0
+var sizeY = 0
+
+func _init(x: int, y: int):
+  sizeX = x
+  sizeY = y
+  for i in range(sizeX):
+    for j in range(sizeY):
+      var tile = SavedTile.new()
+      tile.x = i
+      tile.y = j
+      tiles.append(tile)
 
 func toJson() -> String:
   var data:Dictionary = {}
@@ -19,7 +25,7 @@ func toJson() -> String:
     tileData["id"] = tile.id
     tileData["rotation"] = tile.rotation - PlanningContext.defaultRotation
     tileData["x"] = tile.x
-    tileData["z"] = tile.z
+    tileData["y"] = tile.y
     data["tiles"].append(tileData)
   return JSON.stringify(data)
 
@@ -45,32 +51,38 @@ func fromJson(json:String):
     var rotation = splitOnAnyOf(tileData["rotation"], " ,()")
     tile.rotation = Vector3(float(rotation[0]), float(rotation[1]), float(rotation[2])) + PlanningContext.defaultRotation
     tile.x = tileData["x"]
-    tile.z = tileData["z"]
+    tile.y = tileData["y"]
     tiles.append(tile)
 
-func hasTileAt(x:int, z:int) -> bool:
+func getTileIdx(x:int, y:int) -> int:
+  var idx = x * sizeY + y
+  if idx < tiles.size():
+    return idx
+  return -1
+
+func hasTileAt(x:int, y:int) -> bool:
   for tile in tiles:
-    if tile.x == x and tile.z == z:
+    if tile.x == x and tile.y == y:
       return true
   return false
 
-func getTileAt(x:int, z:int) -> SavedTile:
-  for tile in tiles:
-    if tile.x == x and tile.z == z:
-      return tile
-  return null
+func getTileAt(x:int, y:int) -> SavedTile:
+  var idx = getTileIdx(x, y)
+  if idx == -1:
+    return null
+  return tiles[idx]
 
-func setTileAt(x:int, z:int, context:TileContext):
-  var savedTile: SavedTile
-  if (hasTileAt(x, z)):
-    savedTile = getTileAt(x, z)
-    savedTile.rotation = context.rotation
-    savedTile.id = context.tile.id
-  else:
-    savedTile = SavedTile.new()
-    savedTile.id = context.tile.id
-    savedTile.rotation = context.rotation
-    savedTile.x = x
-    savedTile.z = z
-    tiles.append(savedTile)
+func setTileAt(x:int, y:int, context:TileContext):
+  var savedTile: SavedTile = getTileAt(x, y)
+  if savedTile == null:
+    print("[SceneData] setTileAt: invalid tile index")
+    return
+  savedTile.rotation = context.rotation
+  savedTile.id = context.tile.id
+  savedTile.fillState = SavedTile.TileFillState.OCCUPIED_ROOT
+  var childOccupiedCoords = context.get_other_occupied_space_coords()
+  for coord in childOccupiedCoords:
+    var childTile = getTileAt(coord[0], coord[1])
+    if childTile != null:
+      childTile.fillState = SavedTile.TileFillState.OCCUPIED_CHILD
   return

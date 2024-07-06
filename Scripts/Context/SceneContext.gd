@@ -21,7 +21,7 @@ func initialize():
   selectedTileContext = TileContext.new(0, 0)
   selectedTileContext.rotation = defaultRotation
   selectedTileContext.tile.size = Tile.TileSize.T_2X2
-  currentScene = SceneData.new()
+  currentScene = SceneData.new(10, 10)
   currentScene.sceneName = "New Scene"
 
 func load_tileResources():

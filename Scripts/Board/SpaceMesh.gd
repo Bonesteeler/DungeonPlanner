@@ -3,13 +3,17 @@ extends MeshInstance3D
 var defaultMaterial = preload ("res://Materials/DefaultMaterial.tres")
 var previewMaterial = preload ("res://Materials/HoveredMaterial.tres")
 var spaceMaterial = preload ("res://Materials/SpaceMaterial.tres")
+var errorMaterial = preload ("res://Materials/ErrorMaterial.tres")
 var emptySpaceMesh = preload ("res://Meshes/SpaceMesh.tres")
 var setMesh: Mesh = preload ("res://Meshes/SpaceMesh.tres")
 var setRotation = Vector3.ZERO
 var set = false
 
-func start_preview(tile: TileContext):
-  set_surface_override_material(0, previewMaterial)
+func start_preview(tile: TileContext, isError: bool):
+  var surfaceMaterial = previewMaterial
+  if isError: 
+    surfaceMaterial = errorMaterial
+  set_surface_override_material(0, surfaceMaterial)
   set_preview_context(tile)
 
 func exit_preview():

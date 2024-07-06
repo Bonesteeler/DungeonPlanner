@@ -22,11 +22,11 @@ func _init():
 func load_scene_from_json(file_name: String) -> SceneData:
     var file = FileAccess.open(savedScenesPath + file_name + ".json", FileAccess.READ)
     if file == null:
-      var newScene = SceneData.new()
+      var newScene = SceneData.new(10, 10)
       newScene.sceneName = file_name
       return newScene
     var jsonString = file.get_as_text()
-    var parsedScene = SceneData.new()
+    var parsedScene = SceneData.new(10, 10)
     parsedScene.fromJson(jsonString)
     file.close()
     return parsedScene
