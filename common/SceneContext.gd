@@ -12,7 +12,7 @@ const SET_DEFINITIONS_PATH = "user://SetDefinitions/"
 const NODE_PATH = "PlanningContext"
 const USER_DIR = "user://"
 
-static var current_scene: SceneData
+static var current_scene: TileLayout
 static var initialized: bool = false
 static var selected_tile_context: TileContext
 static var tile_resources: TileResources
@@ -30,7 +30,7 @@ static func initialize():
   load_tile_resources()
   selected_tile_context = TileContext.new()
   selected_tile_context.rotation = DEFAULT_ROTATION
-  current_scene = SceneData.new()
+  current_scene = TileLayout.new()
   current_scene.scene_name = "New Scene"
 
 static func get_instance(from: Node) -> SceneContext:
@@ -104,7 +104,7 @@ static func update_selected_tile(new_selected: Tile):
 static func set_tile(x: int, z: int, tile: TileContext):
   current_scene.set_tile_at(x, z, tile)
 
-static func set_current_scene(new_scene: SceneData):
+static func set_current_scene(new_scene: TileLayout):
   current_scene = new_scene
 
 static func get_tile_from_id(id: String) -> Tile:

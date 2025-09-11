@@ -73,7 +73,7 @@ func request_scene_import(scene_id: String) -> void:
   )
   http_request.request(SCENE_REQUEST_DATA_URL_TEMPLATE % scene_id)
 
-func upload_scene(scene: SceneData) -> void:
+func upload_scene(scene: TileLayout) -> void:
   var http_request := HTTPRequest.new()
   add_child(http_request)
   http_request.request_completed.connect(

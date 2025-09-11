@@ -101,7 +101,7 @@ func delete_scene_confirmed():
   update_recent_scenes()
 
 func on_new_scene():
-  SceneContext.get_instance(self).current_scene = SceneData.new()
+  SceneContext.get_instance(self).current_scene = TileLayout.new()
   change_to_planning_scene()
 
 func change_to_planning_scene():

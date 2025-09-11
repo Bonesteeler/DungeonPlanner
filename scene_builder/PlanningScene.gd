@@ -23,7 +23,7 @@ func _ready():
   viewport.size_changed.connect(on_viewport_resized)
 
 func new_scene():
-  var new_data = SceneData.new()
+  var new_data = TileLayout.new()
   SceneContext.current_scene = new_data
   board.load_scene(new_data)
 

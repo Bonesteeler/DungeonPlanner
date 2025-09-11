@@ -22,42 +22,42 @@ func _init():
     save_name = saved_scenes_dir.get_next()
   saved_scenes_dir.list_dir_end()
 
-func load_scene_from_json(file_path: String) -> SceneData:
+func load_scene_from_json(file_path: String) -> TileLayout:
     var file = FileAccess.open(file_path, FileAccess.READ)
     if file == null:
-      return SceneData.new()
+      return TileLayout.new()
     var json_string = file.get_as_text()
-    var parsed_scene = SceneData.new()
+    var parsed_scene = TileLayout.new()
     parsed_scene.from_json(json_string)
     file.close()
     var file_name = file_path.get_file().trim_suffix(".json")
     parsed_scene.scene_name = file_name
     return parsed_scene
 
-func load_scene_from_user(file_name: String) -> SceneData:
+func load_scene_from_user(file_name: String) -> TileLayout:
     var file = FileAccess.open(SAVED_SCENES_PATH + file_name + ".json", FileAccess.READ)
     if file == null:
       print("Failed to open saved scene:%s with error %s" %
        [file_name, str(FileAccess.get_open_error())])
-      var new_scene = SceneData.new()
+      var new_scene = TileLayout.new()
       new_scene.scene_name = file_name
       return new_scene
     var json_string = file.get_as_text()
-    var parsed_scene = SceneData.new()
+    var parsed_scene = TileLayout.new()
     parsed_scene.from_json(json_string)
     file.close()
     return parsed_scene
 
-func import_server_json(json: Dictionary) -> SceneData:
+func import_server_json(json: Dictionary) -> TileLayout:
     var new_scene = Scene.new()
-    var parsed_scene = SceneData.new()
+    var parsed_scene = TileLayout.new()
     new_scene.data = parsed_scene.from_server_json(json)
     new_scene.scene_name = parsed_scene.scene_name
     scenes.append(new_scene)
     save_scene_to_user(parsed_scene)
     return parsed_scene
 
-func save_scene_to_user(scene: SceneData):
+func save_scene_to_user(scene: TileLayout):
   var json_string = scene.to_json()
   var file = FileAccess.open(SAVED_SCENES_PATH + scene.scene_name + ".json", FileAccess.WRITE)
   file.store_string(json_string)

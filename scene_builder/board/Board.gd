@@ -93,7 +93,7 @@ func on_context_updated():
     var hover_error = not SceneContext.does_selected_tile_fit(space_position)
     hovered_space.update_context(SceneContext.get_selected_tile_context(), hover_error)
 
-func load_scene(scene: SceneData):
+func load_scene(scene: TileLayout):
   if scene == null:
     return
   var is_updated = []
