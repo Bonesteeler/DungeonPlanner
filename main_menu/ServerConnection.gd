@@ -2,14 +2,12 @@ class_name ServerConnection
 extends Node
 
 signal new_scene_list(scenes: SceneListResponse)
-signal scene_imported(sceneJson: Dictionary)
 signal upload_success(scene_name: String)
 signal upload_failure(scene_name: String)
 
 const SCENE_ADD_URL = DOMAIN + "/scenes/add"
 const SCENE_LIST_URL_TEMPLATE = DOMAIN + "/scenes/list/%d"
-const SCENE_REQUEST_DATA_URL_TEMPLATE = DOMAIN + "/scenes/%s"
-const DOMAIN = "https://dungeon-planner-backend-7f50910efa9c.herokuapp.com"
+const DOMAIN = "http://localhost:8080"
 
 func request_scene_list(startIdx: int = 0) -> void:
   var http_request := HTTPRequest.new()
@@ -48,30 +46,11 @@ func request_scene_list(startIdx: int = 0) -> void:
           new_scene.author = scene_json.author
         else:
           new_scene.author = "Unknown author"
-        if scene_json.has("uniqueTileIds"):
-          new_scene.unique_tile_ids = scene_json.uniqueTileIds
-        else:
-          new_scene.unique_tile_ids = {}
         response.scenes.append(new_scene)
       http_request.queue_free()
       new_scene_list.emit(response))
   var uri = SCENE_LIST_URL_TEMPLATE % startIdx
   http_request.request(uri)
-
-func request_scene_import(scene_id: String) -> void:
-  var http_request := HTTPRequest.new()
-  add_child(http_request)
-  http_request.request_completed.connect(
-    func(_result, response_code, _headers, body: PackedByteArray) -> void:
-      if response_code != 200:
-        print("Failed to get scene data from server, response code: %d" % response_code)
-        http_request.queue_free()
-        return
-      var json: Dictionary = JSON.parse_string(body.get_string_from_utf8())
-      scene_imported.emit(json)
-      http_request.queue_free()
-  )
-  http_request.request(SCENE_REQUEST_DATA_URL_TEMPLATE % scene_id)
 
 func upload_scene(scene: TileLayout) -> void:
   var http_request := HTTPRequest.new()

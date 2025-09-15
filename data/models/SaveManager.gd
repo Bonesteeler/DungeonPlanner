@@ -27,8 +27,7 @@ func load_scene_from_json(file_path: String) -> TileLayout:
     if file == null:
       return TileLayout.new()
     var json_string = file.get_as_text()
-    var parsed_scene = TileLayout.new()
-    parsed_scene.from_json(json_string)
+    var parsed_scene = TileLayoutSerializer.deserialize(json_string)
     file.close()
     var file_name = file_path.get_file().trim_suffix(".json")
     parsed_scene.scene_name = file_name
@@ -43,18 +42,8 @@ func load_scene_from_user(file_name: String) -> TileLayout:
       new_scene.scene_name = file_name
       return new_scene
     var json_string = file.get_as_text()
-    var parsed_scene = TileLayout.new()
-    parsed_scene.from_json(json_string)
+    var parsed_scene = TileLayoutSerializer.deserialize(json_string)
     file.close()
-    return parsed_scene
-
-func import_server_json(json: Dictionary) -> TileLayout:
-    var new_scene = Scene.new()
-    var parsed_scene = TileLayout.new()
-    new_scene.data = parsed_scene.from_server_json(json)
-    new_scene.scene_name = parsed_scene.scene_name
-    scenes.append(new_scene)
-    save_scene_to_user(parsed_scene)
     return parsed_scene
 
 func save_scene_to_user(scene: TileLayout):

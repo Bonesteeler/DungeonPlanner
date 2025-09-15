@@ -3,96 +3,16 @@ extends RefCounted
 
 const AUTHOR_STRING = "A community member"
 const SIZE = Vector2(20, 20)
-const KEY_AUTHOR = "author"
-const KEY_SCENE_NAME = "sceneName"
-const KEY_NAME = "name"
-const KEY_TILES = "tiles"
 
 var scene_name = ""
 var tiles = []
 
-func get_unique_tile_ids() -> Dictionary:
+func get_unique_tile_ids() -> Array:
   var unique_tile_ids: Dictionary = {}
   for tile in tiles:
     if not unique_tile_ids.has(tile.id):
       unique_tile_ids.set(tile.id, 1)
-  return unique_tile_ids
-
-func to_json() -> String:
-  var data: Dictionary = {}
-  data[TileLayout.KEY_SCENE_NAME] = scene_name
-  data[TileLayout.KEY_TILES] = []
-  for tile in tiles:
-    var tile_data: Dictionary = {}
-    tile_data[PlacedTile.KEY_ID] = tile.id
-    tile_data[PlacedTile.KEY_ROTATION] = tile.rotation - PlanningContext.DEFAULT_ROTATION
-    tile_data[PlacedTile.KEY_X] = tile.x
-    tile_data[PlacedTile.KEY_Z] = tile.z
-    data[TileLayout.KEY_TILES].append(tile_data)
-  return JSON.stringify(data)
-
-func from_json(json: String):
-  tiles = []
-  var data: Dictionary = JSON.parse_string(json)
-  scene_name = data[TileLayout.KEY_SCENE_NAME]
-  for tile_data in data[TileLayout.KEY_TILES]:
-    var tile = PlacedTile.new()
-    tile.id = tile_data[PlacedTile.KEY_ID]
-    var rotation = split_on_any_of(tile_data[PlacedTile.KEY_ROTATION], " ,()")
-    tile.rotation = Vector3(
-        float(rotation[0]),
-        float(rotation[1]),
-        float(rotation[2])
-    ) + PlanningContext.DEFAULT_ROTATION
-    tile.x = tile_data[PlacedTile.KEY_X]
-    tile.z = tile_data[PlacedTile.KEY_Z]
-    tile.update_tile_offset()
-    tiles.append(tile)
-
-func from_server_json(json: Dictionary) -> TileLayout:
-  tiles = []
-  scene_name = json[TileLayout.KEY_NAME]
-  for tile_data in json[TileLayout.KEY_TILES]:
-    var tile = PlacedTile.new()
-    tile.id = tile_data[PlacedTile.KEY_TILE_ID]
-    var y_rotation = tile_data[PlacedTile.KEY_ROTATION]
-    tile.rotation = Vector3(
-        0,
-        y_rotation,
-        0
-    ) + PlanningContext.DEFAULT_ROTATION
-    tile.x = tile_data[PlacedTile.KEY_X_POS]
-    tile.z = tile_data[PlacedTile.KEY_Y_POS]
-    tile.update_tile_offset()
-    tiles.append(tile)
-  return self
-
-func to_server_json() -> String:
-  var data: Dictionary = {}
-  data[TileLayout.KEY_NAME] = scene_name
-  data[TileLayout.KEY_AUTHOR] = AUTHOR_STRING
-  data[TileLayout.KEY_TILES] = []
-  for tile in tiles:
-    var tile_data: Dictionary = {}
-    tile_data[PlacedTile.KEY_TILE_ID] = tile.id
-    var y_rotation = tile.rotation.y - PlanningContext.DEFAULT_ROTATION.y
-    tile_data[PlacedTile.KEY_ROTATION] = y_rotation
-    tile_data[PlacedTile.KEY_X_POS] = tile.x
-    tile_data[PlacedTile.KEY_Y_POS] = tile.z
-    data[TileLayout.KEY_TILES].append(tile_data)
-  return JSON.stringify(data)
-
-func split_on_any_of(string: String, delimiters: String) -> Array:
-  var tokens = []
-  var current_token = ""
-  for c in string:
-    if delimiters.find(c) != -1:
-      if current_token != "":
-        tokens.append(current_token)
-        current_token = ""
-    else:
-      current_token += c
-  return tokens
+  return unique_tile_ids.keys()
 
 func has_tile_at(x: int, z: int) -> bool:
   for tile in tiles:

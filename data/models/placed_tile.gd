@@ -1,14 +1,6 @@
 class_name PlacedTile
 extends RefCounted
 
-const KEY_ID = "id"
-const KEY_ROTATION = "rotation"
-const KEY_TILE_ID = "tileID"
-const KEY_X = "x"
-const KEY_X_POS = "xPos"
-const KEY_Y_POS = "yPos"
-const KEY_Z = "z"
-
 # TODO replace field setters with proper setter methods, currently the occupsied spaces are not updated when position or rotation change
 var id: String = "" :
   set(value):

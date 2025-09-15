@@ -119,8 +119,3 @@ func _on_scene_import_dialog_file_selected(path: String) -> void:
   SceneContext.get_instance(self).current_scene = scene_data
   save_manager.save_scene_to_user(scene_data)
   change_to_planning_scene()
-
-func on_scene_imported_from_server(scene_json: Dictionary):
-  var scene_data = save_manager.import_server_json(scene_json)
-  SceneContext.get_instance(self).current_scene = scene_data
-  update_recent_scenes()
