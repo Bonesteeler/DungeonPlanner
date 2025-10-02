@@ -11,7 +11,7 @@ var viewport
 
 func _ready():
   board.create_board()
-  board.load_scene(SceneContext.current_scene)
+  board.load_scene(SceneContext.current_scene.data)
   planner_ui.set_tile_resources(SceneContext.tile_resources)
   planner_ui.tile_selected.connect(SceneContext.update_selected_tile)
   planner_ui.new_scene.connect(new_scene)
@@ -24,18 +24,16 @@ func _ready():
 
 func new_scene():
   var new_data = TileLayout.new()
-  SceneContext.current_scene = new_data
+  SceneContext.current_scene.data = new_data
   board.load_scene(new_data)
 
-func save_scene(scene_name: String):
-  SceneContext.current_scene.scene_name = scene_name
-  var scene_data = SceneContext.current_scene
-  save_manager.save_scene_to_user(scene_data)
+func save_scene(scene: Scene):
+  SceneContext.current_scene = scene
+  save_manager.save_scene_to_user(scene)
 
-func load_scene(scene_name: String):
-  var scene_data = save_manager.load_scene_from_user(scene_name)
-  SceneContext.set_current_scene(scene_data)
-  board.load_scene(scene_data)
+func load_scene(scene: Scene):
+  SceneContext.set_current_scene(scene)
+  board.load_scene(scene.data)
 
 func quit_scene():
   # Can't preload main menu scene because it causes circular dependencies

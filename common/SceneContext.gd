@@ -12,7 +12,7 @@ const SET_DEFINITIONS_PATH = "user://SetDefinitions/"
 const NODE_PATH = "PlanningContext"
 const USER_DIR = "user://"
 
-static var current_scene: TileLayout
+static var current_scene: Scene
 static var initialized: bool = false
 static var selected_tile_context: TileContext
 static var tile_resources: TileResources
@@ -30,8 +30,8 @@ static func initialize():
   load_tile_resources()
   selected_tile_context = TileContext.new()
   selected_tile_context.rotation = DEFAULT_ROTATION
-  current_scene = TileLayout.new()
-  current_scene.scene_name = "New Scene"
+  current_scene = Scene.new()
+  current_scene.scene_name = ""
 
 static func get_instance(from: Node) -> SceneContext:
   return from.get_tree().root.get_node_or_null(NODE_PATH) as SceneContext
@@ -102,9 +102,9 @@ static func update_selected_tile(new_selected: Tile):
   selected_tile_context.mesh = load(new_selected.mesh_path)
 
 static func set_tile(x: int, z: int, tile: TileContext):
-  current_scene.set_tile_at(x, z, tile)
+  current_scene.data.set_tile_at(x, z, tile)
 
-static func set_current_scene(new_scene: TileLayout):
+static func set_current_scene(new_scene: Scene):
   current_scene = new_scene
 
 static func get_tile_from_id(id: String) -> Tile:
@@ -117,5 +117,5 @@ static func get_tile_from_id(id: String) -> Tile:
 static func does_selected_tile_fit(position: Vector2) -> bool:
   if selected_tile_context.tile == null:
     return false
-  return current_scene.does_tile_fit(
+  return current_scene.data.does_tile_fit(
       selected_tile_context.tile, position, selected_tile_context.rotation)

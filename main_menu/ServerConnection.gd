@@ -32,27 +32,14 @@ func request_scene_list(startIdx: int = 0) -> void:
       if json.has("scenes"):
         scenes = json.scenes
       for scene_json in scenes:
-        var new_scene = Scene.new()
-        if scene_json.has("id"):
-          new_scene.id = scene_json.id
-        else:
-          # No id, can't process scene 
-          continue
-        if scene_json.has("name"):
-          new_scene.scene_name = scene_json.name
-        else:
-          new_scene.scene_name = "Untitled"
-        if scene_json.has("author"):
-          new_scene.author = scene_json.author
-        else:
-          new_scene.author = "Unknown author"
+        var new_scene = SceneSerializer.deserialize(scene_json)
         response.scenes.append(new_scene)
       http_request.queue_free()
       new_scene_list.emit(response))
   var uri = SCENE_LIST_URL_TEMPLATE % startIdx
   http_request.request(uri)
 
-func upload_scene(scene: TileLayout) -> void:
+func upload_scene(scene: Scene) -> void:
   var http_request := HTTPRequest.new()
   add_child(http_request)
   http_request.request_completed.connect(

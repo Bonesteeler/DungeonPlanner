@@ -1,6 +1,8 @@
 class_name SaveManager
 extends Node
 
+signal scene_added()
+
 const SAVED_SCENES_PATH = "user://SavedScenes/"
 
 var scenes: Array[Scene] = []
@@ -16,9 +18,9 @@ func _init():
     if save_name.ends_with(".json"):
       var scene = Scene.new()
       var without_suffix = save_name.trim_suffix(".json")
-      scene.scene_name = without_suffix
-      scene.data = load_scene_from_user(without_suffix)
-      scenes.append(scene)
+      scene = load_scene_from_user(without_suffix)
+      if scene != null:
+        scenes.append(scene)
     save_name = saved_scenes_dir.get_next()
   saved_scenes_dir.list_dir_end()
 
@@ -33,24 +35,33 @@ func load_scene_from_json(file_path: String) -> TileLayout:
     parsed_scene.scene_name = file_name
     return parsed_scene
 
-func load_scene_from_user(file_name: String) -> TileLayout:
+func load_scene_from_user(file_name: String) -> Scene:
     var file = FileAccess.open(SAVED_SCENES_PATH + file_name + ".json", FileAccess.READ)
     if file == null:
       print("Failed to open saved scene:%s with error %s" %
        [file_name, str(FileAccess.get_open_error())])
-      var new_scene = TileLayout.new()
+      var new_scene = Scene.new()
       new_scene.scene_name = file_name
       return new_scene
     var json_string = file.get_as_text()
-    var parsed_scene = TileLayoutSerializer.deserialize(json_string)
+    var parsed_scene = SceneSerializer.deserialize(json_string)
     file.close()
     return parsed_scene
 
-func save_scene_to_user(scene: TileLayout):
-  var json_string = scene.to_json()
+func save_scene_to_user(scene: Scene):
+  var json_string = SceneSerializer.serialize(scene)
   var file = FileAccess.open(SAVED_SCENES_PATH + scene.scene_name + ".json", FileAccess.WRITE)
   file.store_string(json_string)
-  file.close()
+  file.close() 
+
+func add_scene(scene: Scene):
+  var idx = scenes.find_custom((func(s): return s.scene_name == scene.scene_name))
+  if idx == -1:
+    scenes.append(scene)
+  else:
+    scenes[idx] = scene
+  save_scene_to_user(scene)
+  scene_added.emit()
 
 func delete_scene(file_name: String):
   var local_path = SAVED_SCENES_PATH + file_name + ".json"

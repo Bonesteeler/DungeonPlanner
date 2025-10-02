@@ -15,12 +15,15 @@ var save_manager: SaveManager
 @onready var imported_sets_container: VBoxContainer = $%ImportedSets
 @onready var import_set: MarginContainer = $%ImportTileSetDialog
 @onready var recent_scenes_container: VBoxContainer = $%RecentScenes
+@onready var scene_browser: SceneBrowser = $%SceneBrowser
 @onready var scene_import_dialog: FileDialog = $%SceneImportDialog
 @onready var server_connection: ServerConnection = $%ServerConnection
 
 func _ready():
   SceneContext.initialize()
   save_manager = SaveManager.new()
+  scene_browser.scene_import.connect(save_manager.add_scene)
+  save_manager.scene_added.connect(update_recent_scenes)
   update_recent_scenes()
   update_imported_sets()
 
@@ -101,7 +104,7 @@ func delete_scene_confirmed():
   update_recent_scenes()
 
 func on_new_scene():
-  SceneContext.get_instance(self).current_scene = TileLayout.new()
+  SceneContext.get_instance(self).current_scene = Scene.new()
   change_to_planning_scene()
 
 func change_to_planning_scene():

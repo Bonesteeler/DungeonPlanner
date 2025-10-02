@@ -1,7 +1,8 @@
+class_name SceneBrowser
 extends VBoxContainer
 
 signal request_scene_list(startIdx: int)
-signal scene_import_request(scene_id: String)
+signal scene_import(scene: Scene)
 
 const SCENE_BROWSER_ITEM_SCENE = preload("res://main_menu/SceneBrowserItem.tscn")
 
@@ -39,5 +40,5 @@ func _on_next_button_pressed() -> void:
     start_idx = 0
   request_scene_list.emit(start_idx)
 
-func _on_scene_browser_item_pressed(scene_id: String) -> void:
-    scene_import_request.emit(scene_id)
+func _on_scene_browser_item_pressed(scene: Scene) -> void:
+    scene_import.emit(scene)

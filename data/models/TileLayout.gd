@@ -16,7 +16,7 @@ func get_unique_tile_ids() -> Array:
 
 func has_tile_at(x: int, z: int) -> bool:
   for tile in tiles:
-    if tile.x == x and tile.z == z:
+    if tile.position.x == x and tile.position.y == z:
       return true
   return false
 
@@ -25,7 +25,7 @@ func has_position_in_tile_occupying_space_excluding_self(
     tile_origin: Vector2
 ) -> bool:
   for tile in tiles:
-    if tile.x == tile_origin.x and tile.z == tile_origin.y:
+    if tile.position.x == tile_origin.x and tile.position.y == tile_origin.y:
       continue # Skip the tile at the given position
     for occupied_space in tile.occupied_spaces:
       if occupied_space.x == position.x and occupied_space.y == position.y:
@@ -34,13 +34,13 @@ func has_position_in_tile_occupying_space_excluding_self(
 
 func get_tile_at(x: int, z: int) -> PlacedTile:
   for tile in tiles:
-    if tile.x == x and tile.z == z:
+    if tile.position.x == x and tile.position.y == z:
       return tile
   return null
 
 func get_origin_tile(position: Vector2) -> PlacedTile:
   for tile in tiles:
-    if tile.x == position.x and tile.z == position.y:
+    if tile.position.x == position.x and tile.position.y == position.y:
       return tile
     for occupied_space in tile.occupied_spaces:
       if occupied_space.x == position.x and occupied_space.y == position.y:
@@ -55,8 +55,7 @@ func set_tile_at(x: int, z: int, tile_context: SceneContext.TileContext):
     saved_tile = get_tile_at(x, z)
   else:
     saved_tile = PlacedTile.new()
-    saved_tile.x = x
-    saved_tile.z = z
+    saved_tile.position = Vector2(x, z)
     tiles.append(saved_tile)
   saved_tile.id = tile_context.tile.id
   saved_tile.rotation = tile_context.rotation
@@ -65,7 +64,7 @@ func set_tile_at(x: int, z: int, tile_context: SceneContext.TileContext):
 
 func remove_tile_at(x: int, z: int):
   for i in range(tiles.size()):
-    if tiles[i].x == x and tiles[i].z == z:
+    if tiles[i].position.x == x and tiles[i].position.y == z:
       tiles.remove_at(i)
       return
   print("No tile found at position (", x, ", ", z, ") to remove.")

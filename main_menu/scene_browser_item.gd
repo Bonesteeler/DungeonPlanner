@@ -1,6 +1,6 @@
 extends Container
 
-signal on_pressed(scene_id: String)
+signal on_pressed(scene_id: Scene)
 
 const AUTHOR_STRING_TEMPLATE = "by: %s"
 
@@ -21,4 +21,4 @@ func set_scene(scene: Scene) -> void:
       author_label.text = AUTHOR_STRING_TEMPLATE % scene_data.author
 
 func forward_pressed() -> void:
-  on_pressed.emit(scene_data.id)
+  on_pressed.emit(scene_data)
