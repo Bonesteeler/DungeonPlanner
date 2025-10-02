@@ -15,12 +15,15 @@ var save_manager: SaveManager
 @onready var imported_sets_container: VBoxContainer = $%ImportedSets
 @onready var import_set: MarginContainer = $%ImportTileSetDialog
 @onready var recent_scenes_container: VBoxContainer = $%RecentScenes
+@onready var scene_browser: SceneBrowser = $%SceneBrowser
 @onready var scene_import_dialog: FileDialog = $%SceneImportDialog
 @onready var server_connection: ServerConnection = $%ServerConnection
 
 func _ready():
   SceneContext.initialize()
   save_manager = SaveManager.new()
+  scene_browser.scene_import.connect(save_manager.add_scene)
+  save_manager.scene_added.connect(update_recent_scenes)
   update_recent_scenes()
   update_imported_sets()
 
@@ -101,7 +104,7 @@ func delete_scene_confirmed():
   update_recent_scenes()
 
 func on_new_scene():
-  SceneContext.get_instance(self).current_scene = SceneData.new()
+  SceneContext.get_instance(self).current_scene = Scene.new()
   change_to_planning_scene()
 
 func change_to_planning_scene():
@@ -119,8 +122,3 @@ func _on_scene_import_dialog_file_selected(path: String) -> void:
   SceneContext.get_instance(self).current_scene = scene_data
   save_manager.save_scene_to_user(scene_data)
   change_to_planning_scene()
-
-func on_scene_imported_from_server(scene_json: Dictionary):
-  var scene_data = save_manager.import_server_json(scene_json)
-  SceneContext.get_instance(self).current_scene = scene_data
-  update_recent_scenes()

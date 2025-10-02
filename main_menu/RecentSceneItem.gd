@@ -31,7 +31,7 @@ func update_nodes():
   if name_label != null:
     name_label.text = scene.scene_name
   if status_label != null and select_button != null:
-    var has_tiles = tile_resources.has_tile_ids(scene.unique_tile_ids.keys())
+    var has_tiles = tile_resources.has_tile_ids(scene.data.get_unique_tile_ids())
     if has_tiles:
       status_label.text = READY_STRING
       status_label.add_theme_color_override("font_color", Color.WHITE)

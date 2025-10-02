@@ -61,6 +61,7 @@ unique_name_in_owner = true
 layout_mode = 2
 
 [node name="SceneBrowser" type="VBoxContainer" parent="HBoxContainer"]
+unique_name_in_owner = true
 layout_mode = 2
 script = ExtResource("2_yt4ty")
 
@@ -89,7 +90,6 @@ horizontal_scroll_mode = 0
 [node name="SceneListContainer" type="VBoxContainer" parent="HBoxContainer/SceneBrowser/ScrollContainer"]
 unique_name_in_owner = true
 layout_mode = 2
-script = ExtResource("2_yt4ty")
 
 [node name="ConfirmationDialog" type="ConfirmationDialog" parent="."]
 title = "Confirm delete"
@@ -120,13 +120,10 @@ script = ExtResource("4_yt4ty")
 [connection signal="pressed" from="HBoxContainer/LoadScene/SceneButtons/New Scene" to="." method="on_new_scene"]
 [connection signal="pressed" from="HBoxContainer/LoadScene/SceneButtons/Import" to="." method="_on_import_scene_pressed"]
 [connection signal="request_scene_list" from="HBoxContainer/SceneBrowser" to="ServerConnection" method="request_scene_list"]
-[connection signal="scene_import_request" from="HBoxContainer/SceneBrowser" to="ServerConnection" method="request_scene_import"]
 [connection signal="pressed" from="HBoxContainer/SceneBrowser/HBoxContainer/Previous" to="HBoxContainer/SceneBrowser" method="_on_prev_button_pressed"]
 [connection signal="pressed" from="HBoxContainer/SceneBrowser/HBoxContainer/Next" to="HBoxContainer/SceneBrowser" method="_on_next_button_pressed"]
-[connection signal="scene_import_request" from="HBoxContainer/SceneBrowser/ScrollContainer/SceneListContainer" to="ServerConnection" method="request_scene_import"]
 [connection signal="set_imported" from="ImportTileSetDialog" to="." method="on_set_imported"]
 [connection signal="file_selected" from="SceneImportDialog" to="." method="_on_scene_import_dialog_file_selected"]
 [connection signal="new_scene_list" from="ServerConnection" to="HBoxContainer/SceneBrowser" method="set_scene_items"]
-[connection signal="scene_imported" from="ServerConnection" to="." method="on_scene_imported_from_server"]
 [connection signal="upload_failure" from="ServerConnection" to="." method="on_upload_failure"]
 [connection signal="upload_success" from="ServerConnection" to="." method="on_upload_success"]

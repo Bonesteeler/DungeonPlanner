@@ -1,12 +1,12 @@
 extends MarginContainer
 
 class UIContext:
-  var current_scene: String = ""
+  var current_scene: Scene = Scene.new()
   var recent_scenes: Array[Scene] = []
 
 signal load_scene(scene_name: String)
 signal new_scene()
-signal save_current_scene(scene_name: String)
+signal save_current_scene(scene: Scene)
 signal tile_selected(tile: Tile)
 signal tool_add_tile_selected()
 signal tool_select_tile_selected()
@@ -44,7 +44,7 @@ func _ready():
   save_as_dialog.saved_with_name.connect(_on_save_as)
   context = UIContext.new()
   if SceneContext.current_scene != null:
-    context.current_scene = SceneContext.current_scene.scene_name
+    context.current_scene = SceneContext.current_scene
 
 func set_tile_resources(new_resources: TileResources):
   resources = new_resources
@@ -68,15 +68,23 @@ func set_recent_scenes(scenes: Array[Scene]):
   file_button.set_saves(context.recent_scenes)
 
 func _on_file_new():
-  context.current_scene = ""
+  context.current_scene = Scene.new()
   new_scene.emit()
 
 func _on_file_load(scene_name: String):
-  context.current_scene = scene_name
-  load_scene.emit(scene_name)
+  var loaded_scene: Scene = null
+  for scene in context.recent_scenes:
+    if scene.scene_name == scene_name:
+      loaded_scene = scene
+      break
+  if loaded_scene != null:
+    context.current_scene = loaded_scene
+    load_scene.emit(loaded_scene)
+  else:
+    push_error("Scene " + scene_name + " not found in recent scenes.")
 
 func _on_file_save():
-  if context.current_scene == "":
+  if context.current_scene.scene_name == "":
     show_save_as_dialog()
     return
   unsaved_changes = false
@@ -86,7 +94,7 @@ func show_save_as_dialog():
   save_as_dialog.visible = true
 
 func _on_save_as(scene_name: String):
-  context.current_scene = scene_name
+  context.current_scene.scene_name = scene_name
   unsaved_changes = false
   save_current_scene.emit(context.current_scene)
   file_button.set_saves(context.recent_scenes)
@@ -108,7 +116,7 @@ func unsaved_changes_save():
   if SceneContext.current_scene.scene_name == "":
     unsaved_changes_save_as_dialog.visible = true
   else:
-    save_current_scene.emit(SceneContext.current_scene.scene_name)
+    save_current_scene.emit(SceneContext.current_scene)
     quit_scene.emit()
 
 func unsaved_changes_custom(action: StringName):

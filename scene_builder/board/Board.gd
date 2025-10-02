@@ -42,13 +42,13 @@ func on_space_hover_enter(space: Node3D):
       var hovered_tile = SceneContext.current_scene.get_origin_tile(space_position)
       if hovered_tile == null:
         return
-      hovered_space = board_nodes[hovered_tile.x][hovered_tile.z]
+      hovered_space = board_nodes[hovered_tile.position.x][hovered_tile.position.y]
       hovered_space.update_color(false)
     CustomEnums.ToolType.REMOVE_TILE:
       var hovered_tile = SceneContext.current_scene.get_origin_tile(space_position)
       if hovered_tile == null:
         return
-      hovered_space = board_nodes[hovered_tile.x][hovered_tile.z]
+      hovered_space = board_nodes[hovered_tile.position.x][hovered_tile.position.y]
       hovered_space.update_color(true)
 
 func on_space_hover_exit(space: Node3D):
@@ -58,7 +58,7 @@ func on_space_hover_exit(space: Node3D):
   else:
     var tile_origin = SceneContext.current_scene.get_origin_tile(Vector2(space.x, space.z))
     if tile_origin != null:
-      var selected_space = board_nodes[tile_origin.x][tile_origin.z]
+      var selected_space = board_nodes[tile_origin.position.x][tile_origin.position.y]
       selected_space.end_preview()
 
 func on_space_clicked(space: Node3D, x: int, y: int):
@@ -81,8 +81,8 @@ func on_space_clicked(space: Node3D, x: int, y: int):
       var selected_tile = SceneContext.current_scene.get_origin_tile(Vector2(x, y))
       if selected_tile == null:
         return
-      SceneContext.current_scene.remove_tile_at(selected_tile.x, selected_tile.z)
-      var origin_space = board_nodes[selected_tile.x][selected_tile.z]
+      SceneContext.current_scene.remove_tile_at(selected_tile.position.x, selected_tile.position.y)
+      var origin_space = board_nodes[selected_tile.position.x][selected_tile.position.y]
       origin_space.set_empty()
       updated.emit()
 
@@ -93,7 +93,7 @@ func on_context_updated():
     var hover_error = not SceneContext.does_selected_tile_fit(space_position)
     hovered_space.update_context(SceneContext.get_selected_tile_context(), hover_error)
 
-func load_scene(scene: SceneData):
+func load_scene(scene: TileLayout):
   if scene == null:
     return
   var is_updated = []
@@ -113,8 +113,8 @@ func load_scene(scene: SceneData):
     var mesh_path = tile_data.mesh_path
     if mesh_path != "":
       tile_context.mesh = load(mesh_path)
-    board_nodes[tile.x][tile.z].set_tile(tile_context)
-    is_updated[tile.x][tile.z] = true
+    board_nodes[tile.position.x][tile.position.y].set_tile(tile_context)
+    is_updated[tile.position.x][tile.position.y] = true
   for i in START_ROWS:
     for j in START_COLS:
       if !is_updated[i][j]:
