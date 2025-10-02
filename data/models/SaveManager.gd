@@ -52,7 +52,7 @@ func save_scene_to_user(scene: Scene):
   var json_string = SceneSerializer.serialize(scene)
   var file = FileAccess.open(SAVED_SCENES_PATH + scene.scene_name + ".json", FileAccess.WRITE)
   file.store_string(json_string)
-  file.close() 
+  file.close()
 
 func add_scene(scene: Scene):
   var idx = scenes.find_custom((func(s): return s.scene_name == scene.scene_name))

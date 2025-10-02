@@ -1,7 +1,8 @@
 class_name PlacedTile
 extends RefCounted
 
-# TODO replace field setters with proper setter methods, currently the occupsied spaces are not updated when position or rotation change
+# TODO replace field setters with proper setter methods.
+# currently the occupied spaces are not updated when position or rotation change
 var id: String = "" :
   set(value):
     id = value

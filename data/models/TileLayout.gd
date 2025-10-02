@@ -70,11 +70,11 @@ func remove_tile_at(x: int, z: int):
   print("No tile found at position (", x, ", ", z, ") to remove.")
 
 func does_tile_fit(tile: Tile, position: Vector2, rotation: Vector3) -> bool:
-  var targetTile: PlacedTile = PlacedTile.new()
-  targetTile.position = position
-  targetTile.rotation = rotation
-  targetTile.id = tile.id
-  var occupied_spaces = targetTile.calculate_occupied_spaces()
+  var target_tile: PlacedTile = PlacedTile.new()
+  target_tile.position = position
+  target_tile.rotation = rotation
+  target_tile.id = tile.id
+  var occupied_spaces = target_tile.calculate_occupied_spaces()
   for space in occupied_spaces:
     if has_position_in_tile_occupying_space_excluding_self(Vector2(space.x, space.y), position):
       return false

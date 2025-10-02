@@ -35,8 +35,9 @@ func request_scene_list(startIdx: int = 0) -> void:
         var new_scene = SceneSerializer.deserialize(scene_json)
         response.scenes.append(new_scene)
       http_request.queue_free()
-      new_scene_list.emit(response))
-  var uri = SCENE_LIST_URL_TEMPLATE % startIdx
+      new_scene_list.emit(response)
+  )
+  var uri: String = SCENE_LIST_URL_TEMPLATE % startIdx
   http_request.request(uri)
 
 func upload_scene(scene: Scene) -> void:
@@ -51,7 +52,7 @@ func upload_scene(scene: Scene) -> void:
       http_request.queue_free()
   )
   var json_string = scene.to_server_json()
-  var headers = ["Content-Type: application/json"]
+  var headers: PackedStringArray = ["Content-Type: application/json"]
   var error = http_request.request(SCENE_ADD_URL, headers, HTTPClient.METHOD_PUT, json_string)
   if error != OK:
     print("Failed to upload scene: %s with error: %s" % [scene.scene_name, error])
