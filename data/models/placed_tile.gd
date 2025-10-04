@@ -1,9 +1,17 @@
 class_name PlacedTile
 extends RefCounted
+## PlacedTile
+##
+## [i]Represents a tile placed on the planning grid including its position, rotation, and the set of occupied grid spaces.[/i][br]
+## [b]Properties:[/b][br]
+## - [b]id[/b]: The unique identifier for the tile.[br]
+## - [b]position[/b]: The tile's origin position in grid coordinates as a [code]Vector2[/code].[br]
+## - [b]rotation[/b]: The tile's rotation in degrees as a [code]Vector3[/code]; only the Y component is used for grid rotation.[br]
+## - [b]occupied_spaces[/b]: Calculated [code]Array[/code] of [code]Vector2[/code] positions on the grid that this placed tile occupies.[br]
 
 # TODO replace field setters with proper setter methods.
 # currently the occupied spaces are not updated when position or rotation change
-var id: String = "" :
+var id: String = "":
   set(value):
     id = value
     tile_data = SceneContext.get_tile_from_id(id)
@@ -16,10 +24,14 @@ var rotation: Vector3 = Vector3.ZERO
 var position: Vector2 = Vector2.ZERO
 var tile_data: Tile
 
+## Updates [code]occupied_spaces[/code] to match the current [code]position[/code] and [code]rotation[/code].[br]
+## [b]Returns:[/b] [void] — updates [code]occupied_spaces[/code] in-place.[br]
 func update_tile_offset():
   occupied_spaces.clear()
   occupied_spaces.append_array(calculate_occupied_spaces())
 
+## Calculates which grid cells are occupied by this tile based on its [code]tile_data[/code], [code]position[/code], and [code]rotation[/code].[br]
+## [b]Returns:[/b] [Array] — an array of [code]Vector2[/code] positions representing occupied grid cells.[br]
 func calculate_occupied_spaces() -> Array:
   # Create base offsets based on tile size
   var x_size = tile_data.x_size

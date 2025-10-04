@@ -1,5 +1,10 @@
 class_name SaveManager
 extends Node
+## SaveManager
+##
+## [i]Manages saving, loading and tracking of user-created scenes stored under user://SavedScenes/.[/i][br]
+## [b]Properties:[/b][br]
+## - [b]scenes[/b]: Array of [code]Scene[/code] objects currently discovered in the save folder and managed in-memory.[br]
 
 signal scene_added()
 
@@ -7,6 +12,9 @@ const SAVED_SCENES_PATH = "user://SavedScenes/"
 
 var scenes: Array[Scene] = []
 
+## Ensure the save directory exists and populate [code]scenes[/code] from any existing JSON files.[br]
+## [b]Emits:[/b][br]
+## - [code]scene_added()[/code] when a saved scene is discovered and added to the in-memory list during initialization.[br]
 func _init():
   var dir = DirAccess.open("user://")
   if dir.dir_exists(SAVED_SCENES_PATH) == false:
@@ -24,6 +32,10 @@ func _init():
     save_name = saved_scenes_dir.get_next()
   saved_scenes_dir.list_dir_end()
 
+## Load a TileLayout from a JSON file path.[br]
+## [b]Parameters:[/b][br]
+## [code]file_path[/code] : [String] — absolute or relative filesystem path to a .json file containing a serialized TileLayout.[br]
+## [b]Returns:[/b] [TileLayout] — a deserialized TileLayout. Returns a new empty [code]TileLayout[/code] if the file cannot be opened.[br]
 func load_scene_from_json(file_path: String) -> TileLayout:
     var file = FileAccess.open(file_path, FileAccess.READ)
     if file == null:
@@ -35,6 +47,10 @@ func load_scene_from_json(file_path: String) -> TileLayout:
     parsed_scene.scene_name = file_name
     return parsed_scene
 
+## Load a saved Scene from the user save directory.[br]
+## [b]Parameters:[/b][br]
+## [code]file_name[/code] : [String] — base filename (without .json) of the saved scene under user://SavedScenes/.[br]
+## [b]Returns:[/b] [Scene] — the deserialized Scene. If the file cannot be opened, a new [code]Scene[/code] with [code]scene_name[/code] set to [code]file_name[/code] is returned.[br]
 func load_scene_from_user(file_name: String) -> Scene:
     var file = FileAccess.open(SAVED_SCENES_PATH + file_name + ".json", FileAccess.READ)
     if file == null:
@@ -48,12 +64,20 @@ func load_scene_from_user(file_name: String) -> Scene:
     file.close()
     return parsed_scene
 
+## Serialize and write a Scene to the user save directory as JSON.[br]
+## [b]Parameters:[/b][br]
+## [code]scene[/code] : [Scene] — the Scene instance to serialize and persist. The Scene's [code]scene_name[/code] is used for the filename.[br]
 func save_scene_to_user(scene: Scene):
   var json_string = SceneSerializer.serialize(scene)
   var file = FileAccess.open(SAVED_SCENES_PATH + scene.scene_name + ".json", FileAccess.WRITE)
   file.store_string(json_string)
   file.close()
 
+## Add or replace a Scene in memory and persist it to disk.[br]
+## [b]Parameters:[/b][br]
+## [code]scene[/code] : [Scene] — the scene to add or update.[br]
+## [b]Emits:[/b][br]
+## - [code]scene_added()[/code] after the scene is added or updated and saved.[br]
 func add_scene(scene: Scene):
   var idx = scenes.find_custom((func(s): return s.scene_name == scene.scene_name))
   if idx == -1:
@@ -63,6 +87,8 @@ func add_scene(scene: Scene):
   save_scene_to_user(scene)
   scene_added.emit()
 
+## Remove a Scene in memory and from disk.[br]
+## [code]file_name[/code] : [String] — base filename (without .json) of the scene to delete from user://SavedScenes/.[br]
 func delete_scene(file_name: String):
   var local_path = SAVED_SCENES_PATH + file_name + ".json"
   OS.move_to_trash(ProjectSettings.globalize_path(local_path))
@@ -70,6 +96,3 @@ func delete_scene(file_name: String):
   while idx != -1:
     scenes.remove_at(idx)
     idx = scenes.find_custom((func(s): return s.scene_name == file_name))
-
-func get_scene_path(file_name: String) -> String:
-  return SAVED_SCENES_PATH + file_name + ".json"
