@@ -13,7 +13,7 @@ Here is an example function formatting
 ## [b]Emits:[/b][br]
 ## - [code]import_started(total_tiles: [int])[/code] once at the start of an import[br]
 ## - [code]tile_imported()[/code] after each tile is imported[br]
-## [b]Returns:[/b] [void] — prints an error and returns early on failure.[br]
+## [b]Returns:[/b] [void][br]
 
 Second, the class should have documentation directly after the extends line. This documentation should include a brief description of the class, a list of properties, signals, and constants. If any of the previous sections are empty, do not include it in the documentation.
 In the class documentation, Include an empty comment line after the class name. Here is an example class formatting for the StlToMesh class

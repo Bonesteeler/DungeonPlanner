@@ -1,4 +1,20 @@
+class_name Board
 extends Node3D
+## Board
+##
+## [i]Grid of planning spaces for placing, selecting, and removing tiles. Handles hover
+## previews, clicks, and loading a saved TileLayout into the board nodes.[/i][br]
+## [b]Properties:[/b][br]
+## - [b]board_nodes[/b] : [Array] — 2D array of instantiated space nodes for the board.[br]
+## - [b]current_tool[/b] : [CustomEnums.ToolType] — active tool used for interactions (add/select/remove). [br]
+## - [b]hovered_space[/b] : [Node3D] — currently hovered space node, used for previews.[br]
+## - [b]space_scene[/b] : [PackedScene] — preloaded scene used to instantiate spaces.[br]
+## [b]Signals:[/b][br]
+## - [code]updated()[/code] : Emitted when the board data changes and UI should refresh.[br]
+## - [code]tile_selected(tile_id: String)[/code] : Emitted when a tile is selected via the select tool.[br]
+## [b]Constants:[/b][br]
+## - [code]START_ROWS[/code], [code]START_COLS[/code] : Initial board dimensions in spaces.[br]
+## - [code]SPACE_SIZE[/code] : Size in world units of a single planning space.[br]
 
 signal updated()
 signal tile_selected(tile_id: String)
@@ -12,6 +28,8 @@ var current_tool = CustomEnums.ToolType.ADD_TILE
 var hovered_space: Node3D
 var space_scene = preload("res://scene_builder/board/Space.tscn")
 
+## Create the initial grid of space nodes and wire up their signals.[br]
+## [b]Returns:[/b] [void][br]
 func create_board():
   const X_OFFSET = float(START_ROWS) / 2 * SPACE_SIZE * -1.0
   const Z_OFFSET = float(START_COLS) / 2 * SPACE_SIZE * -1.0
@@ -30,6 +48,10 @@ func create_board():
       new_space.space_hover_exit.connect(on_space_hover_exit)
       new_space.space_clicked.connect(on_space_clicked)
 
+## Handle hover enter on a space for the currently selected tool.[br]
+## [b]Parameters:[/b][br]
+## [code]space[/code] : [Node3D] — the space node that the pointer entered.[br]
+## [b]Returns:[/b] [void][br]
 func on_space_hover_enter(space: Node3D):
   hovered_space = space
   var space_position = Vector2(hovered_space.x, hovered_space.z)
@@ -51,6 +73,10 @@ func on_space_hover_enter(space: Node3D):
       hovered_space = board_nodes[hovered_tile.position.x][hovered_tile.position.y]
       hovered_space.update_color(true)
 
+## Handle hover exit for a space.[br]
+## [b]Parameters:[/b][br]
+## [code]space[/code] : [Node3D] — the space node that the pointer left.[br]
+## [b]Returns:[/b] [void][br]
 func on_space_hover_exit(space: Node3D):
   if hovered_space == space:
     hovered_space.end_preview()
@@ -61,6 +87,15 @@ func on_space_hover_exit(space: Node3D):
       var selected_space = board_nodes[tile_origin.position.x][tile_origin.position.y]
       selected_space.end_preview()
 
+## Handle mouse click on a space for the currently selected tool.[br]
+## [b]Parameters:[/b][br]
+## [code]space[/code] : [Node3D] — the clicked space node.[br]
+## [code]x[/code] : [int] — board X coordinate of the clicked space.[br]
+## [code]y[/code] : [int] — board Y coordinate of the clicked space.[br]
+## [b]Emits:[/b][br]
+## - [code]updated()[/code][br]
+## - [code]tile_selected(tile_id: String)[/code][br]
+## [b]Returns:[/b] [void][br]
 func on_space_clicked(space: Node3D, x: int, y: int):
   match current_tool:
     CustomEnums.ToolType.ADD_TILE:
@@ -86,6 +121,8 @@ func on_space_clicked(space: Node3D, x: int, y: int):
       origin_space.set_empty()
       updated.emit()
 
+## Update the hover preview when the selected tile context changes (e.g., rotation or tile selection).[br]
+## [b]Returns:[/b] [void][br]
 func on_context_updated():
   if hovered_space != null:
     var space_position = Vector2(hovered_space.x, hovered_space.z)
@@ -93,6 +130,10 @@ func on_context_updated():
     var hover_error = not SceneContext.does_selected_tile_fit(space_position)
     hovered_space.update_context(SceneContext.get_selected_tile_context(), hover_error)
 
+## Load a saved TileLayout into the board, instantiating tile contexts and meshes as needed.[br]
+## [b]Parameters:[/b][br]
+## [code]scene[/code] : [TileLayout] — saved scene data containing tiles to place on the board.[br]
+## [b]Returns:[/b] [void][br]
 func load_scene(scene: TileLayout):
   if scene == null:
     return
@@ -120,5 +161,9 @@ func load_scene(scene: TileLayout):
       if !is_updated[i][j]:
         board_nodes[i][j].set_empty()
 
+## Set the active interaction tool for the board (add, select, remove).[br]
+## [b]Parameters:[/b][br]
+## [code]tool_type[/code] : [CustomEnums.ToolType] — new tool to use for user interactions.[br]
+## [b]Returns:[/b] [void][br]
 func update_current_tool(tool_type: CustomEnums.ToolType):
   current_tool = tool_type
