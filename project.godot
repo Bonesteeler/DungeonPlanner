@@ -28,7 +28,7 @@ project/assembly_name="DungeonPlanner"
 
 [editor_plugins]
 
-enabled=PackedStringArray()
+enabled=PackedStringArray("res://addons/gut/plugin.cfg")
 
 [rendering]
 

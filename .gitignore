@@ -1,12 +1,13 @@
 # Godot 4+ specific ignores
 .godot/
 
+# Configs
 .vscode/*
+.gutconfig.json
 
 /addons/*
 /Builds/*
 /HiddenMeshes/*
-/tests/*
 
 # Addons to track
 !/addons/gut
