@@ -1,15 +1,30 @@
 class_name LoadSavedFiles
 extends RefCounted
-##
-##
-##
+## LoadSavedFiles
+## 
+## A helper class responsible for importing tile sets from a directory of STL[br]
+## files. This class coordinates file validation, import progress signalling,[br]
+## and writing the resulting set definition to disk.[br]
 
 signal import_started(int)
 signal tile_imported()
 
 const TILE_PATH = "user://Meshes/"
 
+## Import a directory of STL files into a new DragonbiteTileSet[br]
+## [b]Parameters:[/b][br]
+## [code]path[/code] : [String] — filesystem path to the directory containing[br]
+## [code].stl[/code] files.[br]
+## [code]set_name[/code] : [String] — unique name to assign to the imported tile set.[br]
+## [b]Emits:[/b][br]
+## - [code]import_started(total_tiles: [int])[/code] once at the start of an import[br]
+## - [code]tile_imported()[/code] after each tile is imported[br]
+## [b]Side-effects:[/b][br]
+## - Writes a JSON set definition to [code]SceneContext.SET_DEFINITIONS_PATH[/code][br]
+## - Adds the new set to [code]SceneContext.tile_resources[/code][br]
+## [b]Returns:[/b] [void] — prints an error and returns early on failure.[br]
 func import_tile_set_from_directory(path: String, set_name: String):
+# TODO: Have this return the set instead of saving it
   # Check path was provided
   var dirs = path.split("/")
   var count = dirs.size()
@@ -70,8 +85,11 @@ func import_tile_set_from_directory(path: String, set_name: String):
   set_definition_json.close()
   SceneContext.tile_resources.add_set(new_set)
 
+## [b]Emits:[/b] [code]import_started(total_tiles: [int])[/code][br]
+## [b]Parameters:[/b] [code]total_tiles[/code] : [int] — number of tiles that will be imported.[br]
 func emit_import_started(total_tiles: int):
   import_started.emit(total_tiles)
 
+## [b]Emits:[/b] [code]tile_imported()[/code]
 func emit_tile_imported():
   tile_imported.emit()

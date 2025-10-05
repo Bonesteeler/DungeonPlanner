@@ -1,5 +1,14 @@
 class_name StlToMesh
 extends RefCounted
+## StlToMesh
+##
+## [i]Utility to convert an STL file into a Godot ArrayMesh and align it to the planning grid.[/i][br]
+## [b]Usage:[/b] Provide a filesystem path to an STL file when constructing this class.[br]The class computes a SHA-256 hash of the vertex data and exposes the resulting ArrayMesh via the [code]mesh[/code] property.[br]
+## [b]Properties:[/b][br]
+## - [b]mesh[/b]: The generated [code]ArrayMesh[/code].[br]
+## - [b]mesh_hash[/b]: SHA-256 hex digest of the trimmed vertex data and file size.[br]
+## - [b]x_size[/b], [b]y_size[/b]: Calculated tile lengths of the mesh in tiles (50 units per tile).[br]
+
 
 #https://en.wikipedia.org/wiki/STL_(file_format)
 class Triangle:
@@ -12,6 +21,9 @@ var mesh_hash: String
 var x_size: int
 var y_size: int
 
+## [b]Description:[/b] Initializes the StlToMesh instance by converting the provided STL file into an ArrayMesh and computing a SHA-256 hash of the vertex data.[br]
+## [b]Parameters:[/b][br]
+## - [code]source_path: String[/code] - Filesystem path to the input STL file.[br]
 func _init(source_path: String):
   mesh = stl_file_to_array_mesh(source_path)
   var hasher = HashingContext.new()
@@ -19,6 +31,10 @@ func _init(source_path: String):
   hasher.update(hash_input)
   mesh_hash = hasher.finish().hex_encode()
 
+## Opens an STL file, parses its triangles (ASCII or binary), aligns the mesh to the planning grid and converts it to an [code]ArrayMesh[/code].[br]
+## [b]Parameters:[/b][br]
+## - [code]stl_file: String[/code] - Path to the STL file to load.[br]
+## [b]Returns:[/b] [code]ArrayMesh[/code] - The constructed mesh. Returns an empty ArrayMesh on failure.[br]
 func stl_file_to_array_mesh(stl_file: String) -> ArrayMesh:
   var stl = FileAccess.open(stl_file, FileAccess.READ)
 
@@ -38,6 +54,10 @@ func stl_file_to_array_mesh(stl_file: String) -> ArrayMesh:
   stl.close()
   return save_mesh(triangles)
 
+## Heuristically checks whether an open STL [code]FileAccess[/code] contains ASCII STL data.[br]
+## [b]Parameters:[/b][br]
+## - [code]file: FileAccess[/code] - An already-opened file handle to the STL file.[br]
+## [b]Returns:[/b] [code]bool[/code] - True if the file appears to be ASCII STL, false otherwise.[br]
 func is_ascii(file: FileAccess) -> bool:
   var current_pos = file.get_position()
   file.seek(0)
@@ -50,6 +70,10 @@ func is_ascii(file: FileAccess) -> bool:
   return result
 
 
+## Parses an ASCII STL file from the provided [code]FileAccess[/code] and returns an array of Triangle objects.[br]
+## [b]Parameters:[/b][br]
+## - [code]file: FileAccess[/code] - An already-opened ASCII STL file handle.[br]
+## [b]Returns:[/b] [code]Array[/code] - An array of [code]Triangle[/code] instances. Returns an empty array on parse error.[br]
 func convert_ascii(file: FileAccess) -> Array:
   var surface_tool = SurfaceTool.new()
   surface_tool.begin(Mesh.PRIMITIVE_TRIANGLES)
@@ -113,6 +137,10 @@ func convert_ascii(file: FileAccess) -> Array:
   return triangles
 
 
+## Parses a binary STL file from the provided [code]FileAccess[/code] and returns an array of Triangle objects.[br]
+## [b]Parameters:[/b][br]
+## - [code]file: FileAccess[/code] - An already-opened binary STL file handle.[br]
+## [b]Returns:[/b] [code]Array[/code] - An array of [code]Triangle[/code] instances.[br]
 func convert_binary(file: FileAccess) -> Array:
   #Skip header
   file.seek(80)
@@ -145,12 +173,18 @@ func convert_binary(file: FileAccess) -> Array:
 
   return triangles
 
+## Adds a single vertex coordinate to the internal hash input buffer.[br]
+## [b]Parameters:[/b][br]
+## - [code]vertex: float[/code] - A single vertex coordinate value (x, y, or z).[br]
+## [b]Returns:[/b] Nothing.[br]
 func append_vertex_to_hash_input(vertex: float):
-  # Add vertex to hash input, truncating to thousandths place to avoid precision issues
+  # Truncating to thousandths place to avoid precision issues
   hash_input.append(int(vertex * 1000))
 
-# Line up the mesh with the planning grid. For an odd length side, center the mesh
-# for an even length side, offset the mesh by half a tile.
+## Computes the bounding box of the parsed triangles and recenters the mesh so it aligns with the project's planning grid (50-unit tiles).[br]
+## [b]Parameters:[/b][br]
+## - [code]triangles: Array[/code] - An array of [code]Triangle[/code] instances to position.[br]
+## [b]Returns:[/b] [code]Array[/code] - The modified array of triangles with vertex positions shifted.[br]
 func position_mesh(triangles: Array) -> Array:
   #Center the mesh, calculate the bounding box
   var max_vertex: Vector3 = Vector3(-INF, -INF, -INF)
@@ -176,6 +210,10 @@ func position_mesh(triangles: Array) -> Array:
       triangle.vertices[i][2] -= min_vertex[2]
   return triangles
 
+## Converts an array of Triangle instances into an [code]ArrayMesh[/code].[br]
+## [b]Parameters:[/b][br]
+## - [code]triangles: Array[/code] - Array of [code]Triangle[/code] instances to include in the mesh.[br]
+## [b]Returns:[/b] [code]ArrayMesh[/code] - The committed mesh.[br]
 func save_mesh(triangles: Array) -> ArrayMesh:
   var surface_tool = SurfaceTool.new()
   surface_tool.begin(Mesh.PRIMITIVE_TRIANGLES)
@@ -185,14 +223,28 @@ func save_mesh(triangles: Array) -> ArrayMesh:
       surface_tool.add_vertex(vertex)
   return surface_tool.commit()
 
+## Returns a component-wise maximum of two [code]Vector3[/code] values.[br]
+## [b]Parameters:[/b][br]
+## - [code]a: Vector3[/code][br]
+## - [code]b: Vector3[/code][br]
+## [b]Returns:[/b] [code]Vector3[/code] - Component-wise maximum.[br]
 func max_vector(a: Vector3, b: Vector3) -> Vector3:
   return Vector3(max(a.x, b.x), max(a.y, b.y), max(a.z, b.z))
 
+## Returns a component-wise minimum of two [code]Vector3[/code] values.[br]
+## [b]Parameters:[/b][br]
+## - [code]a: Vector3[/code][br]
+## - [code]b: Vector3[/code][br]
+## [b]Returns:[/b] [code]Vector3[/code] - Component-wise minimum.[br]
 func min_vector(a: Vector3, b: Vector3) -> Vector3:
   return Vector3(min(a.x, b.x), min(a.y, b.y), min(a.z, b.z))
 
-# Tiles are 50x50, return the tile length for a given min and max value, rounded to the nearest tile
-func get_tile_length(min_val : float, max_val: float) -> int:
+## Calculates the number of 50-unit tiles that fit between two coordinates, rounding to the nearest tile (leftover >= 25 rounds up).[br]
+## [b]Parameters:[/b][br]
+## - [code]min_val: float[/code] - Minimum coordinate value.[br]
+## - [code]max_val: float[/code] - Maximum coordinate value.[br]
+## [b]Returns:[/b] [code]int[/code] - Number of tiles.[br]
+func get_tile_length(min_val: float, max_val: float) -> int:
   var diff = max_val - min_val
   var tile_count = int(diff / 50)
   var leftover = diff - (tile_count * 50)

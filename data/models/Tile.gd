@@ -1,5 +1,13 @@
 class_name Tile
 extends RefCounted
+## Tile
+##
+## [i]Represents a tile resource used by the planner. Handles importing/conversion of STL files to Godot ArrayMesh resources, caching metadata, and storing the saved mesh path.[/i][br]
+## [b]Properties:[/b][br]
+## - [b]name[/b][br]
+## - [b]mesh_path[/b]: Filesystem path to the saved [code]ArrayMesh[/code] resource.[br]
+## - [b]id[/b]: Hash id.[br]
+## - [b]x_size[/b], [b]y_size[/b]: Tile dimensions in planning grid units.[br]
 
 enum TileStatus {CACHED, CREATED, NOT_FOUND, CACHE_MISS}
 
@@ -9,6 +17,10 @@ var id: String = ""
 var x_size: int = 0
 var y_size: int = 0
 
+## Load tile metadata from an imported JSON dictionary and verify the mesh resource exists.[br]
+## [b]Parameters:[/b][br]
+## [code]json[/code] : [Dictionary] — JSON payload to be imported[br]
+## [b]Returns:[/b] [TileStatus] — [b]CACHED[/b] if the resource exists and metadata was loaded, [b]CACHE_MISS[/b] if the mesh resource was not found.[br]
 func load_imported_tile(json: Dictionary) -> TileStatus:
   var res_path = json.get(DragonbiteTileSet.KEY_TILE_RES_PATH, "")
   if !FileAccess.file_exists(res_path):
@@ -24,6 +36,11 @@ func load_imported_tile(json: Dictionary) -> TileStatus:
   y_size = json.get(DragonbiteTileSet.KEY_TILE_Y_SIZE, 1)
   return TileStatus.CACHED
 
+## Convert an STL file into a Godot ArrayMesh and save it to the provided destination path.[br]
+## [b]Parameters:[/b][br]
+## [code]source_path[/code] : [String] — filesystem path to the source .stl file to import.[br]
+## [code]destination_path[/code] : [String] — filesystem path where the resulting [code]ArrayMesh[/code] resource should be saved (e.g. user://meshes/tile.meshres).[br]
+## [b]Returns:[/b] [TileStatus] — [b]CREATED[/b] on successful import and save, [b]CACHED[/b] if destination already exists, [b]NOT_FOUND[/b] if the source file is missing or a required directory failed to be created.[br]
 func create_tile(source_path: String, destination_path: String) -> TileStatus:
   if !FileAccess.file_exists(source_path):
     print("Source file does not exist: ", source_path)
