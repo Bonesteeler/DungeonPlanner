@@ -3,7 +3,10 @@
 
 .vscode/*
 
-addons/
-Builds/
-HiddenMeshes/
-tests/
+/addons/*
+/Builds/*
+/HiddenMeshes/*
+/tests/*
+
+# Addons to track
+!/addons/gut
