@@ -11,18 +11,19 @@ extends RefCounted
 
 # TODO replace field setters with proper setter methods.
 # currently the occupied spaces are not updated when position or rotation change
-var id: String = "":
-  set(value):
-    id = value
-    tile_data = SceneContext.get_tile_from_id(id)
+# Or just make a proper constructor
+var id: String:
+  get(): 
     if tile_data == null:
-      print("[PlacedTile] Tile with ID ", id, " not found in context.")
-      return
-    update_tile_offset()
+      return ""
+    return tile_data.id
 var occupied_spaces: Array = []
 var rotation: Vector3 = Vector3.ZERO
 var position: Vector2 = Vector2.ZERO
-var tile_data: Tile
+var tile_data: Tile:
+  set(value):
+    tile_data = value
+    update_tile_offset()
 
 ## Updates [code]occupied_spaces[/code] to match the current [code]position[/code] and [code]rotation[/code].[br]
 ## [b]Returns:[/b] [void] — updates [code]occupied_spaces[/code] in-place.[br]
