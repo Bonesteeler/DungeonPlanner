@@ -52,7 +52,7 @@ func add_set(new_set: DragonbiteTileSet):
 ## [b]Returns:[/b] [DragonbiteTileSet] — the selected tile set or null if no set is selected.[br]
 func get_selected_set() -> DragonbiteTileSet:
   if selected_set_idx < 0 or selected_set_idx >= tile_sets.size():
-    push_error("Selected set index out of bounds: %d" % selected_set_idx)
+    print("Selected set index out of bounds: %d" % selected_set_idx)
     return null
   return tile_sets[selected_set_idx]
 
