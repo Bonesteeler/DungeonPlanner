@@ -94,7 +94,7 @@ func set_tile_at(x: int, z: int, tile_context: SceneContext.TileContext):
     saved_tile = PlacedTile.new()
     saved_tile.position = Vector2(x, z)
     tiles.append(saved_tile)
-  saved_tile.id = tile_context.tile.id
+  saved_tile.tile_data = tile_context.tile
   saved_tile.rotation = tile_context.rotation
   saved_tile.update_tile_offset()
   return
@@ -121,7 +121,7 @@ func does_tile_fit(tile: Tile, position: Vector2, rotation: Vector3) -> bool:
   var target_tile: PlacedTile = PlacedTile.new()
   target_tile.position = position
   target_tile.rotation = rotation
-  target_tile.id = tile.id
+  target_tile.tile_data = tile
   var occupied_spaces = target_tile.calculate_occupied_spaces()
   for space in occupied_spaces:
     if has_position_in_tile_occupying_space_excluding_self(Vector2(space.x, space.y), position):

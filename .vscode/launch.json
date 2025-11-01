@@ -13,6 +13,16 @@
       "debug_paths": false,
       "debug_navigation": false,
       "additional_options": ""
+    },
+    {
+      "name": "Godot Unit Test",
+      "type": "godot",
+      "request": "launch",
+      "project": "${workspaceFolder}",
+      "debug_collisions": false,
+      "debug_paths": false,
+      "debug_navigation": false,
+      "additional_options": "--path ${workspaceFolder} -s addons/gut/gut_cmdln.gd"
     }
   ]
 }
