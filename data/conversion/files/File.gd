@@ -77,7 +77,7 @@ static func read_file_as_text(path: String) -> String:
 ##
 ## Opens and closes the file automatically.
 ##
-static func write_file_as_test(path: String, content: String) -> bool:
+static func write_file_as_text(path: String, content: String) -> bool:
   var file := FileAccess.open(path, FileAccess.WRITE)
   if not file:
     push_error("Failed to open file for writing: %s" % path)
