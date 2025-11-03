@@ -54,7 +54,7 @@ func emit_tile_imported() -> void:
 func import_tiles () -> void:
 #region Sanity checks
   self.dir_lists = DirList.new(pathname)
-  stl_files = dir_lists.get_files_with_path("stl", true) # Get the .stl files, dropping the .stl extension.
+  stl_files = dir_lists.get_files("stl", DirList.Mode.NAME_NO_EXT)
   if stl_files.size() == 0:
     push_error("No .stl stl_files found in directory: " + pathname)
     return

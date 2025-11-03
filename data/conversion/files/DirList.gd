@@ -1,9 +1,7 @@
 class_name DirList
 extends RefCounted
 ##
-## Scans a directory for files and directories.
-##
-##
+## Loads files and directories from the given path.
 ##
 
 # Utility class for file operations. The var deliberately has the same name as the class to remind
@@ -14,7 +12,15 @@ extends RefCounted
 var _directories: Array = []
 var _files: Array = []
 var _filepath: String = ""
-var _recursive: bool = false  #  Not implemented yet.
+var _recursive: bool = false # Not implemented yet.
+
+# Add enum to control returned format instead of strings.
+enum Mode {
+  NAME_WITH_EXT,
+  NAME_NO_EXT,
+  PATH_WITH_EXT,
+  PATH_NO_EXT
+}
 
 ##
 ## Constructor
@@ -26,8 +32,8 @@ func _init(path: String, is_recursive: bool = false) -> void:
   _directories = []
   _files = []
 
-  set_path(path)
-  _scan_directory(_filepath)
+  _set_path(path)
+  _load_directory()
   _recursive = is_recursive
 
 
@@ -35,46 +41,35 @@ func _init(path: String, is_recursive: bool = false) -> void:
 ## Retrieve files, selectively, from the file list.
 ##
 ## @param extension The file extension to filter on (e.g. "stl"), or "" for all files.
+## @param mode One of Mode.* controlling returned string format (default Mode.NAME_WITH_EXT)
 ##
-## @todo Possibly expand to allow full regex filtering.
-##
-func get_files(extension: String = "") -> Array:
-  var list := []
-  for file in _files:
-    if extension == "" or file.get_extension() == extension:
-      list.append(file)
-
-  return list
-
-
-##
-## Retrieve files, from the file list, with their path prepended.
-##
-## If the file list is empty, the directory is scanned first.
-##
-## @param extension The file extension to filter on (e.g. "stl"), or "" for all files.
-## @param drop_ext If true, the extension is dropped from the filename.
-##
-func get_files_with_path(extension: String = "", drop_ext: bool = false) -> Array:
+func get_files(extension: String = "", mode: int = Mode.NAME_WITH_EXT) -> Array:
+  # Ensure directory scanned
   if _files.size() == 0:
-    _scan_directory()
+    _load_directory()
   if _files.size() == 0:
     push_error("No files found in directory: " + _filepath)
     return []
 
   var list := []
-  for file in _files:
-    if file.get_extension() == extension or extension == "":
-      var filename = file.get_file()
-      if drop_ext:
+  var include_path := (mode == Mode.PATH_WITH_EXT or mode == Mode.PATH_NO_EXT)
+  var keep_ext := (mode == Mode.NAME_WITH_EXT or mode == Mode.PATH_WITH_EXT)
+
+  for file: String in _files:
+    if extension == "" or file.get_extension() == extension:
+      var filename := file.get_file() # filename with extension
+      if not keep_ext:
         filename = File.name_sans_extension(filename)
 
-      list.append(_filepath + filename)
+      if include_path:
+        list.append(_filepath + filename)
+      else:
+        list.append(filename)
 
   return list
 
 
-func set_path(path: String) -> void:
+func _set_path(path: String) -> void:
   if !File.is_path_valid(path):
     push_error("Trying to initialise with invalid path: " + path)
     return
@@ -85,36 +80,26 @@ func set_path(path: String) -> void:
 
 
 ##
-## Scan the directory for files and directories.
+## Loads files and directories from the given path.
 ##
-## @param path The path to scan. If empty, uses the path provided at initialisation.
-##
-func _scan_directory(path: String = "") -> void:
-#region Sanity checks
-  if path == "":
-    path = _filepath
-  else:
-    if !File.is_path_valid(path):
-      push_error("ScanDirectory initialized with invalid path: " + path)
-      return
-
-  if path.ends_with("/") == false:
-    path += "/"
-#endregion
+func _load_directory() -> void:
+  if _filepath == "":
+    push_error("DirList path is empty.")
+    return
 
   _directories.clear()
   _files.clear()
 
-  var dir = DirAccess.open(path)
+  var dir = DirAccess.open(_filepath)
   if dir == null:
-    push_error("DirList failed to open path: " + path)
+    push_error("DirList failed to open path: " + _filepath)
     print("Failed to open ", DirAccess.get_open_error())
     return
 
   dir.list_dir_begin()
   var filename = dir.get_next()
   while filename != "":
-    var filespec = "/".join([path, filename])
+    var filespec := "/".join([_filepath, filename])
 
     if dir.current_is_dir():
       _directories.append(filespec)

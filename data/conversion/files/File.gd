@@ -29,6 +29,10 @@ static func file_exists(path: String) -> bool:
 ## Check if a path is valid (no invalid characters in any directory).
 ##
 static func is_path_valid(path: String) -> bool:
+  # Always accept user:// paths.
+  if path.begins_with("user://"):
+    return true
+
   var dirs = path.split("/")
   var count = dirs.size()
   if count == 0:
