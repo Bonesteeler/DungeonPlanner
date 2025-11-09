@@ -1,0 +1,43 @@
+[gd_scene load_steps=4 format=3 uid="uid://ida2csr4aivb"]
+
+[ext_resource type="Script" uid="uid://dxf3aewvcckos" path="res://navigation/navigation_bar.gd" id="1_uyk5a"]
+
+[sub_resource type="Gradient" id="Gradient_7yjak"]
+colors = PackedColorArray(0.023100002, 0.072939955, 0.21, 1, 0.2622, 0.3149466, 0.46, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_uyk5a"]
+gradient = SubResource("Gradient_7yjak")
+
+[node name="NavigationBar" type="MarginContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_uyk5a")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 2
+texture = SubResource("GradientTexture1D_uyk5a")
+expand_mode = 2
+
+[node name="ButtonMargin" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 4
+
+[node name="HBoxContainer" type="HBoxContainer" parent="ButtonMargin"]
+layout_mode = 2
+
+[node name="Home" type="Button" parent="ButtonMargin/HBoxContainer"]
+layout_mode = 2
+text = "Home"
+
+[node name="Scene" type="Button" parent="ButtonMargin/HBoxContainer"]
+layout_mode = 2
+text = "Scene"
+
+[connection signal="pressed" from="ButtonMargin/HBoxContainer/Home" to="." method="forward_home_selected"]
+[connection signal="pressed" from="ButtonMargin/HBoxContainer/Scene" to="." method="forward_planner_selected"]

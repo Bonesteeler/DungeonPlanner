@@ -1,0 +1,34 @@
+[gd_scene load_steps=3 format=3 uid="uid://cte4yn8wx5n67"]
+
+[ext_resource type="Script" uid="uid://dew8ltxnk8hvd" path="res://navigation/navigation_bar_container.gd" id="1_84reu"]
+[ext_resource type="PackedScene" uid="uid://ida2csr4aivb" path="res://navigation/navigation_bar.tscn" id="1_i1m7h"]
+
+[node name="NavigationBarContainer" type="VBoxContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 0
+script = ExtResource("1_84reu")
+
+[node name="NavigationBar" parent="." instance=ExtResource("1_i1m7h")]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="."]
+layout_mode = 2
+size_flags_vertical = 3
+stretch = true
+
+[node name="SubViewport" type="SubViewport" parent="SubViewportContainer"]
+unique_name_in_owner = true
+handle_input_locally = false
+physics_object_picking = true
+size = Vector2i(1152, 617)
+render_target_update_mode = 4
+
+[connection signal="home_selected" from="NavigationBar" to="." method="home_selected"]
+[connection signal="planner_selected" from="NavigationBar" to="." method="planner_selected"]
