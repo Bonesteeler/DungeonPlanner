@@ -144,7 +144,7 @@ func load_scene(scene: TileLayout):
       new_row.append(false)
     is_updated.append(new_row)
   for tile in scene.tiles:
-    var tile_data = SceneContext.get_tile_from_id(tile.id)
+    var tile_data = TileSets.get_tile_from_id(tile.id)
     if tile_data == null:
       print("Tile ID not found: %s" % tile.id)
       continue

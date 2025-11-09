@@ -1,5 +1,5 @@
 class_name TileResources
-extends RefCounted
+extends Node
 ## TileResources
 ##
 ## [i]Manager of imported Dragonbite tile sets.[/i][br]
@@ -10,12 +10,33 @@ extends RefCounted
 ## - [code]KEY_SET[/code]: Key used in dictionaries returned by [code]get_set_and_tile_data[/code] to reference the tile set.[br]
 ## - [code]KEY_TILE[/code]: Key used in dictionaries returned by [code]get_set_and_tile_data[/code] to reference the tile object.[br]
 
+const SET_DEFINITIONS_PATH = "user://SetDefinitions/"
+
 const KEY_SET = "set"
 const KEY_TILE = "tile"
 
 var selected_set_idx = 0
 var tile_sets: Array = []
 var unique_tile_ids: Dictionary = {}
+
+func _init() -> void:
+  var dir_access = DirAccess.open(SET_DEFINITIONS_PATH)
+  if not dir_access.dir_exists(SET_DEFINITIONS_PATH):
+    dir_access.make_dir_recursive(SET_DEFINITIONS_PATH)
+  load_set_definitions()
+
+## Load tile set definitions from app data.[br]
+func load_set_definitions():
+  var start_time = Time.get_ticks_msec()
+  var dir_paths = DirList.new(SET_DEFINITIONS_PATH)
+  var set_files = dir_paths.get_files("json", DirList.Mode.PATH_WITH_EXT)
+  for set_file in set_files:
+    var contents = File.read_file_as_text(set_file)
+    var json = JSON.new()
+    json.parse(contents)
+    add_imported_set(json.data)
+  var end_time = Time.get_ticks_msec()
+  print("Tile sets loaded in ", (end_time - start_time) / 1000.0, " sec")
 
 ## Create and add a DragonbiteTileSet from JSON data.[br]
 ## [b]Parameters:[/b][br]
@@ -48,6 +69,14 @@ func add_set(new_set: DragonbiteTileSet):
     unique_tile_ids.set(tile.id, 1)
   tile_sets.append(new_set)
 
+## Return the names of all loaded tile sets.[br]
+## [b]Returns:[/b] [Array] — list of tile set names as strings.[br]
+func get_set_names() -> Array:
+  var set_names = []
+  for tile_set in tile_sets:
+    set_names.append(tile_set.name)
+  return set_names
+
 ## Return the currently selected [code]DragonbiteTileSet[/code].[br]
 ## [b]Returns:[/b] [DragonbiteTileSet] — the selected tile set or null if no set is selected.[br]
 func get_selected_set() -> DragonbiteTileSet:
@@ -78,6 +107,8 @@ func remove_set(set_name: String):
         unique_tile_ids.erase(tile.id)
       tile_sets[i].delete_tiles()
       tile_sets.remove_at(i)
+      var file_path = SET_DEFINITIONS_PATH + set_name + ".json"
+      File.delete_file(file_path)
       return
 
 ## Check whether all provided tile ids are present in the manager's registry.[br]
@@ -89,3 +120,14 @@ func has_tile_ids(tile_ids: Array) -> bool:
     if not unique_tile_ids.has(tile_id):
       return false
   return true
+
+## Find and return a tile by its unique id.[br]
+## [b]Parameters:[/b][br]
+## [code]id[/code] : [String] — unique identifier of the tile to find.[br]
+## [b]Returns:[/b] [Tile] — the matching tile, or [code]null[/code] if not found.[br]
+func get_tile_from_id(id: String) -> Tile:
+  for tile_set in tile_sets:
+    for tile in tile_set.tiles:
+      if tile.id == id:
+        return tile
+  return null
