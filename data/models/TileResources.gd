@@ -49,12 +49,12 @@ func add_imported_set(json: Dictionary):
 
 ## Import a directory or list of STL files into a new DragonbiteTileSet and add it to the manager.[br]
 ## [b]Parameters:[/b][br]
-## [code]set_name[/code] : [String] — name to assign to the imported tile set.[br]
+## [code]name_set[/code] : [String] — name to assign to the imported tile set.[br]
 ## [code]stl_file_paths[/code] : [Array] — array of filesystem paths to .stl files to import.[br]
 ## [b]Returns:[/b] [void][br]
-func import_set(set_name: String, stl_file_paths: Array):
+func import_set(name_set: String, stl_file_paths: Array):
   var new_set := DragonbiteTileSet.new()
-  new_set.import_set(set_name, stl_file_paths)
+  new_set.import_set(name_set, stl_file_paths)
   add_set(new_set)
 
 ## Register a [code]DragonbiteTileSet[/code][br]
@@ -98,16 +98,16 @@ func get_set_and_tile_data(tile_id: String) -> Dictionary:
 
 ## Remove a tile set by name, delete its tiles, and remove their ids from the unique id registry.[br]
 ## [b]Parameters:[/b][br]
-## [code]set_name[/code] : [String] — name of the tile set to remove.[br]
+## [code]name_set[/code] : [String] — name of the tile set to remove.[br]
 ## [b]Returns:[/b] [void][br]
-func remove_set(set_name: String):
+func remove_set(name_set: String):
   for i in range(tile_sets.size()):
     if tile_sets[i].name == set_name:
       for tile in tile_sets[i].tiles:
         unique_tile_ids.erase(tile.id)
       tile_sets[i].delete_tiles()
       tile_sets.remove_at(i)
-      var file_path = SET_DEFINITIONS_PATH + set_name + ".json"
+      var file_path = SET_DEFINITIONS_PATH + name_set + ".json"
       File.delete_file(file_path)
       return
 

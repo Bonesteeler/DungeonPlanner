@@ -56,10 +56,8 @@ func import_tile_set_from_directory(path: String, set_name: String):
 
   print("Import thread starting for: ", path)
   var tiles = []
-  for file_name in stl_paths:
-    if file_name.get_extension() != "stl":
-      continue
-    var new_tile = new_set.import_tile(path + "/" + file_name)
+  for file_path in stl_paths:
+    var new_tile = new_set.import_tile(file_path)
 
     var tile_definition = {}
     tile_definition[DragonbiteTileSet.KEY_TILE_NAME] = new_tile.name
