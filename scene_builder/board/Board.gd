@@ -61,13 +61,13 @@ func on_space_hover_enter(space: Node3D):
       var is_red = not SceneContext.does_selected_tile_fit(space_position)
       hovered_space.update_context(SceneContext.get_selected_tile_context(), is_red)
     CustomEnums.ToolType.SELECT_TILE:
-      var hovered_tile = SceneContext.current_scene.get_origin_tile(space_position)
+      var hovered_tile = SceneContext.current_scene.data.get_origin_tile(space_position)
       if hovered_tile == null:
         return
       hovered_space = board_nodes[hovered_tile.position.x][hovered_tile.position.y]
       hovered_space.update_color(false)
     CustomEnums.ToolType.REMOVE_TILE:
-      var hovered_tile = SceneContext.current_scene.get_origin_tile(space_position)
+      var hovered_tile = SceneContext.current_scene.data.get_origin_tile(space_position)
       if hovered_tile == null:
         return
       hovered_space = board_nodes[hovered_tile.position.x][hovered_tile.position.y]
@@ -82,7 +82,7 @@ func on_space_hover_exit(space: Node3D):
     hovered_space.end_preview()
     hovered_space = null
   else:
-    var tile_origin = SceneContext.current_scene.get_origin_tile(Vector2(space.x, space.z))
+    var tile_origin = SceneContext.current_scene.data.get_origin_tile(Vector2(space.x, space.z))
     if tile_origin != null:
       var selected_space = board_nodes[tile_origin.position.x][tile_origin.position.y]
       selected_space.end_preview()
@@ -108,15 +108,15 @@ func on_space_clicked(space: Node3D, x: int, y: int):
       space.set_tile(selected_tile_context)
       updated.emit()
     CustomEnums.ToolType.SELECT_TILE:
-      var selected_tile = SceneContext.current_scene.get_origin_tile(Vector2(x, y))
+      var selected_tile = SceneContext.current_scene.data.get_origin_tile(Vector2(x, y))
       if selected_tile == null:
         return
       tile_selected.emit(selected_tile.id)
     CustomEnums.ToolType.REMOVE_TILE:
-      var selected_tile = SceneContext.current_scene.get_origin_tile(Vector2(x, y))
+      var selected_tile = SceneContext.current_scene.data.get_origin_tile(Vector2(x, y))
       if selected_tile == null:
         return
-      SceneContext.current_scene.remove_tile_at(selected_tile.position.x, selected_tile.position.y)
+      SceneContext.current_scene.data.remove_tile_at(selected_tile.position.x, selected_tile.position.y)
       var origin_space = board_nodes[selected_tile.position.x][selected_tile.position.y]
       origin_space.set_empty()
       updated.emit()
