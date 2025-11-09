@@ -11,7 +11,7 @@ signal tile_imported()
 
 const TILE_PATH = "user://Meshes/"
 
-## Import a directory of STL files into a new DragonbiteTileSet[br]
+## Import a directory of STL files into a new DragonbiteTileSet. Updates disk and in memory tile set data.[br]
 ## [b]Parameters:[/b][br]
 ## [code]path[/code] : [String] — filesystem path to the directory containing[br]
 ## [code].stl[/code] files.[br]
@@ -19,9 +19,6 @@ const TILE_PATH = "user://Meshes/"
 ## [b]Emits:[/b][br]
 ## - [code]import_started(total_tiles: [int])[/code] once at the start of an import[br]
 ## - [code]tile_imported()[/code] after each tile is imported[br]
-## [b]Side-effects:[/b][br]
-## - Writes a JSON set definition to [code]SceneContext.SET_DEFINITIONS_PATH[/code][br]
-## - Adds the new set to [code]SceneContext.tile_resources[/code][br]
 ## [b]Returns:[/b] [void] — prints an error and returns early on failure.[br]
 func import_tile_set_from_directory(path: String, set_name: String):
 # TODO: Have this return the set instead of saving it
@@ -40,30 +37,27 @@ func import_tile_set_from_directory(path: String, set_name: String):
       return
 
   # Check set_name is not already in use.
-  if SceneContext.get_set_names().has(set_name):
+  if TileSets.get_set_names().has(set_name):
     print("Tile set with name ", set_name, " already exists")
     return
 
-  var set_definition := {}
-  var set_definition_dir = DirAccess.open(path)
-  if set_definition_dir == null:
-    print("Failed to open ", DirAccess.get_open_error())
+  var import_dir = DirList.new(path)
+  var stl_paths = import_dir.get_files("stl", DirList.Mode.PATH_WITH_EXT)
+  if stl_paths.size() == 0:
+    print("No .stl files found in directory: ", path)
     return
 
+  var set_definition := {}
+
   var new_set := DragonbiteTileSet.new()
-  # Get name
   new_set.name = set_name
   set_definition["name"] = set_name
-  # Get tiles and import stl files
-  var tiles = []
-  var stl_file_paths := set_definition_dir.get_files()
-  call_deferred("emit_import_started", stl_file_paths.size())
+  call_deferred("emit_import_started", stl_paths.size())
 
   print("Import thread starting for: ", path)
-  for file_name in stl_file_paths:
-    if file_name.get_extension() != "stl":
-      continue
-    var new_tile = new_set.import_tile(path + "/" + file_name)
+  var tiles = []
+  for file_path in stl_paths:
+    var new_tile = new_set.import_tile(file_path)
 
     var tile_definition = {}
     tile_definition[DragonbiteTileSet.KEY_TILE_NAME] = new_tile.name
@@ -79,11 +73,9 @@ func import_tile_set_from_directory(path: String, set_name: String):
 
   # Save file
   var result = JSON.stringify(set_definition, "  ")
-  var json_path = SceneContext.SET_DEFINITIONS_PATH + set_name + ".json"
-  var set_definition_json = FileAccess.open(json_path, FileAccess.WRITE)
-  set_definition_json.store_string(result)
-  set_definition_json.close()
-  SceneContext.tile_resources.add_set(new_set)
+  var json_path = TileSets.SET_DEFINITIONS_PATH + set_name + ".json"
+  File.write_file_as_text(json_path, result)
+  TileSets.add_set(new_set)
 
 ## [b]Emits:[/b] [code]import_started(total_tiles: [int])[/code][br]
 ## [b]Parameters:[/b] [code]total_tiles[/code] : [int] — number of tiles that will be imported.[br]

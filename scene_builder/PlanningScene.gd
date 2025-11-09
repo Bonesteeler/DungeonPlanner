@@ -26,7 +26,6 @@ var viewport
 func _ready():
   board.create_board()
   board.load_scene(SceneContext.current_scene.data)
-  planner_ui.set_tile_resources(SceneContext.tile_resources)
   planner_ui.tile_selected.connect(SceneContext.update_selected_tile)
   planner_ui.new_scene.connect(new_scene)
   planner_ui.save_current_scene.connect(save_scene)

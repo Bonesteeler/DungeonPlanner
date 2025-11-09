@@ -38,3 +38,6 @@ unique_name_in_owner = true
 [connection signal="updated" from="Board" to="CanvasLayer/PlannerUI" method="on_board_updated"]
 [connection signal="rotate_left" from="InputListener" to="Board" method="on_context_updated"]
 [connection signal="rotate_right" from="InputListener" to="Board" method="on_context_updated"]
+[connection signal="tool_add_tile_selected" from="CanvasLayer/PlannerUI" to="Board" method="update_current_tool" binds= [0]]
+[connection signal="tool_remove_tile_selected" from="CanvasLayer/PlannerUI" to="Board" method="update_current_tool" binds= [2]]
+[connection signal="tool_select_tile_selected" from="CanvasLayer/PlannerUI" to="Board" method="update_current_tool" binds= [1]]

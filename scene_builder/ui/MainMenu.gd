@@ -32,17 +32,16 @@ func update_recent_scenes():
   for child in recent_scenes_container.get_children():
     child.queue_free()
   var recent_scenes = save_manager.scenes
-  var tile_resources = SceneContext.tile_resources
   for scene in recent_scenes:
     var button = RECENT_SCENE_ITEM_SCENE.instantiate()
-    button.set_recent_scene_data(scene, tile_resources)
+    button.set_recent_scene_data(scene)
     button.delete_pressed.connect(delete_recent_scene.bind(scene.scene_name))
     button.select_pressed.connect(load_recent_scene.bind(scene.scene_name))
     button.upload_pressed.connect(upload_scene.bind(scene.scene_name))
     recent_scenes_container.add_child(button)
 
 func update_imported_sets():
-  var imported_sets = SceneContext.get_set_names()
+  var imported_sets = TileSets.get_set_names()
   for child in imported_sets_container.get_children():
     child.queue_free()
   for imported_set in imported_sets:
@@ -88,7 +87,7 @@ func delete_imported_set(removed_set_name: String):
 
 func delete_set_confirmed():
   confirmation_dialog.confirmed.disconnect(delete_set_confirmed)
-  SceneContext.remove_set(confirmation_dialog_target)
+  TileSets.remove_set(confirmation_dialog_target)
   update_imported_sets()
   update_recent_scenes()
 

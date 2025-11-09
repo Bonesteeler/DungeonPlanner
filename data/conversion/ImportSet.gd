@@ -27,7 +27,7 @@ var tiles: Array = []
 func _init(tile_set_name: String, path: String):
 #region Sanity checks
   # Check set_name is not already in use.
-  if SceneContext.get_set_names().has(tile_set_name):
+  if TileSets.get_set_names().has(tile_set_name):
     push_error("Tile set with set_name ", tile_set_name, " already exists")
     return
 
@@ -70,7 +70,7 @@ func import_tiles () -> void:
 
 #region Save file  ## I would treat this as conversion and give it its own class.
   var result = JSON.stringify(tile_set, "  ")
-  var json_path = SceneContext.SET_DEFINITIONS_PATH + set_name + ".json"
+  var json_path = TileSets.SET_DEFINITIONS_PATH + set_name + ".json"
   var set_definition_json = FileAccess.open(json_path, FileAccess.WRITE)
   if FileAccess.get_open_error() != OK:
     push_error("Failed to open file for writing: " + json_path)
@@ -79,10 +79,6 @@ func import_tiles () -> void:
   set_definition_json.close()
 #endregion
 
-  var scene_context = SceneTree.current_scene.get_first_node_in_group("SceneContext")
-  if scene_context == null:
-    push_error("Failed to find SceneContext node to add new tile set")
-    return
-
-  scene_context.tile_resources.add_set(self.tile_set)
+  # Uncomment this when TileSets is ready to accept TileGroup.
+  # TileSets.add_set(self.tile_set)
   return

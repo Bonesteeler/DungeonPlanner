@@ -20,7 +20,6 @@ const UNSAVED_CHANGES_DONT_SAVE_ACTION: StringName = "dont_save"
 
 var context: UIContext
 var current_tool: CustomEnums.ToolType = CustomEnums.ToolType.ADD_TILE
-var resources: TileResources
 var unsaved_changes: bool = false
 
 @onready var file_button = $%FileButton
@@ -45,11 +44,8 @@ func _ready():
   context = UIContext.new()
   if SceneContext.current_scene != null:
     context.current_scene = SceneContext.current_scene
-
-func set_tile_resources(new_resources: TileResources):
-  resources = new_resources
-  set_selected_set(resources.tile_sets[0])
-  set_selector_node.set_selectable_sets(resources.tile_sets)
+  set_selected_set(TileSets.tile_sets[0])
+  set_selector_node.set_selectable_sets(TileSets.tile_sets)
 
 func set_selected_tile(tile: Tile):
   tile_selected.emit(tile)
@@ -153,7 +149,7 @@ func show_only_tool_info_of_group(group: StringName):
       child.visible = false
 
 func on_tile_selected(tile_id: String) -> void:
-  var tile_data = SceneContext.tile_resources.get_set_and_tile_data(tile_id)
+  var tile_data = TileSets.get_set_and_tile_data(tile_id)
   if tile_data[TileResources.KEY_TILE] == null:
     print("Tile with ID ", tile_id, " not found in resources.")
     return
