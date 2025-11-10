@@ -10,8 +10,9 @@ extends Node
 ## - [code]KEY_SET[/code]: Key used in dictionaries returned by [code]get_set_and_tile_data[/code] to reference the tile set.[br]
 ## - [code]KEY_TILE[/code]: Key used in dictionaries returned by [code]get_set_and_tile_data[/code] to reference the tile object.[br]
 
-const SET_DEFINITIONS_PATH = "user://SetDefinitions/"
+signal tile_sets_changed()
 
+const SET_DEFINITIONS_PATH = "user://SetDefinitions/"
 const KEY_SET = "set"
 const KEY_TILE = "tile"
 
@@ -68,6 +69,7 @@ func add_set(new_set: DragonbiteTileSet):
       print("Hash collision detected for tile ID: %s" % tile.id)
     unique_tile_ids.set(tile.id, 1)
   tile_sets.append(new_set)
+  tile_sets_changed.emit()
 
 ## Return the names of all loaded tile sets.[br]
 ## [b]Returns:[/b] [Array] — list of tile set names as strings.[br]
@@ -109,6 +111,7 @@ func remove_set(name_set: String):
       tile_sets.remove_at(i)
       var file_path = SET_DEFINITIONS_PATH + name_set + ".json"
       File.delete_file(file_path)
+      tile_sets_changed.emit()
       return
 
 ## Check whether all provided tile ids are present in the manager's registry.[br]

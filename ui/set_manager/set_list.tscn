@@ -1,0 +1,19 @@
+[gd_scene load_steps=2 format=3 uid="uid://4d52h1ninu7c"]
+
+[ext_resource type="Script" uid="uid://daqj6fijuv3de" path="res://ui/set_manager/set_list.gd" id="1_ms6x3"]
+
+[node name="SetList" type="VBoxContainer"]
+script = ExtResource("1_ms6x3")
+
+[node name="Import" type="Button" parent="."]
+layout_mode = 2
+text = "Import set"
+
+[node name="ScrollContainer" type="ScrollContainer" parent="."]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="SetListContainer" type="VBoxContainer" parent="ScrollContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3

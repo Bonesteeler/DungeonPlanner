@@ -76,7 +76,6 @@ func _on_area_3d_input_event(_camera, event, _pos, _normal, _shape_idx):
 ## - [code]space_hover_enter(Node3D)[/code] when the mouse enters this space.[br]
 ## [b]Returns:[/b] [void][br]
 func _on_area_3d_mouse_entered():
-  print("Hover entered space at (", x, ", ", z, ")")
   space_hover_enter.emit(self)
 
 ## Called when the mouse cursor exits the Area3D; emits [code]space_hover_exit[/code].[br]

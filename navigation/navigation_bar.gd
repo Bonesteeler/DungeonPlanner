@@ -10,9 +10,13 @@ extends Container
 
 signal home_selected()
 signal planner_selected()
+signal sets_selected()
 
 func forward_home_selected():
     home_selected.emit()
 
 func forward_planner_selected():
     planner_selected.emit()
+
+func forward_sets_selected():
+    sets_selected.emit()
