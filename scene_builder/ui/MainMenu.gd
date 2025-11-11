@@ -14,7 +14,6 @@ var export_scene_name: String = ""
 var save_manager: SaveManager
 
 @onready var confirmation_dialog: ConfirmationDialog = $ConfirmationDialog
-@onready var imported_sets_container: VBoxContainer = $%ImportedSets
 @onready var import_set: MarginContainer = $%ImportTileSetDialog
 @onready var recent_scenes_container: VBoxContainer = $%RecentScenes
 @onready var scene_browser: SceneBrowser = $%SceneBrowser
@@ -27,7 +26,6 @@ func _ready():
   scene_browser.scene_import.connect(save_manager.add_scene)
   save_manager.scene_added.connect(update_recent_scenes)
   update_recent_scenes()
-  update_imported_sets()
 
 func update_recent_scenes():
   #Delete existing scenes
@@ -42,21 +40,10 @@ func update_recent_scenes():
     button.upload_pressed.connect(upload_scene.bind(scene.scene_name))
     recent_scenes_container.add_child(button)
 
-func update_imported_sets():
-  var imported_sets = TileSets.get_set_names()
-  for child in imported_sets_container.get_children():
-    child.queue_free()
-  for imported_set in imported_sets:
-    var new_item = IMPORTED_SET_ITEM_SCENE.instantiate()
-    new_item.set_text(imported_set)
-    new_item.delete_pressed.connect(delete_imported_set.bind(imported_set))
-    imported_sets_container.add_child(new_item)
-
 func import_set_pressed():
   import_set.initialize()
 
 func on_set_imported():
-  update_imported_sets()
   update_recent_scenes()
 
 func load_recent_scene(scene_name: String):
@@ -90,7 +77,6 @@ func delete_imported_set(removed_set_name: String):
 func delete_set_confirmed():
   confirmation_dialog.confirmed.disconnect(delete_set_confirmed)
   TileSets.remove_set(confirmation_dialog_target)
-  update_imported_sets()
   update_recent_scenes()
 
 func delete_recent_scene(scene_name: String):

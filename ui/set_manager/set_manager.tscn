@@ -4,10 +4,11 @@
 [ext_resource type="Script" uid="uid://b7urdu84o7dq6" path="res://ui/set_manager/set_manager_view_model.gd" id="1_fa8gm"]
 
 [sub_resource type="Gradient" id="Gradient_jkn8m"]
-colors = PackedColorArray(0.023529412, 0.07450981, 0.21176471, 1, 0.2627451, 0.3137255, 0.45882353, 1)
+colors = PackedColorArray(0.050260514, 0.17144808, 0.34460405, 1, 0.2627451, 0.3137255, 0.45882353, 1)
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_701mt"]
 gradient = SubResource("Gradient_jkn8m")
+width = 1024
 
 [node name="SetManager" type="MarginContainer"]
 anchors_preset = 15

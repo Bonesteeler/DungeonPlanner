@@ -29,18 +29,6 @@ layout_mode = 2
 layout_mode = 2
 text = "Import set"
 
-[node name="Label" type="Label" parent="HBoxContainer/Tile sets"]
-layout_mode = 2
-text = "Imported sets"
-
-[node name="ScrollContainer" type="ScrollContainer" parent="HBoxContainer/Tile sets"]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="ImportedSets" type="VBoxContainer" parent="HBoxContainer/Tile sets/ScrollContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-
 [node name="LoadScene" type="VBoxContainer" parent="HBoxContainer"]
 layout_mode = 2
 
