@@ -1,6 +1,7 @@
-[gd_scene load_steps=4 format=3 uid="uid://dsa4vwpi18sk6"]
+[gd_scene load_steps=5 format=3 uid="uid://dsa4vwpi18sk6"]
 
 [ext_resource type="PackedScene" uid="uid://4d52h1ninu7c" path="res://ui/set_manager/set_list.tscn" id="1_701mt"]
+[ext_resource type="Script" uid="uid://b7urdu84o7dq6" path="res://ui/set_manager/set_manager_view_model.gd" id="1_fa8gm"]
 
 [sub_resource type="Gradient" id="Gradient_jkn8m"]
 colors = PackedColorArray(0.023529412, 0.07450981, 0.21176471, 1, 0.2627451, 0.3137255, 0.45882353, 1)
@@ -14,6 +15,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_fa8gm")
 
 [node name="Background" type="TextureRect" parent="."]
 layout_mode = 2
@@ -33,7 +35,8 @@ layout_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="SetList" parent="MarginContainer/Columns/Left" instance=ExtResource("1_701mt")]
+[node name="Sets" parent="MarginContainer/Columns/Left" instance=ExtResource("1_701mt")]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
 
@@ -58,3 +61,6 @@ layout_mode = 2
 
 [node name="TileDetails" type="MarginContainer" parent="MarginContainer/Columns/Right/Title/SetDetails"]
 layout_mode = 2
+
+[connection signal="delete_set" from="MarginContainer/Columns/Left/Sets" to="." method="delete_set"]
+[connection signal="select_set" from="MarginContainer/Columns/Left/Sets" to="." method="select_set"]

@@ -3,12 +3,15 @@ extends VBoxContainer
 
 const SET_LIST_ITEM_SCENE = preload("res://ui/set_manager/set_list_item.tscn")
 
+signal select_set(String)
+signal delete_set(String)
+
 var viewModel: SetListViewModel
 
 @onready var set_list_container: VBoxContainer = $%SetListContainer
 
-func _ready() -> void:
-    viewModel = SetListViewModel.new(TileSets)
+func set_vm(vm: SetListViewModel) -> void:
+    viewModel = vm
     update_items()
     viewModel.sets_changed.connect(update_items)
 
@@ -22,3 +25,11 @@ func update_items() -> void:
         var item = SET_LIST_ITEM_SCENE.instantiate()
         item.set_text(s)
         set_list_container.add_child(item)
+        item.delete_pressed.connect(forward_delete_pressed)
+        item.select_pressed.connect(forward_select_pressed)
+
+func forward_delete_pressed(tile_set_name: String) -> void:
+    delete_set.emit(tile_set_name)
+
+func forward_select_pressed(tile_set_name: String) -> void:
+    select_set.emit(tile_set_name)

@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://ee1ioymv36ln"]
 
-[ext_resource type="Script" uid="uid://74vjc3uko0vu" path="res://main_menu/ImportedSetItem.gd" id="1_xhn2k"]
+[ext_resource type="Script" uid="uid://bysm6u8027nmu" path="res://ui/set_manager/set_list_item.gd" id="1_cuag3"]
 
 [node name="ImportedSetItem" type="HBoxContainer"]
 anchors_preset = 8
@@ -14,14 +14,16 @@ offset_right = 6.5
 offset_bottom = 11.5
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_xhn2k")
+script = ExtResource("1_cuag3")
 
-[node name="Name" type="Label" parent="."]
+[node name="Name" type="Button" parent="."]
 unique_name_in_owner = true
 layout_mode = 2
+size_flags_horizontal = 3
 
 [node name="Delete" type="Button" parent="."]
 layout_mode = 2
 text = "Delete"
 
+[connection signal="pressed" from="Name" to="." method="forward_select_pressed"]
 [connection signal="pressed" from="Delete" to="." method="forward_delete_pressed"]
