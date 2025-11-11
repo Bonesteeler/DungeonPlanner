@@ -1,7 +1,9 @@
-[gd_scene load_steps=5 format=3 uid="uid://dsa4vwpi18sk6"]
+[gd_scene load_steps=7 format=3 uid="uid://dsa4vwpi18sk6"]
 
 [ext_resource type="PackedScene" uid="uid://4d52h1ninu7c" path="res://ui/set_manager/set_list.tscn" id="1_701mt"]
 [ext_resource type="Script" uid="uid://b7urdu84o7dq6" path="res://ui/set_manager/set_manager_view_model.gd" id="1_fa8gm"]
+[ext_resource type="PackedScene" uid="uid://doatq5mh2eluk" path="res://ui/set_manager/set_details.tscn" id="3_b0xsl"]
+[ext_resource type="Script" uid="uid://4v2v8d7sn3pf" path="res://ui/set_manager/set_details.gd" id="4_0or2c"]
 
 [sub_resource type="Gradient" id="Gradient_jkn8m"]
 colors = PackedColorArray(0.050260514, 0.17144808, 0.34460405, 1, 0.2627451, 0.3137255, 0.45882353, 1)
@@ -46,22 +48,10 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 3.0
 
-[node name="Title" type="VBoxContainer" parent="MarginContainer/Columns/Right"]
+[node name="SetDetails" parent="MarginContainer/Columns/Right" instance=ExtResource("3_b0xsl")]
+unique_name_in_owner = true
 layout_mode = 2
-
-[node name="Title" type="Label" parent="MarginContainer/Columns/Right/Title"]
-layout_mode = 2
-text = "Hello world"
-horizontal_alignment = 1
-
-[node name="SetDetails" type="HBoxContainer" parent="MarginContainer/Columns/Right/Title"]
-layout_mode = 2
-
-[node name="TileView" type="GridContainer" parent="MarginContainer/Columns/Right/Title/SetDetails"]
-layout_mode = 2
-
-[node name="TileDetails" type="MarginContainer" parent="MarginContainer/Columns/Right/Title/SetDetails"]
-layout_mode = 2
+script = ExtResource("4_0or2c")
 
 [connection signal="delete_set" from="MarginContainer/Columns/Left/Sets" to="." method="delete_set"]
 [connection signal="select_set" from="MarginContainer/Columns/Left/Sets" to="." method="select_set"]

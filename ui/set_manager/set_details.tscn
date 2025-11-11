@@ -1,0 +1,18 @@
+[gd_scene format=3 uid="uid://doatq5mh2eluk"]
+
+[node name="SetDetails" type="VBoxContainer"]
+
+[node name="Title" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Hello world"
+horizontal_alignment = 1
+
+[node name="TileGrid" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="TileView" type="GridContainer" parent="TileGrid"]
+layout_mode = 2
+
+[node name="TileDetails" type="MarginContainer" parent="TileGrid"]
+layout_mode = 2

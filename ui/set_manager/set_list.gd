@@ -3,8 +3,8 @@ extends VBoxContainer
 
 const SET_LIST_ITEM_SCENE = preload("res://ui/set_manager/set_list_item.tscn")
 
-signal select_set(String)
 signal delete_set(String)
+signal select_set(String)
 
 var viewModel: SetListViewModel
 
