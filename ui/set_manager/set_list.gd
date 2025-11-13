@@ -4,6 +4,7 @@ extends VBoxContainer
 const SET_LIST_ITEM_SCENE = preload("res://ui/set_manager/set_list_item.tscn")
 
 signal delete_set(String)
+signal import_set()
 signal select_set(String)
 
 var viewModel: SetListViewModel
@@ -30,6 +31,9 @@ func update_items() -> void:
 
 func forward_delete_pressed(tile_set_name: String) -> void:
     delete_set.emit(tile_set_name)
+
+func forward_import_pressed() -> void:
+    import_set.emit()
 
 func forward_select_pressed(tile_set_name: String) -> void:
     select_set.emit(tile_set_name)

@@ -1,0 +1,106 @@
+[gd_scene load_steps=3 format=3 uid="uid://lnnbvuy548v7"]
+
+[ext_resource type="Script" uid="uid://bfxeljs82hp42" path="res://ui/set_manager/import_tileset.gd" id="1_q68fo"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_xo6iv"]
+font_size = 21
+
+[node name="ImportTileSet" type="MarginContainer"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -100.5
+offset_top = -50.0
+offset_right = 100.5
+offset_bottom = 50.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 0
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 0
+theme_override_constants/margin_bottom = 0
+script = ExtResource("1_q68fo")
+
+[node name="Background" type="Panel" parent="."]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 15
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 15
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Import set"
+label_settings = SubResource("LabelSettings_xo6iv")
+horizontal_alignment = 1
+
+[node name="Name" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Name"]
+layout_mode = 2
+text = "Name"
+
+[node name="NameInput" type="LineEdit" parent="MarginContainer/VBoxContainer/Name"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+placeholder_text = "SetName"
+
+[node name="Directory" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="Button" type="Button" parent="MarginContainer/VBoxContainer/Directory"]
+layout_mode = 2
+text = "Browse"
+
+[node name="SelectedDirLabel" type="Label" parent="MarginContainer/VBoxContainer/Directory"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Not selected"
+
+[node name="ActionButtons" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+alignment = 1
+
+[node name="Confirm" type="Button" parent="MarginContainer/VBoxContainer/ActionButtons"]
+unique_name_in_owner = true
+layout_mode = 2
+disabled = true
+text = "Confirm"
+
+[node name="Cancel" type="Button" parent="MarginContainer/VBoxContainer/ActionButtons"]
+layout_mode = 2
+text = "Cancel"
+
+[node name="ImportStatus" type="Label" parent="MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+
+[node name="FileDialog" type="FileDialog" parent="."]
+unique_name_in_owner = true
+title = "Open a Directory"
+ok_button_text = "Select Current Folder"
+file_mode = 2
+access = 2
+use_native_dialog = true
+
+[connection signal="text_changed" from="MarginContainer/VBoxContainer/Name/NameInput" to="." method="_on_set_name_text_changed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/Directory/Button" to="." method="browse_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/ActionButtons/Confirm" to="." method="confirm_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/ActionButtons/Cancel" to="." method="cancel_pressed"]
+[connection signal="dir_selected" from="FileDialog" to="." method="on_import_directory_selected"]

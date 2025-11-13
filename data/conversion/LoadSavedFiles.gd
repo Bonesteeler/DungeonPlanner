@@ -6,10 +6,13 @@ extends RefCounted
 ## files. This class coordinates file validation, import progress signalling,[br]
 ## and writing the resulting set definition to disk.[br]
 
+signal import_complete()
 signal import_started(int)
 signal tile_imported()
 
 const TILE_PATH = "user://Meshes/"
+
+var cancel_requested: bool = false
 
 ## Import a directory of STL files into a new DragonbiteTileSet. Updates disk and in memory tile set data.[br]
 ## [b]Parameters:[/b][br]
@@ -23,6 +26,7 @@ const TILE_PATH = "user://Meshes/"
 func import_tile_set_from_directory(path: String, set_name: String):
 # TODO: Have this return the set instead of saving it
   # Check path was provided
+  cancel_requested = false
   var dirs = path.split("/")
   var count = dirs.size()
   if count == 0:
@@ -57,6 +61,10 @@ func import_tile_set_from_directory(path: String, set_name: String):
   print("Import thread starting for: ", path)
   var tiles = []
   for file_path in stl_paths:
+    if cancel_requested:
+      print("Import cancelled, aborting import.")
+      new_set.delete_tiles()
+      return
     var new_tile = new_set.import_tile(file_path)
 
     var tile_definition = {}
@@ -72,10 +80,18 @@ func import_tile_set_from_directory(path: String, set_name: String):
   set_definition["tiles"] = tiles
 
   # Save file
+  if cancel_requested:
+    print("Import cancelled, aborting import.")
+    new_set.delete_tiles()
+    return
   var result = JSON.stringify(set_definition, "  ")
   var json_path = TileSets.SET_DEFINITIONS_PATH + set_name + ".json"
   File.write_file_as_text(json_path, result)
-  TileSets.add_set(new_set)
+  call_deferred("add_set", new_set)
+  call_deferred("emit_import_complete")
+
+func cancel_import():
+  cancel_requested = true
 
 ## [b]Emits:[/b] [code]import_started(total_tiles: [int])[/code][br]
 ## [b]Parameters:[/b] [code]total_tiles[/code] : [int] — number of tiles that will be imported.[br]
@@ -85,3 +101,11 @@ func emit_import_started(total_tiles: int):
 ## [b]Emits:[/b] [code]tile_imported()[/code]
 func emit_tile_imported():
   tile_imported.emit()
+
+## [b]Emits:[/b] [code]import_complete()[/code]
+func emit_import_complete():
+  import_complete.emit()
+
+## Adds a new tile set to resources
+func add_set(new_set: DragonbiteTileSet):
+  TileSets.add_set(new_set)

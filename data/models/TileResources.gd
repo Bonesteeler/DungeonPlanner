@@ -104,7 +104,7 @@ func get_set_and_tile_data(tile_id: String) -> Dictionary:
 ## [b]Returns:[/b] [void][br]
 func remove_set(name_set: String):
   for i in range(tile_sets.size()):
-    if tile_sets[i].name == set_name:
+    if tile_sets[i].name == name_set:
       for tile in tile_sets[i].tiles:
         unique_tile_ids.erase(tile.id)
       tile_sets[i].delete_tiles()
