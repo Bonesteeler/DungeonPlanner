@@ -16,7 +16,7 @@ disable_receive_shadows = true
 script = ExtResource("1_pj3y6")
 
 [node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.8660254, 0.5, 0, -0.5, 0.8660254, 0, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 0.70710677, 0.70710677, 0, -0.70710677, 0.70710677, 0, 0, 0)
 environment = SubResource("Environment_n3d8r")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="Camera3D"]

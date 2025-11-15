@@ -1,7 +1,6 @@
-[gd_scene load_steps=5 format=3 uid="uid://dhqcdwpxul6uo"]
+[gd_scene load_steps=4 format=3 uid="uid://dhqcdwpxul6uo"]
 
 [ext_resource type="Script" uid="uid://d3ickkox8vwuo" path="res://scene_builder/ui/MainMenu.gd" id="1_les83"]
-[ext_resource type="PackedScene" uid="uid://cm8f1ot0p4yyv" path="res://main_menu/ImportTileSet.tscn" id="2_7rqq1"]
 [ext_resource type="Script" uid="uid://b0liuxw30plba" path="res://main_menu/scene_browser.gd" id="2_yt4ty"]
 [ext_resource type="Script" uid="uid://bmgtjiuv33c2u" path="res://main_menu/ServerConnection.gd" id="4_yt4ty"]
 
@@ -20,14 +19,6 @@ color = Color(0, 0.45098, 0, 1)
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
 layout_mode = 2
 size_flags_horizontal = 4
-
-[node name="Tile sets" type="VBoxContainer" parent="HBoxContainer"]
-custom_minimum_size = Vector2(250, 0)
-layout_mode = 2
-
-[node name="Import tiles" type="Button" parent="HBoxContainer/Tile sets"]
-layout_mode = 2
-text = "Import set"
 
 [node name="LoadScene" type="VBoxContainer" parent="HBoxContainer"]
 layout_mode = 2
@@ -84,13 +75,6 @@ title = "Confirm delete"
 initial_position = 2
 dialog_text = "Deleting map "
 
-[node name="ImportTileSetDialog" parent="." instance=ExtResource("2_7rqq1")]
-unique_name_in_owner = true
-visible = false
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
-
 [node name="SceneImportDialog" type="FileDialog" parent="."]
 unique_name_in_owner = true
 title = "Open a File"
@@ -104,13 +88,11 @@ use_native_dialog = true
 unique_name_in_owner = true
 script = ExtResource("4_yt4ty")
 
-[connection signal="pressed" from="HBoxContainer/Tile sets/Import tiles" to="." method="import_set_pressed"]
 [connection signal="pressed" from="HBoxContainer/LoadScene/SceneButtons/New Scene" to="." method="on_new_scene"]
 [connection signal="pressed" from="HBoxContainer/LoadScene/SceneButtons/Import" to="." method="_on_import_scene_pressed"]
 [connection signal="request_scene_list" from="HBoxContainer/SceneBrowser" to="ServerConnection" method="request_scene_list"]
 [connection signal="pressed" from="HBoxContainer/SceneBrowser/HBoxContainer/Previous" to="HBoxContainer/SceneBrowser" method="_on_prev_button_pressed"]
 [connection signal="pressed" from="HBoxContainer/SceneBrowser/HBoxContainer/Next" to="HBoxContainer/SceneBrowser" method="_on_next_button_pressed"]
-[connection signal="set_imported" from="ImportTileSetDialog" to="." method="on_set_imported"]
 [connection signal="file_selected" from="SceneImportDialog" to="." method="_on_scene_import_dialog_file_selected"]
 [connection signal="new_scene_list" from="ServerConnection" to="HBoxContainer/SceneBrowser" method="set_scene_items"]
 [connection signal="upload_failure" from="ServerConnection" to="." method="on_upload_failure"]

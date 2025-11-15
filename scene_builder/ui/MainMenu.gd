@@ -2,8 +2,6 @@ class_name MainMenu
 extends PanelContainer
 
 const DELETE_CONFIRMATION_STRING_TEMPLATE = "Are you sure you want to delete %s?"
-const IMPORTED_SET_ITEM_SCENE = preload("res://main_menu/ImportedSetItem.tscn")
-# const PLANNING_SCENE_PATH = "res://scene_builder/PlannerScene.tscn"
 const PLANNING_SCENE_PATH = "res://tab_bar/tab_bar_container.tscn"
 const RECENT_SCENE_ITEM_SCENE = preload("res://main_menu/RecentSceneItem.tscn")
 const UPLOAD_SUCCESS_STRING_TEMPLATE = "Successfully uploaded scene: %s"
