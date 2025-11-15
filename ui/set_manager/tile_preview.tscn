@@ -16,21 +16,25 @@ disable_receive_shadows = true
 script = ExtResource("1_pj3y6")
 
 [node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.9070881, 0.42094082, 0, -0.42094082, 0.9070881, 0, 59.006344, 70.80026)
+transform = Transform3D(1, 0, 0, 0, 0.8660254, 0.5, 0, -0.5, 0.8660254, 0, 0, 0)
 environment = SubResource("Environment_n3d8r")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="Camera3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 0.99999994, 0, -22.139471, 1.0002899)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 0.99999994, 0, 0, 0)
 light_color = Color(0.59040004, 0.7358134, 0.82, 1)
 light_specular = 0.0
 directional_shadow_mode = 0
 
 [node name="DirectionalLight3D2" type="DirectionalLight3D" parent="Camera3D"]
-transform = Transform3D(1, 0, 0, 0, 0.70710677, -0.70710677, 0, 0.70710677, 0.70710677, 0, -23.721231, -89.06026)
+transform = Transform3D(1, 0, 0, 0, 0.70710677, -0.70710677, 0, 0.70710677, 0.70710677, 0, 0, 0)
 light_energy = 0.115
 light_specular = 5.963
 directional_shadow_mode = 0
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+[node name="Rotator" type="Node3D" parent="."]
+
+[node name="PreviewMesh" type="MeshInstance3D" parent="Rotator"]
+unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0)
 material_override = SubResource("StandardMaterial3D_pj3y6")
+skeleton = NodePath("../..")

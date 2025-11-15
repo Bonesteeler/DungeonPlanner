@@ -13,4 +13,4 @@ func set_vm(view_model: SetDetailsItemViewModel) -> void:
 func update_item() -> void:
   var tile = vm.tile
   name_button.text = tile.name
-  preview.set_mesh(tile.mesh_path)
+  preview.set_tile(tile)

@@ -29,6 +29,7 @@ func update_set() -> void:
 
 func _on_resized() -> void:
   var item_size = item_scene.instantiate().get_size()
-  var seperation = get_theme_constant("V Separation")
+  var seperation = get_theme_constant("h_separation")
   var columns = max(1, (self.get_size().x + seperation) / (item_size.x + seperation))
+  print(self.get_size().x, " ", item_size.x, " ", seperation, " ", columns)
   set_details_container.columns = columns
