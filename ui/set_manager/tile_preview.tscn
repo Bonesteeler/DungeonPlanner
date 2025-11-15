@@ -1,0 +1,36 @@
+[gd_scene load_steps=4 format=3 uid="uid://b0g6mccd3t7k8"]
+
+[ext_resource type="Script" uid="uid://bci4vwun0r4fb" path="res://ui/set_manager/tile_preview.gd" id="1_pj3y6"]
+
+[sub_resource type="Environment" id="Environment_n3d8r"]
+background_mode = 1
+background_color = Color(0.25490198, 0.30980393, 0.45490196, 1)
+ambient_light_source = 3
+ambient_light_color = Color(1, 1, 1, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_pj3y6"]
+albedo_color = Color(0.24, 0.24, 0.24, 1)
+disable_receive_shadows = true
+
+[node name="TilePreview" type="Node3D"]
+script = ExtResource("1_pj3y6")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.9070881, 0.42094082, 0, -0.42094082, 0.9070881, 0, 59.006344, 70.80026)
+environment = SubResource("Environment_n3d8r")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="Camera3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 0.99999994, 0, -22.139471, 1.0002899)
+light_color = Color(0.59040004, 0.7358134, 0.82, 1)
+light_specular = 0.0
+directional_shadow_mode = 0
+
+[node name="DirectionalLight3D2" type="DirectionalLight3D" parent="Camera3D"]
+transform = Transform3D(1, 0, 0, 0, 0.70710677, -0.70710677, 0, 0.70710677, 0.70710677, 0, -23.721231, -89.06026)
+light_energy = 0.115
+light_specular = 5.963
+directional_shadow_mode = 0
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0)
+material_override = SubResource("StandardMaterial3D_pj3y6")

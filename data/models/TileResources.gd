@@ -79,6 +79,16 @@ func get_set_names() -> Array:
     set_names.append(tile_set.name)
   return set_names
 
+## Returns a set from its name.[br]
+## [b]Parameters:[/b][br]
+## [code]name_set[/code] : [String] — name of the tile set to find.[br]
+## [b]Returns:[/b] [DragonbiteTileSet] — the matching tile set, or [code]null[/code] if not found.[br]
+func get_set(name_set: String) -> DragonbiteTileSet:
+  for tile_set in tile_sets:
+    if tile_set.name == name_set:
+      return tile_set
+  return null
+
 ## Return the currently selected [code]DragonbiteTileSet[/code].[br]
 ## [b]Returns:[/b] [DragonbiteTileSet] — the selected tile set or null if no set is selected.[br]
 func get_selected_set() -> DragonbiteTileSet:

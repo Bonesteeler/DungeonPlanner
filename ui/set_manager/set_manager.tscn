@@ -1,9 +1,8 @@
-[gd_scene load_steps=8 format=3 uid="uid://dsa4vwpi18sk6"]
+[gd_scene load_steps=7 format=3 uid="uid://dsa4vwpi18sk6"]
 
 [ext_resource type="PackedScene" uid="uid://4d52h1ninu7c" path="res://ui/set_manager/set_list.tscn" id="1_701mt"]
 [ext_resource type="Script" uid="uid://b7urdu84o7dq6" path="res://ui/set_manager/set_manager_view_model.gd" id="1_fa8gm"]
 [ext_resource type="PackedScene" uid="uid://doatq5mh2eluk" path="res://ui/set_manager/set_details.tscn" id="3_b0xsl"]
-[ext_resource type="Script" uid="uid://4v2v8d7sn3pf" path="res://ui/set_manager/set_details.gd" id="4_0or2c"]
 [ext_resource type="PackedScene" uid="uid://lnnbvuy548v7" path="res://ui/set_manager/import_tileset.tscn" id="5_03jg5"]
 
 [sub_resource type="Gradient" id="Gradient_jkn8m"]
@@ -37,7 +36,6 @@ layout_mode = 2
 
 [node name="Left" type="VBoxContainer" parent="MarginContainer/Columns"]
 layout_mode = 2
-size_flags_horizontal = 3
 
 [node name="Sets" parent="MarginContainer/Columns/Left" instance=ExtResource("1_701mt")]
 unique_name_in_owner = true
@@ -52,7 +50,6 @@ size_flags_stretch_ratio = 3.0
 [node name="SetDetails" parent="MarginContainer/Columns/Right" instance=ExtResource("3_b0xsl")]
 unique_name_in_owner = true
 layout_mode = 2
-script = ExtResource("4_0or2c")
 
 [node name="ImportTileSet" parent="." instance=ExtResource("5_03jg5")]
 unique_name_in_owner = true

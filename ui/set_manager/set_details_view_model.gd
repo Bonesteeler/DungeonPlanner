@@ -1,13 +1,20 @@
 class_name SetDetailsViewModel
 extends RefCounted
 
-signal current_set_changed(String)
+signal current_set_changed()
 
-var current_set: String = ""
+var current_set: DragonbiteTileSet = null
 
-func set_current_set(new_set_name: String) -> void:
-  current_set = new_set_name
-  current_set_changed.emit(new_set_name)
+func set_current_set(new_set: DragonbiteTileSet) -> void:
+  current_set = new_set
+  current_set_changed.emit()
 
 func get_current_set_name() -> String:
-  return current_set
+  if current_set == null:
+    return ""
+  return current_set.name
+
+func get_current_set_tiles() -> Array:
+  if current_set == null:
+    return []
+  return current_set.tiles

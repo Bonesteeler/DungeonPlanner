@@ -23,4 +23,5 @@ func delete_set(tile_set_name: String) -> void:
   tile_res.remove_set(tile_set_name)
 
 func select_set(tile_set_name: String) -> void:
-  set_details_vm.set_current_set(tile_set_name)
+  var selected_set := tile_res.get_set(tile_set_name)
+  set_details_vm.set_current_set(selected_set)
