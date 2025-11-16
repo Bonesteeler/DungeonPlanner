@@ -1,8 +1,9 @@
-[gd_scene load_steps=7 format=3 uid="uid://dsa4vwpi18sk6"]
+[gd_scene load_steps=8 format=3 uid="uid://dsa4vwpi18sk6"]
 
 [ext_resource type="PackedScene" uid="uid://4d52h1ninu7c" path="res://ui/set_manager/set_list.tscn" id="1_701mt"]
 [ext_resource type="Script" uid="uid://b7urdu84o7dq6" path="res://ui/set_manager/set_manager_view_model.gd" id="1_fa8gm"]
 [ext_resource type="PackedScene" uid="uid://doatq5mh2eluk" path="res://ui/set_manager/set_details.tscn" id="3_b0xsl"]
+[ext_resource type="PackedScene" uid="uid://8vpb02c07miu" path="res://ui/set_manager/tile_details.tscn" id="4_03jg5"]
 [ext_resource type="PackedScene" uid="uid://lnnbvuy548v7" path="res://ui/set_manager/import_tileset.tscn" id="5_03jg5"]
 
 [sub_resource type="Gradient" id="Gradient_jkn8m"]
@@ -34,7 +35,7 @@ theme_override_constants/margin_bottom = 10
 [node name="Columns" type="HBoxContainer" parent="MarginContainer"]
 layout_mode = 2
 
-[node name="Left" type="VBoxContainer" parent="MarginContainer/Columns"]
+[node name="Left" type="MarginContainer" parent="MarginContainer/Columns"]
 layout_mode = 2
 
 [node name="Sets" parent="MarginContainer/Columns/Left" instance=ExtResource("1_701mt")]
@@ -42,13 +43,25 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="Right" type="VBoxContainer" parent="MarginContainer/Columns"]
+[node name="Middle" type="MarginContainer" parent="MarginContainer/Columns"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 3.0
 
-[node name="SetDetails" parent="MarginContainer/Columns/Right" instance=ExtResource("3_b0xsl")]
+[node name="SetDetails" parent="MarginContainer/Columns/Middle" instance=ExtResource("3_b0xsl")]
 unique_name_in_owner = true
+layout_mode = 2
+
+[node name="Right" type="MarginContainer" parent="MarginContainer/Columns"]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="TileDetails" parent="MarginContainer/Columns/Right" instance=ExtResource("4_03jg5")]
+unique_name_in_owner = true
+visible = false
 layout_mode = 2
 
 [node name="ImportTileSet" parent="." instance=ExtResource("5_03jg5")]
@@ -61,3 +74,4 @@ size_flags_vertical = 4
 [connection signal="delete_set" from="MarginContainer/Columns/Left/Sets" to="." method="delete_set"]
 [connection signal="import_set" from="MarginContainer/Columns/Left/Sets" to="." method="import_set_started"]
 [connection signal="select_set" from="MarginContainer/Columns/Left/Sets" to="." method="select_set"]
+[connection signal="tile_selected" from="MarginContainer/Columns/Middle/SetDetails" to="." method="set_tile_in_details"]

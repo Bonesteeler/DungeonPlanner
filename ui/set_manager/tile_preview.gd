@@ -3,6 +3,7 @@ extends Node3D
 
 const DISTANCE_PER_UNIT: float = 60.0
 const ROTATION_SPEED: float = 0.66
+const VERTICAL_OFFSET: float = 25.0
 
 @onready var camera: Camera3D = $Camera3D
 @onready var mesh_instance: MeshInstance3D = $%PreviewMesh
@@ -21,4 +22,5 @@ func set_tile(tile: Tile) -> void:
   mesh_instance.position = tile_position
 
   var max_size = max(tile.x_size, tile.y_size)
-  camera.position = Vector3(0, max_size * DISTANCE_PER_UNIT,  max_size * DISTANCE_PER_UNIT)
+  max_size = max(max_size, 1)
+  camera.position = Vector3(0, max_size * DISTANCE_PER_UNIT + VERTICAL_OFFSET,  max_size * DISTANCE_PER_UNIT)

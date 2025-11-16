@@ -3,6 +3,8 @@ extends VBoxContainer
 
 var vm: SetDetailsItemViewModel
 
+signal selected(tile)
+
 @onready var name_button: Button = $%Name
 @onready var preview: TilePreview = $%TilePreview
 
@@ -14,3 +16,6 @@ func update_item() -> void:
   var tile = vm.tile
   name_button.text = tile.name
   preview.set_tile(tile)
+
+func emit_selected():
+  selected.emit(vm.tile)

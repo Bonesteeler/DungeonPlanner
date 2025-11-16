@@ -12,7 +12,6 @@ var export_scene_name: String = ""
 var save_manager: SaveManager
 
 @onready var confirmation_dialog: ConfirmationDialog = $ConfirmationDialog
-@onready var import_set: MarginContainer = $%ImportTileSetDialog
 @onready var recent_scenes_container: VBoxContainer = $%RecentScenes
 @onready var scene_browser: SceneBrowser = $%SceneBrowser
 @onready var scene_import_dialog: FileDialog = $%SceneImportDialog
@@ -37,9 +36,6 @@ func update_recent_scenes():
     button.select_pressed.connect(load_recent_scene.bind(scene.scene_name))
     button.upload_pressed.connect(upload_scene.bind(scene.scene_name))
     recent_scenes_container.add_child(button)
-
-func import_set_pressed():
-  import_set.initialize()
 
 func on_set_imported():
   update_recent_scenes()

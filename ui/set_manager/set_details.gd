@@ -1,9 +1,10 @@
 class_name SetDetails
 extends VBoxContainer
 
-var view_model: SetDetailsViewModel
+signal tile_selected(tile)
 
 var item_scene: PackedScene = preload("res://ui/set_manager/set_details_item.tscn")
+var view_model: SetDetailsViewModel
 
 @onready var set_details_container = $%SetDetailsContainer
 @onready var tile_label = $%Title
@@ -21,6 +22,7 @@ func update_set() -> void:
     set_details_container.get_child(i).queue_free()
   for tile in view_model.get_current_set_tiles():
     var item = item_scene.instantiate()
+    item.selected.connect(forward_tile_selected)
     set_details_container.add_child(item)
     var vm = SetDetailsItemViewModel.new()
     vm.set_tile(tile)
@@ -31,5 +33,7 @@ func _on_resized() -> void:
   var item_size = item_scene.instantiate().get_size()
   var seperation = get_theme_constant("h_separation")
   var columns = max(1, (self.get_size().x + seperation) / (item_size.x + seperation))
-  print(self.get_size().x, " ", item_size.x, " ", seperation, " ", columns)
   set_details_container.columns = columns
+
+func forward_tile_selected(tile: Tile):
+  tile_selected.emit(tile)
