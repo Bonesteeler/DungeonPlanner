@@ -7,7 +7,7 @@ var view_model: SetListViewModel
 var mock_resources: TileResources
 
 func before_each():
-	mock_resources = TileResources.new()
+	mock_resources = TileResources.new(false)
 	view_model = SetListViewModel.new(mock_resources)
 	set_list = SET_LIST_SCENE.instantiate()
 	add_child_autofree(set_list)
@@ -33,7 +33,9 @@ func test_update_items_clears_existing_items():
 	assert_eq(container.get_child_count(), 2, "Should have 2 items initially")
 	
 	# Remove one set and update
-	mock_resources.tile_sets.remove_at(0)
+	mock_resources.remove_set("Set1")
+  # Handle file not found error
+	assert_push_error(1, "File not found should have errored")
 	
 	# Wait for children to be freed
 	await wait_frames(2)

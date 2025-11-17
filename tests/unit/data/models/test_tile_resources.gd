@@ -4,7 +4,7 @@ var resources: TileResources
 
 func before_each():
   # Fresh TileResources for each test
-  resources = TileResources.new()
+  resources = TileResources.new(false)
 
 func test_add_single_set():
   var set_test = DragonbiteTileSet.new()
@@ -64,6 +64,8 @@ func test_remove_set_cleans_ids_and_sets():
 
   # Remove and verify cleanup
   resources.remove_set("set_d")
+  # Expect file not found error
+  assert_push_error(1, "File not found should have errored")
   assert_false(resources.unique_tile_ids.has("id_d"))
   assert_eq(0, resources.tile_sets.size())
 

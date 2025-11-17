@@ -20,11 +20,12 @@ var selected_set_idx = 0
 var tile_sets: Array = []
 var unique_tile_ids: Dictionary = {}
 
-func _init() -> void:
-  var dir_access = DirAccess.open(SET_DEFINITIONS_PATH)
-  if not dir_access.dir_exists(SET_DEFINITIONS_PATH):
-    dir_access.make_dir_recursive(SET_DEFINITIONS_PATH)
-  load_set_definitions()
+func _init(autoload: bool = true) -> void:
+  if autoload:
+    var dir_access = DirAccess.open(SET_DEFINITIONS_PATH)
+    if not dir_access.dir_exists(SET_DEFINITIONS_PATH):
+      dir_access.make_dir_recursive(SET_DEFINITIONS_PATH)
+    load_set_definitions()
 
 ## Load tile set definitions from app data.[br]
 func load_set_definitions():

@@ -4,7 +4,7 @@ var view_model: SetListViewModel
 var mock_resources: TileResources
 
 func before_each():
-  mock_resources = TileResources.new()
+  mock_resources = TileResources.new(false)
   view_model = SetListViewModel.new(mock_resources)
 
 func test_init_loads_initial_set_list():
