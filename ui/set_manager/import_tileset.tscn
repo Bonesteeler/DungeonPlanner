@@ -1,6 +1,6 @@
-[gd_scene load_steps=3 format=3 uid="uid://cm8f1ot0p4yyv"]
+[gd_scene load_steps=3 format=3 uid="uid://lnnbvuy548v7"]
 
-[ext_resource type="Script" uid="uid://dbj0nkpfduyjm" path="res://scene_builder/ui/ImportTileSet.gd" id="1_dmqne"]
+[ext_resource type="Script" uid="uid://bfxeljs82hp42" path="res://ui/set_manager/import_tileset.gd" id="1_q68fo"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_xo6iv"]
 font_size = 21
@@ -21,7 +21,7 @@ theme_override_constants/margin_left = 0
 theme_override_constants/margin_top = 0
 theme_override_constants/margin_right = 0
 theme_override_constants/margin_bottom = 0
-script = ExtResource("1_dmqne")
+script = ExtResource("1_q68fo")
 
 [node name="Background" type="Panel" parent="."]
 layout_mode = 2

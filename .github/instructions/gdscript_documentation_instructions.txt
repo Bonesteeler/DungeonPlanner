@@ -1,4 +1,4 @@
-Add Godot documentation to this file. The Godot version is 4.4
+Add Godot documentation to this file. The Godot version is 4.5
 
 Documentation should be added in two places. Each line should begin with ## and include BBCode tags for formatting. Use [br] for line breaks.
 

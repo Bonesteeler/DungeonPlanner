@@ -10,8 +10,9 @@ extends Node
 ## - [code]KEY_SET[/code]: Key used in dictionaries returned by [code]get_set_and_tile_data[/code] to reference the tile set.[br]
 ## - [code]KEY_TILE[/code]: Key used in dictionaries returned by [code]get_set_and_tile_data[/code] to reference the tile object.[br]
 
-const SET_DEFINITIONS_PATH = "user://SetDefinitions/"
+signal tile_sets_changed()
 
+const SET_DEFINITIONS_PATH = "user://SetDefinitions/"
 const KEY_SET = "set"
 const KEY_TILE = "tile"
 
@@ -19,11 +20,12 @@ var selected_set_idx = 0
 var tile_sets: Array = []
 var unique_tile_ids: Dictionary = {}
 
-func _init() -> void:
-  var dir_access = DirAccess.open(SET_DEFINITIONS_PATH)
-  if not dir_access.dir_exists(SET_DEFINITIONS_PATH):
-    dir_access.make_dir_recursive(SET_DEFINITIONS_PATH)
-  load_set_definitions()
+func _init(autoload: bool = true) -> void:
+  if autoload:
+    var dir_access = DirAccess.open(SET_DEFINITIONS_PATH)
+    if not dir_access.dir_exists(SET_DEFINITIONS_PATH):
+      dir_access.make_dir_recursive(SET_DEFINITIONS_PATH)
+    load_set_definitions()
 
 ## Load tile set definitions from app data.[br]
 func load_set_definitions():
@@ -68,6 +70,7 @@ func add_set(new_set: DragonbiteTileSet):
       print("Hash collision detected for tile ID: %s" % tile.id)
     unique_tile_ids.set(tile.id, 1)
   tile_sets.append(new_set)
+  tile_sets_changed.emit()
 
 ## Return the names of all loaded tile sets.[br]
 ## [b]Returns:[/b] [Array] — list of tile set names as strings.[br]
@@ -76,6 +79,16 @@ func get_set_names() -> Array:
   for tile_set in tile_sets:
     set_names.append(tile_set.name)
   return set_names
+
+## Returns a set from its name.[br]
+## [b]Parameters:[/b][br]
+## [code]name_set[/code] : [String] — name of the tile set to find.[br]
+## [b]Returns:[/b] [DragonbiteTileSet] — the matching tile set, or [code]null[/code] if not found.[br]
+func get_set(name_set: String) -> DragonbiteTileSet:
+  for tile_set in tile_sets:
+    if tile_set.name == name_set:
+      return tile_set
+  return null
 
 ## Return the currently selected [code]DragonbiteTileSet[/code].[br]
 ## [b]Returns:[/b] [DragonbiteTileSet] — the selected tile set or null if no set is selected.[br]
@@ -102,13 +115,14 @@ func get_set_and_tile_data(tile_id: String) -> Dictionary:
 ## [b]Returns:[/b] [void][br]
 func remove_set(name_set: String):
   for i in range(tile_sets.size()):
-    if tile_sets[i].name == set_name:
+    if tile_sets[i].name == name_set:
       for tile in tile_sets[i].tiles:
         unique_tile_ids.erase(tile.id)
       tile_sets[i].delete_tiles()
       tile_sets.remove_at(i)
       var file_path = SET_DEFINITIONS_PATH + name_set + ".json"
       File.delete_file(file_path)
+      tile_sets_changed.emit()
       return
 
 ## Check whether all provided tile ids are present in the manager's registry.[br]

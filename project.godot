@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="DungeonPlanner"
-run/main_scene="uid://dhqcdwpxul6uo"
+run/main_scene="uid://cte4yn8wx5n67"
 config/features=PackedStringArray("4.5", "Forward Plus")
 
 [autoload]
