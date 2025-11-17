@@ -15,8 +15,8 @@ func before_each():
 func test_set_vm_initializes_list():
 	set_list.set_vm(view_model)
 	
-	assert_not_null(set_list.viewModel, "viewModel should be set")
-	assert_eq(set_list.viewModel, view_model, "viewModel should match")
+	assert_not_null(set_list.view_model, "viewModel should be set")
+	assert_eq(set_list.view_model, view_model, "viewModel should match")
 
 func test_update_items_clears_existing_items():
 	# Add some tile sets

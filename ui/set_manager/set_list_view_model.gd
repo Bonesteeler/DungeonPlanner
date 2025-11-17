@@ -21,7 +21,7 @@ func _init(resources: TileResources) -> void:
     res = resources
     sets = res.get_set_names()
     res.tile_sets_changed.connect(update_set_list)
-  
+
 ## Refresh the set list from resources and emit change signal[br]
 ## [b]Emits:[/b][br]
 ## - [code]sets_changed()[/code][br]

@@ -40,7 +40,11 @@ func set_tile(tile: Tile) -> void:
 
   var max_size = max(tile.x_size, tile.y_size)
   max_size = max(max_size, 1)
-  camera.position = Vector3(0, max_size * DISTANCE_PER_UNIT + VERTICAL_OFFSET, max_size * DISTANCE_PER_UNIT)
+  camera.position = Vector3(
+    0,
+    max_size * DISTANCE_PER_UNIT + VERTICAL_OFFSET,
+    max_size * DISTANCE_PER_UNIT
+  )
 
 ## Enable or disable rotation[br]
 ## [b]Parameters:[/b][br]

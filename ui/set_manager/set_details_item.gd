@@ -10,9 +10,9 @@ extends VBoxContainer
 ## [b]Signals:[/b][br]
 ## - [code]selected(tile)[/code]: Emitted when the tile is selected.[br]
 
-var vm: SetDetailsItemViewModel
-
 signal selected(tile)
+
+var vm: SetDetailsItemViewModel
 
 @onready var name_button: Button = $%Name
 @onready var preview: TilePreview = $%TilePreview

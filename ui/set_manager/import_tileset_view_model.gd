@@ -18,12 +18,12 @@ extends RefCounted
 ## - [code]import_path_updated()[/code]: Emitted when import path changes.[br]
 ## - [code]import_state_updated()[/code]: Emitted when import progress state changes.[br]
 
-const IMPORT_STATUS_LABEL_TEMPLATE = "Importing %d tiles, currently %d/%d"
-
-signal validity_updated()
 signal import_complete()
 signal import_path_updated()
 signal import_state_updated()
+signal validity_updated()
+
+const IMPORT_STATUS_LABEL_TEMPLATE = "Importing %d tiles, currently %d/%d"
 
 var file_loader = LoadSavedFiles.new()
 var import_path: String = ""
