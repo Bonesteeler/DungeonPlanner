@@ -22,7 +22,7 @@
       "debug_collisions": false,
       "debug_paths": false,
       "debug_navigation": false,
-      "additional_options": "--path ${workspaceFolder} -s addons/gut/gut_cmdln.gd"
+      "additional_options": "--path ${workspaceFolder} -s addons/gut/gut_cmdln.gd -gdir tests/unit -ginclude_subdirs"
     }
   ]
 }
