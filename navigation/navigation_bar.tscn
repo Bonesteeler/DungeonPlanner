@@ -29,6 +29,7 @@ theme_override_constants/margin_right = 4
 theme_override_constants/margin_bottom = 4
 
 [node name="HBoxContainer" type="HBoxContainer" parent="ButtonMargin"]
+unique_name_in_owner = true
 layout_mode = 2
 
 [node name="Home" type="Button" parent="ButtonMargin/HBoxContainer"]
@@ -39,10 +40,5 @@ text = "Home"
 layout_mode = 2
 text = "Sets"
 
-[node name="Scene" type="Button" parent="ButtonMargin/HBoxContainer"]
-layout_mode = 2
-text = "Scene"
-
 [connection signal="pressed" from="ButtonMargin/HBoxContainer/Home" to="." method="forward_home_selected"]
 [connection signal="pressed" from="ButtonMargin/HBoxContainer/Button" to="." method="forward_sets_selected"]
-[connection signal="pressed" from="ButtonMargin/HBoxContainer/Scene" to="." method="forward_planner_selected"]

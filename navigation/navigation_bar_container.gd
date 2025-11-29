@@ -12,6 +12,8 @@ var SETS_SCENE = load("res://ui/set_manager/set_manager.tscn")
 @onready var content_container: Viewport = $%SubViewport
 
 func _ready() -> void:
+  var navigation_bar_vm = NavigationBarViewModel.new()
+  navigation_bar.set_vm(navigation_bar_vm)
   change_scene(MAIN_MENU)
 
 func home_selected() -> void:

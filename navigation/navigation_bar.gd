@@ -6,12 +6,30 @@ extends Container
 ## Custom tab bar that sends signals when a tab is selected.[br]
 ## [b]Signals:[/b][br]
 ## - home_selected() - Emitted when the home tab is selected.
-## - planner_selected(string) - Emitted when the planner tab is selected.
+## - planner_selected(String) - Emitted when the planner tab is selected.
 ## - set_selected() - Emitted when the sets tab is selected.
 
 signal home_selected()
-signal planner_selected(string)
+signal planner_selected(String)
 signal sets_selected()
+
+var PLANNER_BUTTON_SCENE = preload("res://navigation/scene_button.tscn")
+
+var view_model: NavigationBarViewModel
+
+@onready var button_container: HBoxContainer = $%HBoxContainer
+
+func set_vm(vm: NavigationBarViewModel) -> void:
+  view_model = vm
+  view_model.scene_builders_updated.connect(update_scene_buttons)
+  update_scene_buttons()
+
+func update_scene_buttons() -> void:
+  for scene_builder in view_model.scene_builders:
+    var button = PLANNER_BUTTON_SCENE.instantiate() as SceneButton
+    button.set_scene_name(scene_builder.layout.name)
+    button.scene_selected.connect(forward_planner_selected)
+    button_container.add_child(button)
 
 func forward_home_selected():
     home_selected.emit()
