@@ -15,7 +15,8 @@ extends Node
 const MAIN_MENU_SCENE_PATH = "res://main_menu/MainMenu.tscn"
 
 var save_manager: SaveManager = SaveManager.new()
-var viewport
+var viewport: Viewport
+var vm: SceneBuilderViewModel
 
 @onready var board = $Board
 @onready var planner_ui = $%PlannerUI
@@ -34,6 +35,10 @@ func _ready():
   planner_ui.quit_scene.connect(quit_scene)
   viewport = get_viewport()
   viewport.size_changed.connect(on_viewport_resized)
+
+func set_scene_view_model(scene_vm: SceneBuilderViewModel):
+  vm = scene_vm
+  board.load_scene(vm.layout)
 
 ## Create a new, empty tile layout and load it into the board.[br]
 ## [b]Returns:[/b] [void][br]

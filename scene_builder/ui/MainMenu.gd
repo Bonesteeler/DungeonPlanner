@@ -7,6 +7,8 @@ const RECENT_SCENE_ITEM_SCENE = preload("res://main_menu/RecentSceneItem.tscn")
 const UPLOAD_SUCCESS_STRING_TEMPLATE = "Successfully uploaded scene: %s"
 const UPLOAD_FAILURE_STRING_TEMPLATE = "Failed to upload scene: %s"
 
+signal scene_selected(vm: SceneBuilderViewModel)
+
 var confirmation_dialog_target: String
 var export_scene_name: String = ""
 var save_manager: SaveManager
@@ -42,8 +44,8 @@ func on_set_imported():
 
 func load_recent_scene(scene_name: String):
   var scene_data = save_manager.load_scene_from_user(scene_name)
-  SceneContext.get_instance(self).current_scene = scene_data
-  change_to_planning_scene()
+  var scene_view_model = SceneBuilderViewModel.new(scene_data)
+  scene_selected.emit(scene_view_model)
 
 func upload_scene(scene_name: String):
   var scene_to_upload := save_manager.load_scene_from_user(scene_name)
@@ -85,8 +87,8 @@ func delete_scene_confirmed():
   update_recent_scenes()
 
 func on_new_scene():
-  SceneContext.get_instance(self).current_scene = Scene.new()
-  change_to_planning_scene()
+  var scene_view_model = SceneBuilderViewModel.new()
+  scene_selected.emit(scene_view_model)
 
 func change_to_planning_scene():
   # Can't preload planning_scene because it causes circular dependencies

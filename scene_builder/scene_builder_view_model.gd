@@ -1,11 +1,19 @@
 class_name SceneBuilderViewModel
 extends RefCounted
 
+const DEFAULT_SCENE_NAME = "Untitled Scene"
+
 var layout: TileLayout
+var scene_name: String
 var selected_tile: SceneTileViewModel
 
-func _init():
-  layout = TileLayout.new()
+func _init(data: Scene = null):
+  if data == null:
+    layout = TileLayout.new()
+    scene_name = DEFAULT_SCENE_NAME
+  else:
+    layout = data.data
+    scene_name = data.scene_name
   selected_tile = SceneTileViewModel.new()
 
 func rotate_left():

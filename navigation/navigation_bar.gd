@@ -13,6 +13,8 @@ signal home_selected()
 signal planner_selected(String)
 signal sets_selected()
 
+const STATIC_BUTTON_COUNT = 2
+
 var PLANNER_BUTTON_SCENE = preload("res://navigation/scene_button.tscn")
 
 var view_model: NavigationBarViewModel
@@ -25,9 +27,11 @@ func set_vm(vm: NavigationBarViewModel) -> void:
   update_scene_buttons()
 
 func update_scene_buttons() -> void:
+  for i in range(STATIC_BUTTON_COUNT, button_container.get_child_count()):
+    button_container.get_child(i).queue_free()
   for scene_builder in view_model.scene_builders:
     var button = PLANNER_BUTTON_SCENE.instantiate() as SceneButton
-    button.set_scene_name(scene_builder.layout.name)
+    button.set_scene_name(scene_builder.scene_name)
     button.scene_selected.connect(forward_planner_selected)
     button_container.add_child(button)
 
