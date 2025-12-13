@@ -28,7 +28,6 @@ var vm: SceneBuilderViewModel
 ## [b]Returns:[/b] [void][br]
 func _ready():
   board.create_board()
-  planner_ui.tile_selected.connect(SceneContext.update_selected_tile)
   planner_ui.new_scene.connect(forward_new_scene)
   planner_ui.save_current_scene.connect(save_scene)
   planner_ui.load_scene.connect(load_scene)
@@ -39,8 +38,8 @@ func _ready():
 
 func set_scene_view_model(scene_vm: SceneBuilderViewModel):
   vm = scene_vm
-  # planner_ui.tile_selected.connect(vm.set_selected_tile)
-  board.load_scene(vm.scene.data)
+  planner_ui.set_vm(vm)
+  board.set_layout(vm.scene.data)
 
 ## Create a new, empty tile layout and load it into the board.[br]
 ## [b]Returns:[/b] [void][br]
@@ -53,11 +52,8 @@ func save_scene():
   save_manager.save_scene_to_user(vm.scene)
 
 ## Set the provided scene as current and load its tile data into the board.[br]
-## [b]Parameters:[/b][br]
-## [code]scene[/code] : [Scene] — scene to load.[br]
 ## [b]Returns:[/b] [void][br]
 func load_scene(scene: Scene):
-  SceneContext.set_current_scene(scene)
   board.load_scene(scene.data)
 
 ## Switch back to the main menu scene using a packed scene change. Logs an error if the change fails.[br]

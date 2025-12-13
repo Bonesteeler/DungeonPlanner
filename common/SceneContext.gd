@@ -61,9 +61,6 @@ static func update_selected_tile(new_selected: Tile):
   selected_tile_context.tile = new_selected
   selected_tile_context.mesh = load(new_selected.mesh_path)
 
-static func set_tile(x: int, z: int, tile: TileContext):
-  current_scene.data.set_tile_at(x, z, tile)
-
 static func set_current_scene(new_scene: Scene):
   current_scene = new_scene
 

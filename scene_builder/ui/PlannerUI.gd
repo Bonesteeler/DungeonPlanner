@@ -21,6 +21,7 @@ const UNSAVED_CHANGES_DONT_SAVE_ACTION: StringName = "dont_save"
 var context: UIContext
 var current_tool: CustomEnums.ToolType = CustomEnums.ToolType.ADD_TILE
 var unsaved_changes: bool = false
+var vm: SceneBuilderViewModel
 
 @onready var file_button = $%FileButton
 @onready var menu_bar = $%MenuBar
@@ -42,10 +43,12 @@ func _ready():
   file_button.quit_scene.connect(on_quit)
   save_as_dialog.saved_with_name.connect(_on_save_as)
   context = UIContext.new()
-  if SceneContext.current_scene != null:
-    context.current_scene = SceneContext.current_scene
   set_selected_set(TileSets.tile_sets[0])
   set_selector_node.set_selectable_sets(TileSets.tile_sets)
+
+func set_vm(scene_vm: SceneBuilderViewModel):
+  vm = scene_vm
+  tile_selected.connect(vm.set_selected_tile)
 
 func set_selected_tile(tile: Tile):
   tile_selected.emit(tile)

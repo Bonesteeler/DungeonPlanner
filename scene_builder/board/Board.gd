@@ -26,6 +26,7 @@ const SPACE_SIZE = 5
 var board_nodes: Array = []
 var current_tool = CustomEnums.ToolType.ADD_TILE
 var hovered_space: Node3D
+var layout: TileLayout
 var space_scene = preload("res://scene_builder/board/Space.tscn")
 
 ## Create the initial grid of space nodes and wire up their signals.[br]
@@ -48,6 +49,10 @@ func create_board():
       new_space.space_hover_exit.connect(on_space_hover_exit)
       new_space.space_clicked.connect(on_space_clicked)
 
+func set_layout(scene_layout: TileLayout):
+  layout = scene_layout
+  load_scene(layout)
+
 ## Handle hover enter on a space for the currently selected tool.[br]
 ## [b]Parameters:[/b][br]
 ## [code]space[/code] : [Node3D] — the space node that the pointer entered.[br]
@@ -58,16 +63,16 @@ func on_space_hover_enter(space: Node3D):
   match current_tool:
     CustomEnums.ToolType.ADD_TILE:
       # Error if tile doesn't fit
-      var is_red = not SceneContext.does_selected_tile_fit(space_position)
-      hovered_space.update_context(SceneContext.get_selected_tile_context(), is_red)
+      var is_red = not layout.does_selected_tile_fit(space_position)
+      hovered_space.update_context(layout.get_selected_tile_context(), is_red)
     CustomEnums.ToolType.SELECT_TILE:
-      var hovered_tile = SceneContext.current_scene.data.get_origin_tile(space_position)
+      var hovered_tile = layout.get_origin_tile(space_position)
       if hovered_tile == null:
         return
       hovered_space = board_nodes[hovered_tile.position.x][hovered_tile.position.y]
       hovered_space.update_color(false)
     CustomEnums.ToolType.REMOVE_TILE:
-      var hovered_tile = SceneContext.current_scene.data.get_origin_tile(space_position)
+      var hovered_tile = layout.get_origin_tile(space_position)
       if hovered_tile == null:
         return
       hovered_space = board_nodes[hovered_tile.position.x][hovered_tile.position.y]
@@ -82,7 +87,7 @@ func on_space_hover_exit(space: Node3D):
     hovered_space.end_preview()
     hovered_space = null
   else:
-    var tile_origin = SceneContext.current_scene.data.get_origin_tile(Vector2(space.x, space.z))
+    var tile_origin = layout.get_origin_tile(Vector2(space.x, space.z))
     if tile_origin != null:
       var selected_space = board_nodes[tile_origin.position.x][tile_origin.position.y]
       selected_space.end_preview()
@@ -102,18 +107,18 @@ func on_space_clicked(space: Node3D, x: int, y: int):
       var selected_tile_context = SceneContext.get_selected_tile_context()
       if selected_tile_context.tile == null:
         return
-      if not SceneContext.does_selected_tile_fit(Vector2(x, y)):
+      if not layout.does_selected_tile_fit(Vector2(x, y)):
         return
-      SceneContext.set_tile(x, y, selected_tile_context)
+      layout.set_tile(x, y, selected_tile_context)
       space.set_tile(selected_tile_context)
       updated.emit()
     CustomEnums.ToolType.SELECT_TILE:
-      var selected_tile = SceneContext.current_scene.data.get_origin_tile(Vector2(x, y))
+      var selected_tile = layout.get_origin_tile(Vector2(x, y))
       if selected_tile == null:
         return
       tile_selected.emit(selected_tile.id)
     CustomEnums.ToolType.REMOVE_TILE:
-      var selected_tile = SceneContext.current_scene.data.get_origin_tile(Vector2(x, y))
+      var selected_tile = layout.get_origin_tile(Vector2(x, y))
       if selected_tile == null:
         return
       SceneContext.current_scene.data.remove_tile_at(selected_tile.position.x, selected_tile.position.y)
