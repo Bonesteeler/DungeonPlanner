@@ -12,6 +12,8 @@ extends Node
 ## [b]Constants:[/b][br]
 ## - [code]MAIN_MENU_SCENE_PATH[/code]: Path to the main menu scene resource.[br]
 
+signal new_scene()
+
 const MAIN_MENU_SCENE_PATH = "res://main_menu/MainMenu.tscn"
 
 var save_manager: SaveManager = SaveManager.new()
@@ -26,9 +28,8 @@ var vm: SceneBuilderViewModel
 ## [b]Returns:[/b] [void][br]
 func _ready():
   board.create_board()
-  board.load_scene(SceneContext.current_scene.data)
   planner_ui.tile_selected.connect(SceneContext.update_selected_tile)
-  planner_ui.new_scene.connect(new_scene)
+  planner_ui.new_scene.connect(forward_new_scene)
   planner_ui.save_current_scene.connect(save_scene)
   planner_ui.load_scene.connect(load_scene)
   planner_ui.set_recent_scenes(save_manager.scenes)
@@ -38,22 +39,18 @@ func _ready():
 
 func set_scene_view_model(scene_vm: SceneBuilderViewModel):
   vm = scene_vm
-  board.load_scene(vm.layout)
+  # planner_ui.tile_selected.connect(vm.set_selected_tile)
+  board.load_scene(vm.scene.data)
 
 ## Create a new, empty tile layout and load it into the board.[br]
 ## [b]Returns:[/b] [void][br]
-func new_scene():
-  var new_data = TileLayout.new()
-  SceneContext.current_scene.data = new_data
-  board.load_scene(new_data)
+func forward_new_scene():
+  new_scene.emit()
 
 ## Save the provided scene with the save manager and update the current scene context.[br]
-## [b]Parameters:[/b][br]
-## [code]scene[/code] : [Scene] — scene to save.[br]
 ## [b]Returns:[/b] [void][br]
-func save_scene(scene: Scene):
-  SceneContext.current_scene = scene
-  save_manager.save_scene_to_user(scene)
+func save_scene():
+  save_manager.save_scene_to_user(vm.scene)
 
 ## Set the provided scene as current and load its tile data into the board.[br]
 ## [b]Parameters:[/b][br]

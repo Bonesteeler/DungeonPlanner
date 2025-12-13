@@ -3,17 +3,15 @@ extends RefCounted
 
 const DEFAULT_SCENE_NAME = "Untitled Scene"
 
-var layout: TileLayout
-var scene_name: String
+var scene: Scene
 var selected_tile: SceneTileViewModel
-
+  
 func _init(data: Scene = null):
   if data == null:
-    layout = TileLayout.new()
-    scene_name = DEFAULT_SCENE_NAME
+    scene = Scene.new()
+    scene.scene_name = DEFAULT_SCENE_NAME
   else:
-    layout = data.data
-    scene_name = data.scene_name
+    scene = data
   selected_tile = SceneTileViewModel.new()
 
 func rotate_left():
@@ -40,4 +38,4 @@ func set_selected_tile(tile: Tile):
 func does_selected_tile_fit(position: Vector2) -> bool:
   if selected_tile.tile == null:
     return false
-  return layout.does_tile_fit(selected_tile.tile, position, selected_tile.rotation)
+  return scene.data.does_tile_fit(selected_tile.tile, position, selected_tile.rotation)

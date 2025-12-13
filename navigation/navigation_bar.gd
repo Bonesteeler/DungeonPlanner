@@ -29,9 +29,9 @@ func set_vm(vm: NavigationBarViewModel) -> void:
 func update_scene_buttons() -> void:
   for i in range(STATIC_BUTTON_COUNT, button_container.get_child_count()):
     button_container.get_child(i).queue_free()
-  for scene_builder in view_model.scene_builders:
+  for vm in view_model.scene_builders:
     var button = PLANNER_BUTTON_SCENE.instantiate() as SceneButton
-    button.set_scene_name(scene_builder.scene_name)
+    button.set_scene_name(vm.scene.scene_name)
     button.scene_selected.connect(forward_planner_selected)
     button_container.add_child(button)
 

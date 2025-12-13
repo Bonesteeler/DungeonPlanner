@@ -82,9 +82,9 @@ func get_origin_tile(position: Vector2) -> PlacedTile:
 ## [b]Parameters:[/b][br]
 ## [code]x[/code] : [int] — X coordinate on the planning grid.[br]
 ## [code]z[/code] : [int] — Z coordinate on the planning grid.[br]
-## [code]tile_context[/code] : [SceneContext.TileContext] — Context containing the tile id and rotation to apply.[br]
+## [code]tile_context[/code] : [SceneTileViewModel] — vm of tile to set.[br]
 ## [b]Returns:[/b] [void] — returns early if the tile does not fit.[br]
-func set_tile_at(x: int, z: int, tile_context: SceneContext.TileContext):
+func set_tile_at(x: int, z: int, tile_context: SceneTileViewModel):
   if not does_tile_fit(tile_context.tile, Vector2(x, z), tile_context.rotation):
     return
   var saved_tile: PlacedTile
