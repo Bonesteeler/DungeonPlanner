@@ -29,8 +29,8 @@ var z = 0
 ## [code]context[/code] : [PlanningContext.TileContext] — tile data to display.[br]
 ## [code]is_red[/code] : [bool] — whether to render the tile with a red tint (for invalid placement).[br]
 ## [b]Returns:[/b] [void][br]
-func update_context(context: PlanningContext.TileContext, is_red: bool):
-  mesh_node.set_tile_context(context, is_red)
+func update_context(context: PlanningContext.TileContext):
+  mesh_node.set_tile_context(context, context.valid)
 
 ## Update the mesh color to indicate state (red for invalid, default otherwise). [br]
 ## [b]Parameters:[/b][br]

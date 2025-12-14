@@ -83,7 +83,7 @@ func _on_file_load(scene_name: String):
     push_error("Scene " + scene_name + " not found in recent scenes.")
 
 func _on_file_save():
-  if context.current_scene.scene_name == "":
+  if vm.scene.scene_name == SceneBuilderViewModel.DEFAULT_SCENE_NAME or vm.scene.scene_name == "":
     show_save_as_dialog()
     return
   unsaved_changes = false
@@ -93,7 +93,7 @@ func show_save_as_dialog():
   save_as_dialog.visible = true
 
 func _on_save_as(scene_name: String):
-  context.current_scene.scene_name = scene_name
+  vm.scene.scene_name = scene_name
   unsaved_changes = false
   save_current_scene.emit()
   file_button.set_saves(context.recent_scenes)
@@ -112,7 +112,7 @@ func on_board_updated() -> void:
   unsaved_changes = true
 
 func unsaved_changes_save():
-  if SceneContext.current_scene.scene_name == "":
+  if vm.scene.scene_name == SceneBuilderViewModel.DEFAULT_SCENE_NAME or vm.scene.scene_name == "":
     unsaved_changes_save_as_dialog.visible = true
   else:
     save_current_scene.emit()
@@ -125,7 +125,7 @@ func unsaved_changes_custom(action: StringName):
     print("Unknown unsaved changes action: ", action)
 
 func on_unsaved_changes_save_as_dialog_saved(scene_name: String) -> void:
-  SceneContext.current_scene.scene_name = scene_name
+  vm.scene.scene_name = scene_name
   save_current_scene.emit()
   quit_scene.emit()
 

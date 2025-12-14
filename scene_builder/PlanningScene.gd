@@ -39,7 +39,7 @@ func _ready():
 func set_scene_view_model(scene_vm: SceneBuilderViewModel):
   vm = scene_vm
   planner_ui.set_vm(vm)
-  board.set_layout(vm.scene.data)
+  board.set_vm(vm)
 
 ## Create a new, empty tile layout and load it into the board.[br]
 ## [b]Returns:[/b] [void][br]

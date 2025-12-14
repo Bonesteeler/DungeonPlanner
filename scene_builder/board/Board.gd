@@ -26,7 +26,7 @@ const SPACE_SIZE = 5
 var board_nodes: Array = []
 var current_tool = CustomEnums.ToolType.ADD_TILE
 var hovered_space: Node3D
-var layout: TileLayout
+var vm: SceneBuilderViewModel
 var space_scene = preload("res://scene_builder/board/Space.tscn")
 
 ## Create the initial grid of space nodes and wire up their signals.[br]
@@ -49,9 +49,9 @@ func create_board():
       new_space.space_hover_exit.connect(on_space_hover_exit)
       new_space.space_clicked.connect(on_space_clicked)
 
-func set_layout(scene_layout: TileLayout):
-  layout = scene_layout
-  load_scene(layout)
+func set_vm(view_model: SceneBuilderViewModel):
+  vm = view_model
+  load_scene(vm.scene.data)
 
 ## Handle hover enter on a space for the currently selected tool.[br]
 ## [b]Parameters:[/b][br]
@@ -60,19 +60,19 @@ func set_layout(scene_layout: TileLayout):
 func on_space_hover_enter(space: Node3D):
   hovered_space = space
   var space_position = Vector2(hovered_space.x, hovered_space.z)
-  match current_tool:
+  match current_tool: 
     CustomEnums.ToolType.ADD_TILE:
       # Error if tile doesn't fit
-      var is_red = not layout.does_selected_tile_fit(space_position)
-      hovered_space.update_context(layout.get_selected_tile_context(), is_red)
+      vm.selected_tile.valid = not vm.does_selected_tile_fit(space_position)
+      hovered_space.update_context(vm.selected_tile.to_tile_context())
     CustomEnums.ToolType.SELECT_TILE:
-      var hovered_tile = layout.get_origin_tile(space_position)
+      var hovered_tile = vm.scene.data.get_origin_tile(space_position)
       if hovered_tile == null:
         return
       hovered_space = board_nodes[hovered_tile.position.x][hovered_tile.position.y]
       hovered_space.update_color(false)
     CustomEnums.ToolType.REMOVE_TILE:
-      var hovered_tile = layout.get_origin_tile(space_position)
+      var hovered_tile = vm.scene.data.get_origin_tile(space_position)
       if hovered_tile == null:
         return
       hovered_space = board_nodes[hovered_tile.position.x][hovered_tile.position.y]
@@ -87,7 +87,7 @@ func on_space_hover_exit(space: Node3D):
     hovered_space.end_preview()
     hovered_space = null
   else:
-    var tile_origin = layout.get_origin_tile(Vector2(space.x, space.z))
+    var tile_origin = vm.scene.data.get_origin_tile(Vector2(space.x, space.z))
     if tile_origin != null:
       var selected_space = board_nodes[tile_origin.position.x][tile_origin.position.y]
       selected_space.end_preview()
@@ -104,24 +104,24 @@ func on_space_hover_exit(space: Node3D):
 func on_space_clicked(space: Node3D, x: int, y: int):
   match current_tool:
     CustomEnums.ToolType.ADD_TILE:
-      var selected_tile_context = SceneContext.get_selected_tile_context()
+      var selected_tile_context = vm.selected_tile
       if selected_tile_context.tile == null:
         return
-      if not layout.does_selected_tile_fit(Vector2(x, y)):
+      if not vm.does_selected_tile_fit(Vector2(x, y)):
         return
-      layout.set_tile(x, y, selected_tile_context)
-      space.set_tile(selected_tile_context)
+      vm.scene.data.set_tile_at(x, y, selected_tile_context)
+      space.set_tile(selected_tile_context.to_tile_context())
       updated.emit()
     CustomEnums.ToolType.SELECT_TILE:
-      var selected_tile = layout.get_origin_tile(Vector2(x, y))
+      var selected_tile = vm.scene.data.get_origin_tile(Vector2(x, y))
       if selected_tile == null:
         return
       tile_selected.emit(selected_tile.id)
     CustomEnums.ToolType.REMOVE_TILE:
-      var selected_tile = layout.get_origin_tile(Vector2(x, y))
+      var selected_tile = vm.scene.data.get_origin_tile(Vector2(x, y))
       if selected_tile == null:
         return
-      SceneContext.current_scene.data.remove_tile_at(selected_tile.position.x, selected_tile.position.y)
+      vm.scene.data.remove_tile_at(selected_tile.position.x, selected_tile.position.y)
       var origin_space = board_nodes[selected_tile.position.x][selected_tile.position.y]
       origin_space.set_empty()
       updated.emit()
@@ -132,8 +132,8 @@ func on_context_updated():
   if hovered_space != null:
     var space_position = Vector2(hovered_space.x, hovered_space.z)
     # Error if tile doesn't fit
-    var hover_error = not SceneContext.does_selected_tile_fit(space_position)
-    hovered_space.update_context(SceneContext.get_selected_tile_context(), hover_error)
+    var hover_error = not vm.does_selected_tile_fit(space_position)
+    hovered_space.update_context(vm.scene.data.get_selected_tile_context(), hover_error)
 
 ## Load a saved TileLayout into the board, instantiating tile contexts and meshes as needed.[br]
 ## [b]Parameters:[/b][br]

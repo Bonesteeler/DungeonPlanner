@@ -1,9 +1,10 @@
 class_name SceneTileViewModel
 extends RefCounted
 
-var tile: Tile
-var rotation: Vector3 = Vector3.ZERO
 var mesh: Mesh
+var rotation: Vector3 = Vector3.ZERO
+var tile: Tile
+var valid: bool = true
 
 func rotate(delta: float):
   rotation.y += delta
@@ -21,3 +22,11 @@ func set_tile(new_tile: Tile):
 
 func set_mesh(new_mesh: Mesh):
   mesh = new_mesh
+
+func to_tile_context() -> PlanningContext.TileContext:
+  var context = PlanningContext.TileContext.new()
+  context.tile = tile
+  context.rotation = rotation
+  context.mesh = mesh
+  context.valid = valid
+  return context

@@ -5,6 +5,7 @@ class TileContext:
   var rotation: Vector3
   var tile: Tile
   var mesh: Mesh
+  var valid: bool
 
 const DEFAULT_ROTATION = Vector3.LEFT * 90
 const SAVED_SCENE_PATH = "user://SavedScenes/"
