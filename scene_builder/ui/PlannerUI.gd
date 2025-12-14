@@ -4,8 +4,6 @@ class UIContext:
   var current_scene: Scene = Scene.new()
   var recent_scenes: Array[Scene] = []
 
-signal load_scene(scene_name: String)
-signal new_scene()
 signal save_current_scene()
 signal tile_selected(tile: Tile)
 signal tool_add_tile_selected()
@@ -36,11 +34,8 @@ var vm: SceneBuilderViewModel
 func _ready():
   tile_selector_node.tile_selected.connect(set_selected_tile)
   set_selector_node.set_selected.connect(set_selected_set)
-  file_button.new_scene.connect(_on_file_new)
-  file_button.load_scene.connect(_on_file_load)
   file_button.save_scene.connect(_on_file_save)
   file_button.save_scene_as.connect(show_save_as_dialog)
-  file_button.quit_scene.connect(on_quit)
   save_as_dialog.saved_with_name.connect(_on_save_as)
   context = UIContext.new()
   set_selected_set(TileSets.tile_sets[0])
@@ -62,26 +57,6 @@ func set_selected_tile_from_copy(tile: Tile):
 func set_selected_set(tile_set: DragonbiteTileSet):
   tile_selector_node.set_selected_set(tile_set)
 
-func set_recent_scenes(scenes: Array[Scene]):
-  context.recent_scenes = scenes
-  file_button.set_saves(context.recent_scenes)
-
-func _on_file_new():
-  context.current_scene = Scene.new()
-  new_scene.emit()
-
-func _on_file_load(scene_name: String):
-  var loaded_scene: Scene = null
-  for scene in context.recent_scenes:
-    if scene.scene_name == scene_name:
-      loaded_scene = scene
-      break
-  if loaded_scene != null:
-    context.current_scene = loaded_scene
-    load_scene.emit(loaded_scene)
-  else:
-    push_error("Scene " + scene_name + " not found in recent scenes.")
-
 func _on_file_save():
   if vm.scene.scene_name == SceneBuilderViewModel.DEFAULT_SCENE_NAME or vm.scene.scene_name == "":
     show_save_as_dialog()
@@ -97,12 +72,6 @@ func _on_save_as(scene_name: String):
   unsaved_changes = false
   save_current_scene.emit()
   file_button.set_saves(context.recent_scenes)
-
-func on_quit():
-  if unsaved_changes:
-    unsaved_changes_dialog.visible = true
-  else:
-    quit_scene.emit()
 
 func on_viewport_resized(new_size: Vector2):
   set_selector_node.on_viewport_resized(new_size)
