@@ -24,9 +24,8 @@ func _init():
   var save_name = saved_scenes_dir.get_next()
   while save_name != "":
     if save_name.ends_with(".json"):
-      var scene = Scene.new()
       var without_suffix = save_name.trim_suffix(".json")
-      scene = load_scene_from_user(without_suffix)
+      var scene = load_scene_from_user(without_suffix)
       if scene != null:
         scenes.append(scene)
     save_name = saved_scenes_dir.get_next()
@@ -57,7 +56,7 @@ func load_scene_from_user(file_name: String) -> Scene:
       print("Failed to open saved scene:%s with error %s" %
        [file_name, str(FileAccess.get_open_error())])
       var new_scene = Scene.new()
-      new_scene.scene_name = file_name
+      new_scene.id = UUID.v7()
       return new_scene
     var json_string = file.get_as_text()
     var parsed_scene = SceneSerializer.deserialize(json_string)

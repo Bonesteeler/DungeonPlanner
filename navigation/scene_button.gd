@@ -3,11 +3,11 @@ extends Button
 
 signal scene_selected(String)
 
-var scene_name: String = ""
+var scene_id: String = ""
 
-func set_scene_name(new_name: String) -> void:
-  scene_name = new_name
-  text = new_name
+func set_scene(new_scene: Scene) -> void:
+  scene_id = new_scene.id
+  text = new_scene.scene_name
 
 func _on_button_pressed():
-  scene_selected.emit(scene_name)
+  scene_selected.emit(scene_id)

@@ -2,7 +2,6 @@ extends MarginContainer
 
 class UIContext:
   var current_scene: Scene = Scene.new()
-  var recent_scenes: Array[Scene] = []
 
 signal save_current_scene()
 signal tile_selected(tile: Tile)
@@ -69,9 +68,9 @@ func show_save_as_dialog():
 
 func _on_save_as(scene_name: String):
   vm.scene.scene_name = scene_name
+  vm.update_id(UUID.v7())
   unsaved_changes = false
   save_current_scene.emit()
-  file_button.set_saves(context.recent_scenes)
 
 func on_viewport_resized(new_size: Vector2):
   set_selector_node.on_viewport_resized(new_size)
@@ -83,9 +82,6 @@ func on_board_updated() -> void:
 func unsaved_changes_save():
   if vm.scene.scene_name == SceneBuilderViewModel.DEFAULT_SCENE_NAME or vm.scene.scene_name == "":
     unsaved_changes_save_as_dialog.visible = true
-  else:
-    save_current_scene.emit()
-    quit_scene.emit()
 
 func unsaved_changes_custom(action: StringName):
   if UNSAVED_CHANGES_DONT_SAVE_ACTION == action:
@@ -96,7 +92,6 @@ func unsaved_changes_custom(action: StringName):
 func on_unsaved_changes_save_as_dialog_saved(scene_name: String) -> void:
   vm.scene.scene_name = scene_name
   save_current_scene.emit()
-  quit_scene.emit()
 
 func on_select_add_tool():
   current_tool = CustomEnums.ToolType.ADD_TILE

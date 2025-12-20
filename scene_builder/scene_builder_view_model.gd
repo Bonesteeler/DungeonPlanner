@@ -1,6 +1,8 @@
 class_name SceneBuilderViewModel
 extends RefCounted
 
+signal id_updated()
+
 const DEFAULT_SCENE_NAME = "Untitled Scene"
 
 var scene: Scene
@@ -10,6 +12,7 @@ func _init(data: Scene = null):
   if data == null:
     scene = Scene.new()
     scene.scene_name = DEFAULT_SCENE_NAME
+    scene.id = UUID.v7()
   else:
     scene = data
   selected_tile = SceneTileViewModel.new()
@@ -39,3 +42,7 @@ func does_selected_tile_fit(position: Vector2) -> bool:
   if selected_tile.tile == null:
     return false
   return scene.data.does_tile_fit(selected_tile.tile, position, selected_tile.rotation)
+
+func update_id(new_id: String) -> void:
+  scene.id = new_id
+  id_updated.emit()

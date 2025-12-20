@@ -9,10 +9,6 @@ extends Node
 ## - [b]board[/b]: Onready reference to the [code]Board[/code] node.[br]
 ## - [b]planner_ui[/b]: Onready reference to the planner UI node that provides tile selection and scene controls.[br]
 ## - [b]input_listener[/b]: Onready reference to the [code]InputListener[/code] node.[br]
-## [b]Constants:[/b][br]
-## - [code]MAIN_MENU_SCENE_PATH[/code]: Path to the main menu scene resource.[br]
-
-const MAIN_MENU_SCENE_PATH = "res://main_menu/MainMenu.tscn"
 
 var save_manager: SaveManager = SaveManager.new()
 var viewport: Viewport

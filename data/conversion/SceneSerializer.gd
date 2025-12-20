@@ -40,7 +40,9 @@ static func deserialize_dict(json: Dictionary) -> Scene:
   scene.version = int(json.get(KEY_VERSION, 0))
   scene.author = json.get(KEY_AUTHOR, "Unknown")
   scene.data = TileLayoutSerializer.deserialize_dict({KEY_TILES: json.get(KEY_TILES, [])})
-  scene.id = json.get(KEY_ID, "")
+  scene.id = json.get(KEY_ID, UUID.v7())
+  if scene.id == "":
+    scene.id = UUID.v7()
   scene.scene_name = json.get(KEY_SCENE_NAME, "Untitled Scene")
   scene.version = int(json.get(KEY_VERSION, 1))
   return scene

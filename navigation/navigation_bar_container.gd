@@ -22,8 +22,8 @@ func home_selected() -> void:
   var home_scene = change_scene(MAIN_MENU)
   home_scene.scene_selected.connect(vm.add_scene_builder)
 
-func planner_selected(selected_name: String) -> void:
-  var new_scene_vm = vm.get_scene_by_name(selected_name)
+func planner_selected(selected_id: String) -> void:
+  var new_scene_vm = vm.get_scene_by_id(selected_id)
   var planning_scene = change_scene(PLANNING_SCENE)
   planning_scene.set_scene_view_model(new_scene_vm)
 
