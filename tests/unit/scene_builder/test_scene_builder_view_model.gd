@@ -8,7 +8,7 @@ func before_each():
     view_model = SceneBuilderViewModel.new()
 
 func test_init():
-    assert_not_null(view_model.layout, "Should initialize with a TileLayout")
+    assert_not_null(view_model.scene.data, "Should initialize with a TileLayout")
     assert_not_null(view_model.selected_tile, "Should initialize with a SceneTileViewModel")
 
 func test_rotate_left_rotates_by_90_degrees():

@@ -12,7 +12,7 @@ func test_set_tile_and_get_tile_at():
   tile.x_size = 1
   tile.y_size = 1
 
-  var ctx = SceneContext.TileContext.new()
+  var ctx = SceneTileViewModel.new()
   ctx.tile = tile
   ctx.rotation = Vector3.ZERO
 
@@ -29,7 +29,7 @@ func test_remove_tile_at():
   tile.x_size = 1
   tile.y_size = 1
 
-  var ctx = SceneContext.TileContext.new()
+  var ctx = SceneTileViewModel.new()
   ctx.tile = tile
   ctx.rotation = Vector3.ZERO
 
@@ -46,7 +46,7 @@ func test_get_origin_tile_for_occupied_space():
   tile.x_size = 2
   tile.y_size = 2
 
-  var ctx = SceneContext.TileContext.new()
+  var ctx = SceneTileViewModel.new()
   ctx.tile = tile
   ctx.rotation = Vector3.ZERO
 
@@ -68,7 +68,7 @@ func test_does_tile_fit_detects_overlap_and_bounds():
   big_tile.x_size = 2
   big_tile.y_size = 2
 
-  var ctx_big = SceneContext.TileContext.new()
+  var ctx_big = SceneTileViewModel.new()
   ctx_big.tile = big_tile
   ctx_big.rotation = Vector3.ZERO
 
@@ -95,20 +95,20 @@ func test_does_tile_fit_detects_overlap_and_bounds():
 func test_get_unique_tile_ids():
   # Place tiles using set_tile_at so PlacedTile objects are created correctly
   var tile_a = Tile.new(); tile_a.id = "id_a"; tile_a.x_size = 1; tile_a.y_size = 1
-  var ctx_a = SceneContext.TileContext.new()
+  var ctx_a = SceneTileViewModel.new()
   ctx_a.tile = tile_a
   ctx_a.rotation = Vector3.ZERO
   layout.set_tile_at(0, 0, ctx_a)
 
   var tile_b = Tile.new(); tile_b.id = "id_b"; tile_b.x_size = 1; tile_b.y_size = 1
-  var ctx_b = SceneContext.TileContext.new()
+  var ctx_b = SceneTileViewModel.new()
   ctx_b.tile = tile_b
   ctx_b.rotation = Vector3.ZERO
   layout.set_tile_at(1, 1, ctx_b)
 
   # duplicate id should only appear once
   var tile_a_dup = Tile.new(); tile_a_dup.id = "id_a"; tile_a_dup.x_size = 1; tile_a_dup.y_size = 1
-  var ctx_a_dup = SceneContext.TileContext.new()
+  var ctx_a_dup = SceneTileViewModel.new()
   ctx_a_dup.tile = tile_a_dup
   ctx_a_dup.rotation = Vector3.ZERO
   layout.set_tile_at(2, 2, ctx_a_dup)
