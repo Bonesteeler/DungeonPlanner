@@ -21,13 +21,18 @@ var vm: SceneBuilderViewModel
 ## Initialize the planning scene, create the board, load the current scene data, wire UI signals, and track viewport size.[br]
 ## [b]Returns:[/b] [void][br]
 func _ready():
-  board.create_board()
   planner_ui.save_current_scene.connect(save_scene)
   viewport = get_viewport()
   viewport.size_changed.connect(on_viewport_resized)
 
 func set_scene_view_model(scene_vm: SceneBuilderViewModel):
   vm = scene_vm
+  input_listener.rotate_left.connect(func():
+    vm.rotate_left()
+  )
+  input_listener.rotate_right.connect(func():
+    vm.rotate_right()
+  )
   planner_ui.set_vm(vm)
   board.set_vm(vm)
 

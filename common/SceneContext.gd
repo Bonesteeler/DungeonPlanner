@@ -7,7 +7,6 @@ class TileContext:
   var mesh: Mesh
   var valid: bool
 
-const DEFAULT_ROTATION = Vector3.LEFT * 90
 const SAVED_SCENE_PATH = "user://SavedScenes/"
 const NODE_PATH = "PlanningContext"
 const USER_DIR = "user://"
@@ -24,7 +23,6 @@ static func initialize():
   if not user_dir_access.dir_exists(SAVED_SCENE_PATH):
     user_dir_access.make_dir_recursive(SAVED_SCENE_PATH)
   selected_tile_context = TileContext.new()
-  selected_tile_context.rotation = DEFAULT_ROTATION
   current_scene = Scene.new()
   current_scene.scene_name = ""
 
