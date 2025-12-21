@@ -25,7 +25,7 @@ const SPACE_SIZE = 5
 
 var board_nodes: Array = []
 var current_tool = CustomEnums.ToolType.ADD_TILE
-var hovered_space: Node3D
+var hovered_space: Space
 var vm: SceneBuilderViewModel
 var space_scene = preload("res://scene_builder/board/Space.tscn")
 
@@ -66,18 +66,25 @@ func on_space_hover_enter(space: Node3D):
     CustomEnums.ToolType.ADD_TILE:
       # Error if tile doesn't fit
       vm.set_hovered_space(hovered_space)
+      hovered_space.preview_vm.enable_rotation()
     CustomEnums.ToolType.SELECT_TILE:
       var hovered_tile = vm.get_origin_tile(space_position)
       if hovered_tile == null:
         return
       hovered_space = board_nodes[hovered_tile.position.x][hovered_tile.position.y]
+      hovered_space.preview_vm.set_tile(hovered_space.vm.tile)
+      hovered_space.preview_vm.set_rotation(hovered_space.vm.rotation)
       hovered_space.preview_vm.set_validity(true)
+      hovered_space.preview_vm.disable_rotation()
     CustomEnums.ToolType.REMOVE_TILE:
       var hovered_tile = vm.get_origin_tile(space_position)
       if hovered_tile == null:
         return
       hovered_space = board_nodes[hovered_tile.position.x][hovered_tile.position.y]
+      hovered_space.preview_vm.set_tile(hovered_space.vm.tile)
+      hovered_space.preview_vm.set_rotation(hovered_space.vm.rotation)
       hovered_space.preview_vm.set_validity(false)
+      hovered_space.preview_vm.disable_rotation()
   hovered_space.start_preview()
 
 ## Handle hover exit for a space.[br]

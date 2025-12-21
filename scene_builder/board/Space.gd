@@ -75,9 +75,12 @@ func start_preview():
 ## End any active preview state on the mesh and return it to its previous display.[br]
 ## [b]Returns:[/b] [void][br]
 func end_preview():
-  preview_vm.mesh_updated.disconnect(update_preview_mesh)
-  preview_vm.rotation_changed.disconnect(update_preview_rotation)
-  preview_vm.validity_changed.disconnect(update_preview_color)
+  if preview_vm.mesh_updated.is_connected(update_preview_mesh):
+    preview_vm.mesh_updated.disconnect(update_preview_mesh)
+  if preview_vm.rotation_changed.is_connected(update_preview_rotation):
+    preview_vm.rotation_changed.disconnect(update_preview_rotation)
+  if preview_vm.validity_changed.is_connected(update_preview_color):
+    preview_vm.validity_changed.disconnect(update_preview_color)
   mesh_node.exit_preview()
 
 ## Oneline functions needed to connect and disconnect signals

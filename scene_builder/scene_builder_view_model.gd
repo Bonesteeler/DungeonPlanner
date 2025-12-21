@@ -77,5 +77,8 @@ func set_tile_in_layout_at(x: int, y: int, tile_vm: SceneTileViewModel) -> void:
 func set_selected_tile_in_layout_at(x: int, y: int) -> void:
   set_tile_in_layout_at(x, y, selected_tile)
 
-func get_origin_tile(position: Vector2) -> SceneTileViewModel:
+func remove_tile_in_layout_at(x: int, y: int) -> void:
+  scene.data.remove_tile_at(x, y)
+
+func get_origin_tile(position: Vector2) -> PlacedTile:
   return scene.data.get_origin_tile(position)

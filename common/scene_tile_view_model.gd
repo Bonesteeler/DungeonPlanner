@@ -7,6 +7,7 @@ signal validity_changed()
 
 var mesh: Mesh
 var rotation: Vector3
+var rotation_enabled: bool = true
 var tile: Tile
 var valid: bool = true
 
@@ -15,12 +16,20 @@ func set_rotation(new_rotation: Vector3):
   rotation_changed.emit()
 
 func rotate(delta: float):
+  if not rotation_enabled:
+    return
   rotation.y += delta
   if rotation.y >= 360:
     rotation.y -= 360
   elif rotation.y < 0:
     rotation.y += 360
   rotation_changed.emit()
+
+func enable_rotation():
+  rotation_enabled = true
+
+func disable_rotation():
+  rotation_enabled = false
 
 func set_validity(new_validity: bool):
   if valid != new_validity:
