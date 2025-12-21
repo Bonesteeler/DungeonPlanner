@@ -7,6 +7,7 @@ const DEFAULT_SCENE_NAME = "Untitled Scene"
 
 var scene: Scene
 var selected_tile: SceneTileViewModel
+var preview_space: Space
   
 func _init(data: Scene = null):
   if data == null:
@@ -19,9 +20,11 @@ func _init(data: Scene = null):
 
 func rotate_left():
   selected_tile.rotate(90)
+  selected_tile.set_validity(does_selected_tile_fit())
 
 func rotate_right():
   selected_tile.rotate(-90)
+  selected_tile.set_validity(does_selected_tile_fit())
 
 func get_selected_tile() -> SceneTileViewModel:
   return selected_tile
@@ -38,10 +41,14 @@ func get_selected_tile_rotation() -> Vector3:
 func set_selected_tile(tile: Tile):
   selected_tile.set_tile(tile)
 
-func does_selected_tile_fit(position: Vector2) -> bool:
+func set_hovered_space(space: Space):
+  preview_space = space
+  selected_tile.set_validity(does_selected_tile_fit())
+
+func does_selected_tile_fit() -> bool:
   if selected_tile.tile == null:
     return false
-  return scene.data.does_tile_fit(selected_tile.tile, position, selected_tile.rotation)
+  return scene.data.does_tile_fit(selected_tile.tile, Vector2(preview_space.x, preview_space.z), selected_tile.rotation)
 
 func update_id(new_id: String) -> void:
   scene.id = new_id

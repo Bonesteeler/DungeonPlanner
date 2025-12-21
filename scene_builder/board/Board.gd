@@ -65,7 +65,7 @@ func on_space_hover_enter(space: Node3D):
   match current_tool: 
     CustomEnums.ToolType.ADD_TILE:
       # Error if tile doesn't fit
-      hovered_space.preview_vm.set_validity(vm.does_selected_tile_fit(space_position))
+      vm.set_hovered_space(hovered_space)
     CustomEnums.ToolType.SELECT_TILE:
       var hovered_tile = vm.scene.data.get_origin_tile(space_position)
       if hovered_tile == null:
@@ -109,7 +109,7 @@ func on_space_clicked(space: Node3D, x: int, y: int):
       var selected_tile_context: SceneTileViewModel = vm.selected_tile
       if selected_tile_context.tile == null:
         return
-      if not vm.does_selected_tile_fit(Vector2(x, y)):
+      if not vm.does_selected_tile_fit():
         return
       vm.scene.data.set_tile_at(x, y, selected_tile_context)
       space.set_view_model(selected_tile_context.duplicate())

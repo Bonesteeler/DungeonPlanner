@@ -51,7 +51,6 @@ static func deserialize_dict(json: Dictionary) -> TileLayout:
     test = nested_tiles.get(KEY_TILES, [])
   for tile_data in test:
     var tile = PlacedTile.new()
-    tile.tile_data = TileSets.get_tile_from_id(tile_data[KEY_ID])
     var rotation = split_on_any_of(tile_data[KEY_ROTATION], " ,()")
     tile.rotation = Vector3(
         float(rotation[0]),
@@ -70,6 +69,7 @@ static func deserialize_dict(json: Dictionary) -> TileLayout:
       )
     else:
       continue
+    tile.tile_data = TileSets.get_tile_from_id(tile_data[KEY_ID])
     layout.tiles.append(tile)
   return layout
 
