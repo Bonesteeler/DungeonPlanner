@@ -67,7 +67,7 @@ func show_save_as_dialog():
   save_as_dialog.visible = true
 
 func _on_save_as(scene_name: String):
-  vm.scene.scene_name = scene_name
+  vm.update_scene_name(scene_name)
   vm.update_id(UUID.v7())
   unsaved_changes = false
   save_current_scene.emit()
@@ -90,7 +90,7 @@ func unsaved_changes_custom(action: StringName):
     print("Unknown unsaved changes action: ", action)
 
 func on_unsaved_changes_save_as_dialog_saved(scene_name: String) -> void:
-  vm.scene.scene_name = scene_name
+  vm.update_scene_name(scene_name)
   save_current_scene.emit()
 
 func on_select_add_tool():

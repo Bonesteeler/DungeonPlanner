@@ -67,13 +67,13 @@ func on_space_hover_enter(space: Node3D):
       # Error if tile doesn't fit
       vm.set_hovered_space(hovered_space)
     CustomEnums.ToolType.SELECT_TILE:
-      var hovered_tile = vm.scene.data.get_origin_tile(space_position)
+      var hovered_tile = vm.get_origin_tile(space_position)
       if hovered_tile == null:
         return
       hovered_space = board_nodes[hovered_tile.position.x][hovered_tile.position.y]
       hovered_space.preview_vm.set_validity(true)
     CustomEnums.ToolType.REMOVE_TILE:
-      var hovered_tile = vm.scene.data.get_origin_tile(space_position)
+      var hovered_tile = vm.get_origin_tile(space_position)
       if hovered_tile == null:
         return
       hovered_space = board_nodes[hovered_tile.position.x][hovered_tile.position.y]
@@ -89,7 +89,7 @@ func on_space_hover_exit(space: Node3D):
     hovered_space.end_preview()
     hovered_space = null
   else:
-    var tile_origin = vm.scene.data.get_origin_tile(Vector2(space.x, space.z))
+    var tile_origin = vm.get_origin_tile(Vector2(space.x, space.z))
     if tile_origin != null:
       var selected_space = board_nodes[tile_origin.position.x][tile_origin.position.y]
       selected_space.end_preview()
@@ -106,24 +106,20 @@ func on_space_hover_exit(space: Node3D):
 func on_space_clicked(space: Node3D, x: int, y: int):
   match current_tool:
     CustomEnums.ToolType.ADD_TILE:
-      var selected_tile_context: SceneTileViewModel = vm.selected_tile
-      if selected_tile_context.tile == null:
-        return
-      if not vm.does_selected_tile_fit():
-        return
-      vm.scene.data.set_tile_at(x, y, selected_tile_context)
-      space.set_view_model(selected_tile_context.duplicate())
-      updated.emit()
+      if vm.can_set_selected_tile_at(x, y):
+        vm.set_selected_tile_in_layout_at(x, y)
+        space.set_view_model(vm.get_selected_tile().duplicate())
+        updated.emit()
     CustomEnums.ToolType.SELECT_TILE:
-      var selected_tile = vm.scene.data.get_origin_tile(Vector2(x, y))
+      var selected_tile = vm.get_origin_tile(Vector2(x, y))
       if selected_tile == null:
         return
       tile_selected.emit(selected_tile.id)
     CustomEnums.ToolType.REMOVE_TILE:
-      var selected_tile = vm.scene.data.get_origin_tile(Vector2(x, y))
+      var selected_tile = vm.get_origin_tile(Vector2(x, y))
       if selected_tile == null:
         return
-      vm.scene.data.remove_tile_at(selected_tile.position.x, selected_tile.position.y)
+      vm.remove_tile_in_layout_at(selected_tile.position.x, selected_tile.position.y)
       var origin_space = board_nodes[selected_tile.position.x][selected_tile.position.y]
       origin_space.set_empty()
       updated.emit()
