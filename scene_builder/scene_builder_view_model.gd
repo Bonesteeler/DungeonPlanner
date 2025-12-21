@@ -2,6 +2,7 @@ class_name SceneBuilderViewModel
 extends RefCounted
 
 signal id_updated()
+signal scene_name_updated()
 
 const DEFAULT_SCENE_NAME = "Untitled Scene"
 
@@ -47,7 +48,7 @@ func set_hovered_space(space: Space):
 
 # Scene functions
 func does_selected_tile_fit() -> bool:
-  if selected_tile.tile == null:
+  if preview_space == null or selected_tile.tile == null:
     return false
   return scene.data.does_tile_fit(selected_tile.tile, Vector2(preview_space.x, preview_space.z), selected_tile.rotation)
 
@@ -57,6 +58,7 @@ func update_id(new_id: String) -> void:
 
 func update_scene_name(new_name: String) -> void:
   scene.scene_name = new_name
+  scene_name_updated.emit()
 
 func can_set_tile_at(x: int, y: int, tile_vm: SceneTileViewModel) -> bool:
   if tile_vm.tile == null:
