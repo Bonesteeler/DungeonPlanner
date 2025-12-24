@@ -469,8 +469,8 @@ func test_get_origin_tile_with_large_tile():
   large_tile.name = "LargeTile"
   large_tile.id = "large_id"
   large_tile.mesh_path = test_mesh_path
-  large_tile.x_size = 3
-  large_tile.y_size = 3
+  large_tile.x_size = 2
+  large_tile.y_size = 2
   var large_tile_vm = SceneTileViewModel.new()
   large_tile_vm.set_tile(large_tile)
   
