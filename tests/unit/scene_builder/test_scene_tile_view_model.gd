@@ -98,17 +98,6 @@ func test_set_mesh():
   assert_eq(view_model.mesh, test_mesh)
   assert_signal_emitted(view_model, "mesh_updated")
 
-func test_to_tile_context():
-  view_model.set_tile(test_tile)
-  view_model.set_rotation(Vector3(0, 90, 0))
-  view_model.set_validity(false)
-  
-  var context = view_model.to_tile_context()
-  
-  assert_eq(context.tile, test_tile)
-  assert_eq(context.rotation, Vector3(0, 90, 0))
-  assert_false(context.valid)
-
 func test_duplicate():
   view_model.set_tile(test_tile)
   view_model.set_rotation(Vector3(0, 45, 0))

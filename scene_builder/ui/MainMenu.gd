@@ -20,7 +20,6 @@ var save_manager: SaveManager
 @onready var server_connection: ServerConnection = $%ServerConnection
 
 func _ready():
-  SceneContext.initialize()
   save_manager = SaveManager.new()
   scene_browser.scene_import.connect(save_manager.add_scene)
   save_manager.scene_added.connect(update_recent_scenes)
@@ -102,6 +101,5 @@ func _on_import_scene_pressed() -> void:
 
 func _on_scene_import_dialog_file_selected(path: String) -> void:
   var scene_data = save_manager.load_scene_from_json(path)
-  SceneContext.get_instance(self).current_scene = scene_data
   save_manager.save_scene_to_user(scene_data)
   change_to_planning_scene()

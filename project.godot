@@ -16,7 +16,6 @@ config/features=PackedStringArray("4.5", "Forward Plus")
 
 [autoload]
 
-PlanningContext="*res://common/SceneContext.gd"
 TileSets="*res://data/models/TileResources.gd"
 
 [debug]

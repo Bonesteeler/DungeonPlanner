@@ -47,14 +47,6 @@ func set_mesh(new_mesh: Mesh):
   mesh = new_mesh
   mesh_updated.emit()
 
-func to_tile_context() -> PlanningContext.TileContext:
-  var context = PlanningContext.TileContext.new()
-  context.tile = tile
-  context.rotation = rotation
-  context.mesh = mesh
-  context.valid = valid
-  return context
-
 func duplicate() -> SceneTileViewModel:
   var new_vm = SceneTileViewModel.new()
   new_vm.mesh = mesh

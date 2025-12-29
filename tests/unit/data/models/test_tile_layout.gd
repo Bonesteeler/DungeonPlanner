@@ -80,7 +80,7 @@ func test_does_tile_fit_detects_overlap_and_bounds():
   small_tile.x_size = 1
   small_tile.y_size = 1
 
-  var ctx_small = SceneContext.TileContext.new()
+  var ctx_small = SceneTileViewModel.new()
   ctx_small.tile = small_tile
   ctx_small.rotation = Vector3.ZERO
 
