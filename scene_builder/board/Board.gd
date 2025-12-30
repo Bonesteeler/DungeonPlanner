@@ -63,6 +63,13 @@ func set_vm(view_model: SceneBuilderViewModel):
 ## [b]Returns:[/b] [void][br]
 func on_space_hover_enter(space: Node3D):
   hovered_space = space
+  if is_camera_mode_active():
+    return
+  start_preview()
+  
+## Configures the preview for the currently hovered space based on the active tool.[br]
+## [b]Returns:[/b] [void][br]
+func start_preview():
   var space_position = Vector2(hovered_space.x, hovered_space.z)
   match current_tool: 
     CustomEnums.ToolType.ADD_TILE:
@@ -113,7 +120,7 @@ func on_space_hover_exit(space: Node3D):
 ## - [code]tile_selected(tile_id: String)[/code][br]
 ## [b]Returns:[/b] [void][br]
 func on_space_clicked(space: Node3D, x: int, y: int):
-  if shift_pressed or alt_pressed:
+  if is_camera_mode_active():
     return
   match current_tool:
     CustomEnums.ToolType.ADD_TILE:
@@ -141,13 +148,21 @@ func on_space_clicked(space: Node3D, x: int, y: int):
 ## [b]Returns:[/b] [void][br]
 func set_shift_pressed(pressed: bool):
   shift_pressed = pressed
+  if not is_camera_mode_active():
+    start_preview()
+  elif hovered_space != null:
+    hovered_space.end_preview()
 
 ## Updates alt state for board interactions.[br]
 ## [b]Parameters:[/b][br]
-## [code]pressed[/code] : [bool] — whether the alt key is currently
+## [code]pressed[/code] : [bool] — whether the alt key is currently pressed.[br]
 ## [b]Returns:[/b] [void][br]
 func set_alt_pressed(pressed: bool):
   alt_pressed = pressed
+  if not is_camera_mode_active():
+    start_preview()
+  elif hovered_space != null:
+    hovered_space.end_preview()
 
 ## Load a saved TileLayout into the board, instantiating tile contexts and meshes as needed.[br]
 ## [b]Parameters:[/b][br]
@@ -186,3 +201,8 @@ func load_scene(scene: TileLayout):
 ## [b]Returns:[/b] [void][br]
 func update_current_tool(tool_type: CustomEnums.ToolType):
   current_tool = tool_type
+
+## Returns if a camera mode is active that should disable board interactions.[br]
+## [b]Returns:[/b] [bool][br]
+func is_camera_mode_active() -> bool:
+  return shift_pressed or alt_pressed
