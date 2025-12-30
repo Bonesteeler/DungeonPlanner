@@ -1,10 +1,8 @@
 extends Node3D
 ## CameraMovement
 ##
-## [i]Handles mouse-driven camera controls for the planning scene: panning, rotation, and zoom using mouse buttons and the mouse wheel.[/i][br]
+## [i]Handles camera controls for the planning scene: panning, rotation, and zoom using mouse buttons and the mouse wheel.[/i][br]
 ## [b]Properties:[/b][br]
-## - [b]middle_clicked[/b]: [bool] — true while the middle mouse button is held for rotation.[br]
-## - [b]right_clicked[/b]: [bool] — true while the right mouse button is held for panning.[br]
 ## - [b]camera[/b]: [Camera3D] — onready reference to the child Camera3D node.[br]
 ## [b]Constants:[/b][br]
 ## - [code]PITCH_MIN[/code]: Minimum pitch angle (radians).[br]
@@ -25,8 +23,9 @@ const ZOOM_MAX = 150.0
 const ZOOM_MIN = 20.0
 const ZOOM_PERCENT = 0.1
 
-var middle_clicked = false
-var right_clicked = false
+var alt_pressed = false
+var left_clicked = false
+var shift_pressed = false
 
 @onready var camera = $Camera3D
 
@@ -36,12 +35,9 @@ var right_clicked = false
 ## [b]Returns:[/b] [void][br]
 func handle_mouse_button(event: InputEventMouseButton):
   var event_button = event.get_button_index()
-  # Pan
-  if event_button == MOUSE_BUTTON_RIGHT:
-    right_clicked = event.is_pressed()
-  #Rotate
-  if event_button == MOUSE_BUTTON_MIDDLE:
-    middle_clicked = event.is_pressed()
+  if event_button == MOUSE_BUTTON_LEFT:
+    left_clicked = event.is_pressed()
+    return
   # Zoom
   if event_button == MOUSE_BUTTON_WHEEL_DOWN:
     camera.size += camera.size * ZOOM_PERCENT
@@ -57,11 +53,13 @@ func handle_mouse_button(event: InputEventMouseButton):
 ## [code]event[/code] : [InputEventMouseMotion] — relative motion used for translation or rotation.[br]
 ## [b]Returns:[/b] [void][br]
 func handle_mouse_motion(event: InputEventMouseMotion):
-  if right_clicked:
+  # Pan
+  if left_clicked and shift_pressed:
     var x_translation = - event.relative.x * TRANSFORM_SPEED * (ZOOM_COEFFICIENT * camera.size)
     var z_translation = - event.relative.y * TRANSFORM_SPEED * (ZOOM_COEFFICIENT * camera.size)
     transform = transform.translated_local(Vector3(x_translation, 0, z_translation))
-  if middle_clicked:
+  # Rotate
+  if left_clicked and alt_pressed:
     transform = transform.rotated(Vector3.UP, -event.relative.x * ROTATE_SPEED)
     var current_euler = transform.basis.get_euler()
     var rotation_amount = - event.relative.y * ROTATE_SPEED
@@ -71,6 +69,20 @@ func handle_mouse_motion(event: InputEventMouseMotion):
     elif pitch_result > PITCH_MAX:
       rotation_amount = PITCH_MAX - current_euler.x
     transform = transform.rotated_local(Vector3.RIGHT, rotation_amount)
+
+## Update shift key state[br]
+## [b]Parameters:[/b][br]
+## [code]pressed[/code] : [bool] — true if the Shift key is pressed, false if released.[br]
+## [b]Returns:[/b] [void][br]
+func set_shift_pressed(pressed: bool):
+  shift_pressed = pressed
+
+## Update alt key state[br]
+## [b]Parameters:[/b][br]
+## [code]pressed[/code] : [bool] — true if the Alt key is pressed, false if released.[br]
+## [b]Returns:[/b] [void][
+func set_alt_pressed(pressed: bool):
+  alt_pressed = pressed 
 
 ## Dispatch input events to mouse handlers[br]
 ## [b]Parameters:[/b][br]

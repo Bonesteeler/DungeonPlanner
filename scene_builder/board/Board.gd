@@ -23,11 +23,13 @@ const START_ROWS = 20
 const START_COLS = 20
 const SPACE_SIZE = 5
 
+var alt_pressed: bool = false
 var board_nodes: Array = []
 var current_tool = CustomEnums.ToolType.ADD_TILE
 var hovered_space: Space
-var vm: SceneBuilderViewModel
+var shift_pressed: bool = false
 var space_scene = preload("res://scene_builder/board/Space.tscn")
+var vm: SceneBuilderViewModel
 
 ## Create the initial grid of space nodes and wire up their signals.[br]
 ## [b]Returns:[/b] [void][br]
@@ -111,6 +113,8 @@ func on_space_hover_exit(space: Node3D):
 ## - [code]tile_selected(tile_id: String)[/code][br]
 ## [b]Returns:[/b] [void][br]
 func on_space_clicked(space: Node3D, x: int, y: int):
+  if shift_pressed or alt_pressed:
+    return
   match current_tool:
     CustomEnums.ToolType.ADD_TILE:
       if vm.can_set_selected_tile_at(x, y):
@@ -130,6 +134,20 @@ func on_space_clicked(space: Node3D, x: int, y: int):
       var origin_space = board_nodes[selected_tile.position.x][selected_tile.position.y]
       origin_space.set_empty()
       updated.emit()
+
+## Updates shift state for board interactions.[br]
+## [b]Parameters:[/b][br]
+## [code]pressed[/code] : [bool] — whether the shift key is currently pressed.[br]
+## [b]Returns:[/b] [void][br]
+func set_shift_pressed(pressed: bool):
+  shift_pressed = pressed
+
+## Updates alt state for board interactions.[br]
+## [b]Parameters:[/b][br]
+## [code]pressed[/code] : [bool] — whether the alt key is currently
+## [b]Returns:[/b] [void][br]
+func set_alt_pressed(pressed: bool):
+  alt_pressed = pressed
 
 ## Load a saved TileLayout into the board, instantiating tile contexts and meshes as needed.[br]
 ## [b]Parameters:[/b][br]

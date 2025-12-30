@@ -36,6 +36,10 @@ unique_name_in_owner = true
 
 [connection signal="tile_selected" from="Board" to="CanvasLayer/PlannerUI" method="on_tile_selected"]
 [connection signal="updated" from="Board" to="CanvasLayer/PlannerUI" method="on_board_updated"]
+[connection signal="key_alt_event" from="InputListener" to="Board" method="set_alt_pressed"]
+[connection signal="key_alt_event" from="InputListener" to="CameraControl" method="set_alt_pressed"]
+[connection signal="key_shift_event" from="InputListener" to="Board" method="set_shift_pressed"]
+[connection signal="key_shift_event" from="InputListener" to="CameraControl" method="set_shift_pressed"]
 [connection signal="tool_add_tile_selected" from="CanvasLayer/PlannerUI" to="Board" method="update_current_tool" binds= [0]]
 [connection signal="tool_remove_tile_selected" from="CanvasLayer/PlannerUI" to="Board" method="update_current_tool" binds= [2]]
 [connection signal="tool_select_tile_selected" from="CanvasLayer/PlannerUI" to="Board" method="update_current_tool" binds= [1]]

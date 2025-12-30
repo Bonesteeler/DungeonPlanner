@@ -27,9 +27,11 @@ theme_override_constants/margin_top = 35
 layout_mode = 2
 size_flags_vertical = 0
 text = "Controls:
-Q/E: rotate tile
-Right mouse: Pan camera
-Middle mouse: Rotate camera"
+Q/E: Rotate tile
+Shift + Left mouse: 
+    Camera pan
+Alt + Left mouse:
+    Camera rotate"
 
 [node name="StaticUI" type="VBoxContainer" parent="."]
 layout_mode = 2
