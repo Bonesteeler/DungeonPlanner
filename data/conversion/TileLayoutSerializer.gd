@@ -25,7 +25,7 @@ static func serialize(scene: TileLayout) -> String:
   for tile in scene.tiles:
     var tile_data: Dictionary = {
       KEY_ID: tile.id,
-      KEY_ROTATION: tile.rotation - PlanningContext.DEFAULT_ROTATION,
+      KEY_ROTATION: tile.rotation,
       KEY_X_POS: tile.position.x,
       KEY_Y_POS: tile.position.y
     }
@@ -51,13 +51,12 @@ static func deserialize_dict(json: Dictionary) -> TileLayout:
     test = nested_tiles.get(KEY_TILES, [])
   for tile_data in test:
     var tile = PlacedTile.new()
-    tile.tile_data = TileSets.get_tile_from_id(tile_data[KEY_ID])
     var rotation = split_on_any_of(tile_data[KEY_ROTATION], " ,()")
     tile.rotation = Vector3(
         float(rotation[0]),
         float(rotation[1]),
         float(rotation[2])
-    ) + PlanningContext.DEFAULT_ROTATION
+    )
     if tile_data.has(KEY_X_POS) and tile_data.has(KEY_Y_POS):
       tile.position = Vector2(
           float(tile_data[KEY_X_POS]),
@@ -70,6 +69,7 @@ static func deserialize_dict(json: Dictionary) -> TileLayout:
       )
     else:
       continue
+    tile.tile_data = TileSets.get_tile_from_id(tile_data[KEY_ID])
     layout.tiles.append(tile)
   return layout
 
