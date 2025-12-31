@@ -1,0 +1,15 @@
+[gd_scene format=3 uid="uid://dt3bj5xmgyjlh"]
+
+[node name="LayerSelector" type="VBoxContainer"]
+offset_right = 1.0
+offset_bottom = 23.0
+
+[node name="Title" type="Label" parent="."]
+layout_mode = 2
+text = "Layers:"
+
+[node name="ScrollContainer" type="ScrollContainer" parent="."]
+layout_mode = 2
+
+[node name="Layers" type="VBoxContainer" parent="ScrollContainer"]
+layout_mode = 2

@@ -70,7 +70,7 @@ static func deserialize_dict(json: Dictionary) -> TileLayout:
     else:
       continue
     tile.tile_data = TileSets.get_tile_from_id(tile_data[KEY_ID])
-    layout.tiles.append(tile)
+    layout.current_layer.tiles.append(tile)
   return layout
 
 ## Splits a string into tokens using any character found in the delimiters string.[br]

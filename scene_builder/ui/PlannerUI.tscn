@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://ccxbpogh4na0x"]
+[gd_scene load_steps=10 format=3 uid="uid://ccxbpogh4na0x"]
 
 [ext_resource type="PackedScene" uid="uid://bjdch1vt0u3qe" path="res://scene_builder/ui/TileSelector.tscn" id="1_p3h20"]
 [ext_resource type="Script" uid="uid://33h7ke18pfkj" path="res://scene_builder/ui/PlannerUI.gd" id="1_wubfe"]
@@ -8,6 +8,7 @@
 [ext_resource type="PackedScene" uid="uid://cwjg548hsv7kc" path="res://scene_builder/ui/SaveAsDialog.tscn" id="4_v7e5h"]
 [ext_resource type="PackedScene" uid="uid://diejbhniso38j" path="res://scene_builder/ui/tile_info.tscn" id="7_47kwl"]
 [ext_resource type="Script" uid="uid://dt0lyamdfpa3t" path="res://scene_builder/ui/UnsavedChangesDialog.gd" id="7_fqoex"]
+[ext_resource type="PackedScene" uid="uid://dt3bj5xmgyjlh" path="res://scene_builder/ui/LayerSelector.tscn" id="8_47kwl"]
 
 [node name="PlannerUI" type="MarginContainer"]
 anchors_preset = 15
@@ -16,22 +17,6 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_wubfe")
-
-[node name="Controls" type="MarginContainer" parent="."]
-layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 0
-theme_override_constants/margin_top = 35
-
-[node name="Label" type="Label" parent="Controls" groups=["add_tile", "select_tile"]]
-layout_mode = 2
-size_flags_vertical = 0
-text = "Controls:
-Q/E: Rotate tile
-Shift + Left mouse: 
-    Camera pan
-Alt + Left mouse:
-    Camera rotate"
 
 [node name="StaticUI" type="VBoxContainer" parent="."]
 layout_mode = 2
@@ -65,50 +50,81 @@ script = ExtResource("3_cr31u")
 unique_name_in_owner = true
 visible = false
 
-[node name="Left" type="MarginContainer" parent="StaticUI"]
+[node name="HBoxContainer" type="HBoxContainer" parent="StaticUI"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Left" type="MarginContainer" parent="StaticUI/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 3
 metadata/_edit_use_anchors_ = true
 
-[node name="Background" type="Panel" parent="StaticUI/Left"]
+[node name="Background" type="Panel" parent="StaticUI/HBoxContainer/Left"]
 layout_mode = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="StaticUI/Left"]
+[node name="VBoxContainer" type="VBoxContainer" parent="StaticUI/HBoxContainer/Left"]
 layout_mode = 2
 
-[node name="ToolSelector" type="HBoxContainer" parent="StaticUI/Left/VBoxContainer"]
+[node name="ToolSelector" type="HBoxContainer" parent="StaticUI/HBoxContainer/Left/VBoxContainer"]
 layout_mode = 2
 
-[node name="AddTile" type="Button" parent="StaticUI/Left/VBoxContainer/ToolSelector"]
+[node name="AddTile" type="Button" parent="StaticUI/HBoxContainer/Left/VBoxContainer/ToolSelector"]
 layout_mode = 2
 text = "Add"
 
-[node name="SelectTile" type="Button" parent="StaticUI/Left/VBoxContainer/ToolSelector"]
+[node name="SelectTile" type="Button" parent="StaticUI/HBoxContainer/Left/VBoxContainer/ToolSelector"]
 layout_mode = 2
 text = "Select"
 
-[node name="DeleteTile" type="Button" parent="StaticUI/Left/VBoxContainer/ToolSelector"]
+[node name="DeleteTile" type="Button" parent="StaticUI/HBoxContainer/Left/VBoxContainer/ToolSelector"]
 layout_mode = 2
 text = "Delete"
 
-[node name="ToolInfo" type="HBoxContainer" parent="StaticUI/Left/VBoxContainer"]
+[node name="ToolInfo" type="HBoxContainer" parent="StaticUI/HBoxContainer/Left/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 3
 
-[node name="SetSelectorControl" parent="StaticUI/Left/VBoxContainer/ToolInfo" groups=["add_tile"] instance=ExtResource("3_51qet")]
+[node name="SetSelectorControl" parent="StaticUI/HBoxContainer/Left/VBoxContainer/ToolInfo" groups=["add_tile"] instance=ExtResource("3_51qet")]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="TileSelectorControl" parent="StaticUI/Left/VBoxContainer/ToolInfo" groups=["add_tile"] instance=ExtResource("1_p3h20")]
+[node name="TileSelectorControl" parent="StaticUI/HBoxContainer/Left/VBoxContainer/ToolInfo" groups=["add_tile"] instance=ExtResource("1_p3h20")]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="TileInfo" parent="StaticUI/Left/VBoxContainer/ToolInfo" instance=ExtResource("7_47kwl")]
+[node name="TileInfo" parent="StaticUI/HBoxContainer/Left/VBoxContainer/ToolInfo" instance=ExtResource("7_47kwl")]
 unique_name_in_owner = true
 visible = false
+layout_mode = 2
+
+[node name="Spacer" type="Control" parent="StaticUI/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Right" type="MarginContainer" parent="StaticUI/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 8
+
+[node name="Background" type="Panel" parent="StaticUI/HBoxContainer/Right"]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="StaticUI/HBoxContainer/Right"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="StaticUI/HBoxContainer/Right/VBoxContainer" groups=["add_tile", "select_tile"]]
+layout_mode = 2
+size_flags_vertical = 0
+text = "Controls:
+Q/E: Rotate tile
+Shift + Left mouse: 
+    Camera pan
+Alt + Left mouse:
+    Camera rotate"
+
+[node name="LayerSelector" parent="StaticUI/HBoxContainer/Right/VBoxContainer" instance=ExtResource("8_47kwl")]
 layout_mode = 2
 
 [node name="Dialogs" type="Control" parent="."]
@@ -134,10 +150,10 @@ unique_name_in_owner = true
 initial_position = 1
 visible = false
 
-[connection signal="pressed" from="StaticUI/Left/VBoxContainer/ToolSelector/AddTile" to="." method="on_select_add_tool"]
-[connection signal="pressed" from="StaticUI/Left/VBoxContainer/ToolSelector/SelectTile" to="." method="on_select_select_tool"]
-[connection signal="pressed" from="StaticUI/Left/VBoxContainer/ToolSelector/DeleteTile" to="." method="on_select_remove_tool"]
-[connection signal="copy_tile" from="StaticUI/Left/VBoxContainer/ToolInfo/TileInfo" to="." method="set_selected_tile_from_copy"]
+[connection signal="pressed" from="StaticUI/HBoxContainer/Left/VBoxContainer/ToolSelector/AddTile" to="." method="on_select_add_tool"]
+[connection signal="pressed" from="StaticUI/HBoxContainer/Left/VBoxContainer/ToolSelector/SelectTile" to="." method="on_select_select_tool"]
+[connection signal="pressed" from="StaticUI/HBoxContainer/Left/VBoxContainer/ToolSelector/DeleteTile" to="." method="on_select_remove_tool"]
+[connection signal="copy_tile" from="StaticUI/HBoxContainer/Left/VBoxContainer/ToolInfo/TileInfo" to="." method="set_selected_tile_from_copy"]
 [connection signal="confirmed" from="Dialogs/UnsavedChangesDialog" to="." method="unsaved_changes_save"]
 [connection signal="custom_action" from="Dialogs/UnsavedChangesDialog" to="." method="unsaved_changes_custom"]
 [connection signal="saved_with_name" from="Dialogs/UnsavedChangesSaveAsDialog" to="." method="on_unsaved_changes_save_as_dialog_saved"]
