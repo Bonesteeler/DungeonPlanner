@@ -1,4 +1,6 @@
-[gd_scene format=3 uid="uid://dt3bj5xmgyjlh"]
+[gd_scene load_steps=2 format=3 uid="uid://dt3bj5xmgyjlh"]
+
+[ext_resource type="PackedScene" uid="uid://t6sfri55pwp5" path="res://scene_builder/ui/TileLayerButton.tscn" id="1_kx4pm"]
 
 [node name="LayerSelector" type="VBoxContainer"]
 offset_right = 1.0
@@ -12,4 +14,7 @@ text = "Layers:"
 layout_mode = 2
 
 [node name="Layers" type="VBoxContainer" parent="ScrollContainer"]
+layout_mode = 2
+
+[node name="TileLayer" parent="ScrollContainer/Layers" instance=ExtResource("1_kx4pm")]
 layout_mode = 2

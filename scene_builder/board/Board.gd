@@ -70,6 +70,8 @@ func on_space_hover_enter(space: Node3D):
 ## Configures the preview for the currently hovered space based on the active tool.[br]
 ## [b]Returns:[/b] [void][br]
 func start_preview():
+  if hovered_space == null:
+    return
   var space_position = Vector2(hovered_space.x, hovered_space.z)
   match current_tool: 
     CustomEnums.ToolType.ADD_TILE:
