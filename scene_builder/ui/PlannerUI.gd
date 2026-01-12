@@ -22,6 +22,7 @@ var vm: SceneBuilderViewModel
 
 @onready var file_button = $%FileButton
 @onready var menu_bar = $%MenuBar
+@onready var layer_selector = $%LayerSelector
 @onready var save_as_dialog = $%SaveAsDialogControl
 @onready var set_selector_node = $%SetSelectorControl
 @onready var tile_info = $%TileInfo
@@ -43,6 +44,9 @@ func _ready():
 func set_vm(scene_vm: SceneBuilderViewModel):
   vm = scene_vm
   tile_selected.connect(vm.set_selected_tile)
+  var layer_selector_vm = LayerSelectorViewModel.new()
+  layer_selector_vm.set_layers(vm.scene.data.layers)
+  layer_selector.set_vm(layer_selector_vm)
 
 func set_selected_tile(tile: Tile):
   tile_selected.emit(tile)

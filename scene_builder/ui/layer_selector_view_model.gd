@@ -48,7 +48,7 @@ func update_layer_height(layer_id: int, new_height: float):
 func update_layer_visibility(layer_id: int, is_visible: bool):
   var layer = _get_layer_at_index(layer_id)
   if layer != null:
-    layer.is_visible = is_visible
+    layer.set_visible(is_visible)
     layers_updated.emit()
 
 func _get_layer_at_index(index: int) -> TileLayerViewModel:
