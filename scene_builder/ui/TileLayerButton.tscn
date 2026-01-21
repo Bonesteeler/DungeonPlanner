@@ -7,9 +7,6 @@ offset_right = 56.0
 offset_bottom = 24.0
 script = ExtResource("1_tphtv")
 
-[node name="Background" type="Panel" parent="."]
-layout_mode = 2
-
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2
 theme_override_constants/margin_left = 5
@@ -24,16 +21,19 @@ layout_mode = 2
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="Height" type="TextEdit" parent="MarginContainer/HBoxContainer"]
+[node name="Height" type="LineEdit" parent="MarginContainer/HBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
-size_flags_horizontal = 3
-placeholder_text = "Height"
+size_flags_horizontal = 0
+placeholder_text = "0.0"
 context_menu_enabled = false
 emoji_menu_enabled = false
-autowrap_mode = 2
-scroll_fit_content_height = true
-scroll_fit_content_width = true
+
+[node name="Select" type="Button" parent="MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 8
+text = "Select"
 
 [connection signal="toggled" from="MarginContainer/HBoxContainer/Visible" to="." method="_on_visibility_button_toggled"]
 [connection signal="text_changed" from="MarginContainer/HBoxContainer/Height" to="." method="_on_height_text_changed"]
+[connection signal="pressed" from="MarginContainer/HBoxContainer/Select" to="." method="_on_select_pressed"]

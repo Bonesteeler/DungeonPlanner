@@ -46,6 +46,7 @@ func set_vm(scene_vm: SceneBuilderViewModel):
   tile_selected.connect(vm.set_selected_tile)
   var layer_selector_vm = LayerSelectorViewModel.new()
   layer_selector_vm.set_layers(vm.scene.data.layers)
+  layer_selector_vm.select_layer_with_id(0)
   layer_selector.set_vm(layer_selector_vm)
 
 func set_selected_tile(tile: Tile):

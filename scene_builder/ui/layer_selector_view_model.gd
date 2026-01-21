@@ -13,15 +13,29 @@ var selected_layer_index: int = 0
 func set_layers(new_layers: Array):
   for layer in new_layers:
     var vm = TileLayerViewModel.new()
+    vm.layer.id = layers.size()
+    vm.layer_updated.connect(_forward_layer_updated)
+    vm.layer_selected.connect(select_layer_with_id)
+    vm.delete_requested.connect(delete_layer)
     vm.layer = layer
     layers.append(vm)
   selected_layer_index = 0
   layers_updated.emit() 
 
-func add_new_layer():
+func add_tile_layer():
   var new_layer = TileLayerViewModel.new()
-  new_layer.id = layers.size()
+  new_layer.layer.id = layers.size()
+  new_layer.layer_updated.connect(_forward_layer_updated)
+  new_layer.layer_selected.connect(select_layer_with_id)
+  new_layer.delete_requested.connect(delete_layer)
   layers.append(new_layer) 
+  layers_updated.emit()
+
+func delete_layer(layer_id: int):
+  for i in range(layers.size()):
+    if layers[i].layer.id == layer_id:
+      layers.remove_at(i)
+      break
   layers_updated.emit()
 
 func get_layers_sorted_by_height() -> Array:
@@ -29,20 +43,24 @@ func get_layers_sorted_by_height() -> Array:
   sorted_layers.sort_custom(_compare_layer_height)
   return sorted_layers
 
-func _compare_layer_height(a: TileLayer, b: TileLayer) -> bool:
-  return a.height > b.height
+func _compare_layer_height(a: TileLayerViewModel, b: TileLayerViewModel) -> bool:
+  return a.layer.height > b.layer.height
 
-func select_layer_at_index(index: int):
+func select_layer_with_id(id: int):
+  var selected_layer: TileLayerViewModel
   for layer in layers:
-    if layer.id == index:
-      selected_layer_index = index
-      layer_selected.emit(layer)
-      return
-
+    if layer.layer.id == id:
+      selected_layer_index = id
+      selected_layer = layer
+      layer.set_selected(true)
+    else:
+      layer.set_selected(false)
+  layer_selected.emit(selected_layer)
+  
 func update_layer_height(layer_id: int, new_height: float):
   var layer = _get_layer_at_index(layer_id)
   if layer != null:
-    layer.height = new_height
+    layer.set_height(new_height)
     layers_updated.emit()
 
 func update_layer_visibility(layer_id: int, is_visible: bool):
@@ -53,6 +71,9 @@ func update_layer_visibility(layer_id: int, is_visible: bool):
 
 func _get_layer_at_index(index: int) -> TileLayerViewModel:
   for layer in layers:
-    if layer.id == index:
+    if layer.layer.id == index:
       return layer
   return null
+
+func _forward_layer_updated():
+  layers_updated.emit()
