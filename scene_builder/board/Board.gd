@@ -27,6 +27,7 @@ var alt_pressed: bool = false
 var board_nodes: Array = []
 var current_tool = CustomEnums.ToolType.ADD_TILE
 var hovered_space: Space
+var layer_vm: TileLayerViewModel
 var shift_pressed: bool = false
 var space_scene = preload("res://scene_builder/board/Space.tscn")
 var vm: SceneBuilderViewModel
@@ -52,10 +53,13 @@ func create_board():
       new_space.space_clicked.connect(on_space_clicked)
       new_space.set_preview_vm(vm.selected_tile)
 
-func set_vm(view_model: SceneBuilderViewModel):
+func set_vm(view_model: SceneBuilderViewModel, layer_view_model: TileLayerViewModel):
   vm = view_model
+  layer_vm = layer_view_model
+  layer_vm.layer_updated.connect(on_board_updated)
   create_board()
-  load_scene(vm.scene.data)
+  on_board_updated()
+  load_scene(layer_vm.layer)
 
 ## Handle hover enter on a space for the currently selected tool.[br]
 ## [b]Parameters:[/b][br]
@@ -79,7 +83,7 @@ func start_preview():
       vm.set_hovered_space(hovered_space)
       hovered_space.preview_vm.enable_rotation()
     CustomEnums.ToolType.SELECT_TILE:
-      var hovered_tile = vm.get_origin_tile(space_position)
+      var hovered_tile = layer_vm.get_origin_tile(space_position)
       if hovered_tile == null:
         return
       hovered_space = board_nodes[hovered_tile.position.x][hovered_tile.position.y]
@@ -88,7 +92,7 @@ func start_preview():
       hovered_space.preview_vm.set_validity(true)
       hovered_space.preview_vm.disable_rotation()
     CustomEnums.ToolType.REMOVE_TILE:
-      var hovered_tile = vm.get_origin_tile(space_position)
+      var hovered_tile = layer_vm.get_origin_tile(space_position)
       if hovered_tile == null:
         return
       hovered_space = board_nodes[hovered_tile.position.x][hovered_tile.position.y]
@@ -166,12 +170,12 @@ func set_alt_pressed(pressed: bool):
   elif hovered_space != null:
     hovered_space.end_preview()
 
-## Load a saved TileLayout into the board, instantiating tile contexts and meshes as needed.[br]
+## Load a saved TileLayer into the board, instantiating tile contexts and meshes as needed.[br]
 ## [b]Parameters:[/b][br]
-## [code]scene[/code] : [TileLayout] — saved scene data containing tiles to place on the board.[br]
+## [code]layer[/code] : [TileLayer] — saved scene data containing tiles to place on the board.[br]
 ## [b]Returns:[/b] [void][br]
-func load_scene(scene: TileLayout):
-  if scene == null:
+func load_scene(layer: TileLayer):
+  if layer == null:
     return
   var is_updated = []
   for i in START_ROWS:
@@ -179,7 +183,7 @@ func load_scene(scene: TileLayout):
     for j in START_COLS:
       new_row.append(false)
     is_updated.append(new_row)
-  for tile in scene.current_layer.tiles:
+  for tile in layer.tiles:
     var tile_data = TileSets.get_tile_from_id(tile.id)
     if tile_data == null:
       print("Tile ID not found: %s" % tile.id)
@@ -208,3 +212,10 @@ func update_current_tool(tool_type: CustomEnums.ToolType):
 ## [b]Returns:[/b] [bool][br]
 func is_camera_mode_active() -> bool:
   return shift_pressed or alt_pressed
+
+## Handle board updates from the layer view model.[br]
+## [b]Returns:[/b] [void][br]
+func on_board_updated():
+  var new_position = Vector3.ZERO
+  new_position.y = layer_vm.layer.height
+  position = new_position

@@ -4,6 +4,7 @@ class UIContext:
   var current_scene: Scene = Scene.new()
 
 signal save_current_scene()
+signal tile_layer_added(layer_vm: TileLayerViewModel)
 signal tile_selected(tile: Tile)
 signal tool_add_tile_selected()
 signal tool_select_tile_selected()
@@ -45,8 +46,12 @@ func set_vm(scene_vm: SceneBuilderViewModel):
   vm = scene_vm
   tile_selected.connect(vm.set_selected_tile)
   var layer_selector_vm = LayerSelectorViewModel.new()
-  layer_selector_vm.set_layers(vm.scene.data.layers)
+  layer_selector_vm.set_layer_vms(vm.get_all_layer_vms())
   layer_selector_vm.select_layer_with_id(0)
+  layer_selector_vm.layer_added.connect(func(layer_vm: TileLayerViewModel):
+    vm.add_tile_layer(layer_vm)
+    tile_layer_added.emit(layer_vm)
+  )
   layer_selector.set_vm(layer_selector_vm)
 
 func set_selected_tile(tile: Tile):

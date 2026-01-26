@@ -4,21 +4,20 @@ extends RefCounted
 ##
 ## [i]ViewModel for managing the selection of layers within the scene builder UI.[/i][br]
 
+signal layer_added(layer: TileLayerViewModel)
 signal layer_selected(layer: TileLayer)
 signal layers_updated()
 
 var layers: Array = []
 var selected_layer_index: int = 0
 
-func set_layers(new_layers: Array):
-  for layer in new_layers:
-    var vm = TileLayerViewModel.new()
-    vm.layer.id = layers.size()
-    vm.layer_updated.connect(_forward_layer_updated)
-    vm.layer_selected.connect(select_layer_with_id)
-    vm.delete_requested.connect(delete_layer)
-    vm.layer = layer
-    layers.append(vm)
+func set_layer_vms(new_layer_vms: Array):
+  for layer_vm in new_layer_vms:
+    layer_vm.layer.id = layers.size()
+    layer_vm.layer_updated.connect(_forward_layer_updated)
+    layer_vm.layer_selected.connect(select_layer_with_id)
+    layer_vm.delete_requested.connect(delete_layer)
+    layers.append(layer_vm)
   selected_layer_index = 0
   layers_updated.emit() 
 
@@ -28,7 +27,8 @@ func add_tile_layer():
   new_layer.layer_updated.connect(_forward_layer_updated)
   new_layer.layer_selected.connect(select_layer_with_id)
   new_layer.delete_requested.connect(delete_layer)
-  layers.append(new_layer) 
+  layers.append(new_layer)
+  layer_added.emit(new_layer) 
   layers_updated.emit()
 
 func delete_layer(layer_id: int):

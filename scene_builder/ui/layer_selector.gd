@@ -8,7 +8,7 @@ var view_model: LayerSelectorViewModel
 
 func set_vm(vm: LayerSelectorViewModel) -> void:
   view_model = vm
-  view_model.layers_updated.connect(_on_layers_changed)
+  vm.layers_updated.connect(_on_layers_changed)
   _on_layers_changed()
 
 func _on_layers_changed() -> void:

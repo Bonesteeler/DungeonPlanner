@@ -1,4 +1,4 @@
-class_name TileLayerViewModel
+class_name  TileLayerViewModel
 extends RefCounted
 
 signal delete_requested(layer_id: int)
@@ -33,3 +33,28 @@ func set_visible(is_visible: bool) -> void:
 
 func trigger_delete() -> void:
   delete_requested.emit(layer.id)
+
+## Returns the tile that occupies the specified position.[br]
+## [b]Parameters:[/b][br]
+## [code]position[/code] : [Vector2] — the position to query.[br]
+## [b]Returns:[/b] [PlacedTile][br]
+func get_origin_tile(position: Vector2) -> PlacedTile:
+  return layer.get_origin_tile(position)
+
+func get_height() -> Array:
+  return layer.get_height()
+
+func does_tile_fit(
+    tile: Tile,
+    position: Vector2,
+    rotation: Vector3
+) -> bool:
+  # Delegate to the underlying layer's method
+  return layer.does_tile_fit(tile, position, rotation)
+
+func set_tile_at(
+    x: int,
+    y: int,
+    tile_vm: SceneTileViewModel
+) -> void:  
+  layer.set_tile_at(x, y, tile_vm)

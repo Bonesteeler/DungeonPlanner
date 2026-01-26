@@ -1,7 +1,6 @@
-[gd_scene load_steps=6 format=3 uid="uid://hx11pvk41ggm"]
+[gd_scene load_steps=5 format=3 uid="uid://hx11pvk41ggm"]
 
 [ext_resource type="Script" uid="uid://cpxxyxbhbldbi" path="res://scene_builder/PlanningScene.gd" id="1_rch2c"]
-[ext_resource type="PackedScene" uid="uid://bvldvjouragl3" path="res://scene_builder/board/Board.tscn" id="2_mylks"]
 [ext_resource type="Script" uid="uid://bnushuvk3btte" path="res://scene_builder/InputListener.gd" id="3_nla8a"]
 [ext_resource type="Script" uid="uid://dgu8s1mbeeocu" path="res://scene_builder/CameraMovement.gd" id="4_26lsg"]
 [ext_resource type="PackedScene" uid="uid://ccxbpogh4na0x" path="res://scene_builder/ui/PlannerUI.tscn" id="5_gpwbx"]
@@ -9,7 +8,7 @@
 [node name="MainScene" type="Node"]
 script = ExtResource("1_rch2c")
 
-[node name="Board" parent="." instance=ExtResource("2_mylks")]
+[node name="BoardContainer" type="Node3D" parent="."]
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(-0.252229, 0.399888, 0.881175, 0.860952, -0.322966, 0.393007, 0.441749, 0.857778, -0.262823, 12.6012, 24.5154, 42.988)
@@ -34,12 +33,6 @@ follow_viewport_enabled = true
 [node name="PlannerUI" parent="CanvasLayer" instance=ExtResource("5_gpwbx")]
 unique_name_in_owner = true
 
-[connection signal="tile_selected" from="Board" to="CanvasLayer/PlannerUI" method="on_tile_selected"]
-[connection signal="updated" from="Board" to="CanvasLayer/PlannerUI" method="on_board_updated"]
-[connection signal="key_alt_event" from="InputListener" to="Board" method="set_alt_pressed"]
 [connection signal="key_alt_event" from="InputListener" to="CameraControl" method="set_alt_pressed"]
-[connection signal="key_shift_event" from="InputListener" to="Board" method="set_shift_pressed"]
 [connection signal="key_shift_event" from="InputListener" to="CameraControl" method="set_shift_pressed"]
-[connection signal="tool_add_tile_selected" from="CanvasLayer/PlannerUI" to="Board" method="update_current_tool" binds= [0]]
-[connection signal="tool_remove_tile_selected" from="CanvasLayer/PlannerUI" to="Board" method="update_current_tool" binds= [2]]
-[connection signal="tool_select_tile_selected" from="CanvasLayer/PlannerUI" to="Board" method="update_current_tool" binds= [1]]
+[connection signal="tile_layer_added" from="CanvasLayer/PlannerUI" to="." method="add_tile_layer"]
