@@ -59,4 +59,6 @@ func add_tile_layer(layer_vm: TileLayerViewModel):
   board_container.add_child(new_board)
   new_board.tile_selected.connect(planner_ui.on_tile_selected)
   new_board.updated.connect(planner_ui.on_board_updated)
+  input_listener.key_shift_event.connect(new_board.set_shift_pressed)
+  input_listener.key_alt_event.connect(new_board.set_alt_pressed)
   new_board.set_vm(vm, layer_vm)
