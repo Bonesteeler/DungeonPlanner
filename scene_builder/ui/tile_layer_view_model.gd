@@ -58,3 +58,6 @@ func set_tile_at(
     tile_vm: SceneTileViewModel
 ) -> void:  
   layer.set_tile_at(x, y, tile_vm)
+
+func remove_tile_at(x: int, y: int) -> void:
+  layer.remove_tile_at(x, y)

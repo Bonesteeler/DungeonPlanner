@@ -38,6 +38,15 @@ func set_scene_view_model(scene_vm: SceneBuilderViewModel):
   planner_ui.tile_layer_added.connect(func(layer_vm: TileLayerViewModel):
     add_tile_layer(layer_vm)
   )
+  planner_ui.tool_add_tile_selected.connect(func():
+    vm.set_tool_type(CustomEnums.ToolType.ADD_TILE)
+  )
+  planner_ui.tool_select_tile_selected.connect(func():
+    vm.set_tool_type(CustomEnums.ToolType.SELECT_TILE)
+  )
+  planner_ui.tool_remove_tile_selected.connect(func():
+    vm.set_tool_type(CustomEnums.ToolType.REMOVE_TILE)
+  )
   planner_ui.set_vm(vm)
   for layer_vm in vm.get_all_layer_vms():
     add_tile_layer(layer_vm)

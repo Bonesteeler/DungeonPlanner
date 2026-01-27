@@ -57,10 +57,15 @@ func set_vm(view_model: SceneBuilderViewModel, layer_view_model: TileLayerViewMo
   vm = view_model
   layer_vm = layer_view_model
   layer_vm.layer_updated.connect(on_board_updated)
+  layer_vm.visibility_changed.connect(update_board_visibility)
+  layer_vm.selected_updated.connect(update_board_selected)
+  vm.current_tool_updated.connect(update_current_tool)
   create_board()
   on_board_updated()
   load_scene(layer_vm.layer)
-
+  update_board_visibility(layer_vm.layer.id)
+  update_board_selected()
+  update_current_tool()
 ## Handle hover enter on a space for the currently selected tool.[br]
 ## [b]Parameters:[/b][br]
 ## [code]space[/code] : [Node3D] — the space node that the pointer entered.[br]
@@ -205,8 +210,8 @@ func load_scene(layer: TileLayer):
 ## [b]Parameters:[/b][br]
 ## [code]tool_type[/code] : [CustomEnums.ToolType] — new tool to use for user interactions.[br]
 ## [b]Returns:[/b] [void][br]
-func update_current_tool(tool_type: CustomEnums.ToolType):
-  current_tool = tool_type
+func update_current_tool():
+  current_tool = vm.current_tool
 
 ## Returns if a camera mode is active that should disable board interactions.[br]
 ## [b]Returns:[/b] [bool][br]
@@ -219,3 +224,36 @@ func on_board_updated():
   var new_position = Vector3.ZERO
   new_position.y = layer_vm.layer.height
   position = new_position
+
+## Handle visibility changes from the layer view model.[br]
+## [b]Parameters:[/b][br]
+## [code]layer_id[/code] : [int] — the layer ID (unused, signal compatibility).[br]
+## [b]Returns:[/b] [void][br]
+func update_board_visibility(_layer_id: int):
+  visible = layer_vm.visible
+  set_process_input(layer_vm.visible)
+  # Disable Area3D input monitoring when invisible
+  for i in START_ROWS:
+    for j in START_COLS:
+      var space = board_nodes[i][j] as Space
+      space.get_node("Area3D").input_ray_pickable = layer_vm.visible
+
+## Handle selection state changes from the layer view model.[br]
+## [b]Returns:[/b] [void][br]
+func update_board_selected():
+  set_process_input(layer_vm.selected)
+  for i in START_ROWS:
+    for j in START_COLS:
+      var space = board_nodes[i][j] as Space
+      var area = space.get_node("Area3D")
+      area.input_ray_pickable = layer_vm.selected
+      
+      if layer_vm.selected:
+        # Show all meshes (including placeholders for empty spaces)
+        space.mesh_node.visible = true
+      else:
+        # Only show meshes for tiles that have been placed
+        if space.vm == null or space.vm.tile == null:
+          space.mesh_node.visible = false
+        else:
+          space.mesh_node.visible = true

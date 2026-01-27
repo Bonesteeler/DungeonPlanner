@@ -8,11 +8,13 @@ extends RefCounted
 ## - [code]id_updated[/code]: Emitted when the scene ID is updated.[br]
 ## - [code]scene_name_updated[/code]: Emitted when the scene name is updated.[br]
 
+signal current_tool_updated()
 signal id_updated()
 signal scene_name_updated()
 
 const DEFAULT_SCENE_NAME = "Untitled Scene"
 
+var current_tool: CustomEnums.ToolType = CustomEnums.ToolType.ADD_TILE
 var scene: Scene
 var selected_layer: TileLayerViewModel
 var selected_tile: SceneTileViewModel
@@ -153,7 +155,7 @@ func set_selected_tile_in_layout_at(x: int, y: int) -> void:
 ## [code]x[/code] : [int] — x coordinate.[br]
 ## [code]y[/code] : [int] — y coordinate.[br]
 func remove_tile_in_layout_at(x: int, y: int) -> void:
-  selected_layer.remove_tile_at(selected_layer.id, x, y)
+  selected_layer.remove_tile_at(x, y)
 
 ## Returns the tile that occupies the specified position.[br]
 ## [b]Parameters:[/b][br]
@@ -178,3 +180,7 @@ func get_all_layer_vms() -> Array:
 func add_tile_layer(layer_vm: TileLayerViewModel) -> void:
   tile_layer_vms.append(layer_vm)
   scene.data.layers.append(layer_vm.layer)
+
+func set_tool_type(tool_type: CustomEnums.ToolType) -> void:
+  current_tool = tool_type
+  current_tool_updated.emit()
