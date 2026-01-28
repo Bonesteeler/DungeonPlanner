@@ -38,7 +38,9 @@ func _init(data: Scene = null):
     layer_vm.set_layer(layer)
     tile_layer_vms.append(layer_vm)
   if tile_layer_vms.size() == 0:
-    tile_layer_vms.append(TileLayerViewModel.new())
+    var new_vm = TileLayerViewModel.new()
+    scene.data.layers.append(new_vm.layer)
+    tile_layer_vms.append(new_vm)
   selected_layer = tile_layer_vms[0]
 
 ## Rotates the selected tile 90 degrees counter-clockwise.[br]

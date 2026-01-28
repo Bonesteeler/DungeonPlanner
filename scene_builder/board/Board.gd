@@ -17,7 +17,7 @@ extends Node3D
 ## - [code]SPACE_SIZE[/code] : Size in world units of a single planning space.[br]
 
 signal updated()
-signal tile_selected(tile_id: String)
+signal tile_selected(tile_id: String) 
 
 const START_ROWS = 20
 const START_COLS = 20
@@ -62,7 +62,7 @@ func set_vm(view_model: SceneBuilderViewModel, layer_view_model: TileLayerViewMo
   vm.current_tool_updated.connect(update_current_tool)
   create_board()
   on_board_updated()
-  load_scene(layer_vm.layer)
+  load_layer(layer_vm.layer)
   update_board_visibility(layer_vm.layer.id)
   update_board_selected()
   update_current_tool()
@@ -135,20 +135,20 @@ func on_space_clicked(space: Node3D, x: int, y: int):
     return
   match current_tool:
     CustomEnums.ToolType.ADD_TILE:
-      if vm.can_set_selected_tile_at(x, y):
-        vm.set_selected_tile_in_layout_at(x, y)
+      if layer_vm.does_tile_fit(vm.get_selected_tile().tile, Vector2(x, y), vm.get_selected_tile().rotation):
+        layer_vm.set_tile_at(x, y, vm.get_selected_tile())
         space.set_view_model(vm.get_selected_tile().duplicate())
         updated.emit()
     CustomEnums.ToolType.SELECT_TILE:
-      var selected_tile = vm.get_origin_tile(Vector2(x, y))
+      var selected_tile = layer_vm.get_origin_tile(Vector2(x, y))
       if selected_tile == null:
         return
       tile_selected.emit(selected_tile.id)
     CustomEnums.ToolType.REMOVE_TILE:
-      var selected_tile = vm.get_origin_tile(Vector2(x, y))
+      var selected_tile = layer_vm.get_origin_tile(Vector2(x, y))
       if selected_tile == null:
         return
-      vm.remove_tile_in_layout_at(selected_tile.position.x, selected_tile.position.y)
+      layer_vm.remove_tile_at(selected_tile.position.x, selected_tile.position.y)
       var origin_space = board_nodes[selected_tile.position.x][selected_tile.position.y]
       origin_space.set_empty()
       updated.emit()
@@ -179,7 +179,7 @@ func set_alt_pressed(pressed: bool):
 ## [b]Parameters:[/b][br]
 ## [code]layer[/code] : [TileLayer] — saved scene data containing tiles to place on the board.[br]
 ## [b]Returns:[/b] [void][br]
-func load_scene(layer: TileLayer):
+func load_layer(layer: TileLayer):
   if layer == null:
     return
   var is_updated = []
