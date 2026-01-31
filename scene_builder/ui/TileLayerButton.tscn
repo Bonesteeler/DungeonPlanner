@@ -35,5 +35,5 @@ size_flags_horizontal = 8
 text = "Select"
 
 [connection signal="toggled" from="MarginContainer/HBoxContainer/Visible" to="." method="_on_visibility_button_toggled"]
-[connection signal="text_changed" from="MarginContainer/HBoxContainer/Height" to="." method="_on_height_text_changed"]
+[connection signal="text_submitted" from="MarginContainer/HBoxContainer/Height" to="." method="_on_height_text_changed"]
 [connection signal="pressed" from="MarginContainer/HBoxContainer/Select" to="." method="_on_select_pressed"]
