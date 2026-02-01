@@ -15,6 +15,7 @@ shape = ExtResource("2_g2170")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Area3D"]
 transform = Transform3D(0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.1, 0, 0, 0)
+custom_aabb = AABB(-100, -100, -100, 200, 200, 200)
 mesh = ExtResource("3_vjwkm")
 script = ExtResource("4_g2170")
 

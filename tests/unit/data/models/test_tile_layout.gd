@@ -1,10 +1,16 @@
 extends GutTest
 
 var layout: TileLayout
+var test_layer_id: int = 0
 
 func before_each():
   # Fresh TileLayout for each test
   layout = TileLayout.new()
+  # Create a default layer for testing
+  var layer = TileLayer.new()
+  layer.id = test_layer_id
+  layout.layers.append(layer)
+  layout.current_layer = layer
 
 func test_set_tile_and_get_tile_at():
   var tile = Tile.new()
@@ -16,12 +22,12 @@ func test_set_tile_and_get_tile_at():
   ctx.tile = tile
   ctx.rotation = Vector3.ZERO
 
-  layout.set_tile_at(2, 3, ctx)
+  layout.set_tile_at(test_layer_id, 2, 3, ctx)
 
-  assert_true(layout.has_tile_at(2, 3))
-  var found = layout.get_tile_at(2, 3)
+  assert_true(layout.has_tile_at(test_layer_id, 2, 3))
+  var found = layout.get_tile_at(test_layer_id, 2, 3)
   assert_true(found != null)
-  assert_eq("tile_a", found.id)
+  assert_eq("tile_a", found.tile_data.id)
 
 func test_remove_tile_at():
   var tile = Tile.new()
@@ -33,11 +39,11 @@ func test_remove_tile_at():
   ctx.tile = tile
   ctx.rotation = Vector3.ZERO
 
-  layout.set_tile_at(0, 0, ctx)
-  assert_true(layout.has_tile_at(0, 0))
+  layout.set_tile_at(test_layer_id, 0, 0, ctx)
+  assert_true(layout.has_tile_at(test_layer_id, 0, 0))
 
-  layout.remove_tile_at(0, 0)
-  assert_false(layout.has_tile_at(0, 0))
+  layout.remove_tile_at(test_layer_id, 0, 0)
+  assert_false(layout.has_tile_at(test_layer_id, 0, 0))
 
 func test_get_origin_tile_for_occupied_space():
   # 2x2 tile placed at origin should report origin when queried from occupied cell
@@ -50,16 +56,16 @@ func test_get_origin_tile_for_occupied_space():
   ctx.tile = tile
   ctx.rotation = Vector3.ZERO
 
-  layout.set_tile_at(0, 0, ctx)
+  layout.set_tile_at(test_layer_id, 0, 0, ctx)
 
   # The 2x2 tile placed at (0,0) occupies (0,0),(0,1),(1,0),(1,1)
-  var origin = layout.get_origin_tile(Vector2(1, 1))
+  var origin = layout.get_origin_tile(test_layer_id, Vector2(1, 1))
   assert_true(origin != null)
-  assert_eq("tile_c", origin.id)
+  assert_eq("tile_c", origin.tile_data.id)
   # Origin coordinate returns the same placed tile
-  var origin_at_origin = layout.get_origin_tile(Vector2(0, 0))
+  var origin_at_origin = layout.get_origin_tile(test_layer_id, Vector2(0, 0))
   assert_true(origin_at_origin != null)
-  assert_eq("tile_c", origin_at_origin.id)
+  assert_eq("tile_c", origin_at_origin.tile_data.id)
 
 func test_does_tile_fit_detects_overlap_and_bounds():
   # Place a 2x2 tile at (0,0)
@@ -72,7 +78,7 @@ func test_does_tile_fit_detects_overlap_and_bounds():
   ctx_big.tile = big_tile
   ctx_big.rotation = Vector3.ZERO
 
-  layout.set_tile_at(0, 0, ctx_big)
+  layout.set_tile_at(test_layer_id, 0, 0, ctx_big)
 
   # Small tile overlapping at (1,1) should NOT fit
   var small_tile = Tile.new()
@@ -84,13 +90,13 @@ func test_does_tile_fit_detects_overlap_and_bounds():
   ctx_small.tile = small_tile
   ctx_small.rotation = Vector3.ZERO
 
-  assert_false(layout.does_tile_fit(small_tile, Vector2(1, 1), ctx_small.rotation))
+  assert_false(layout.does_tile_fit(test_layer_id, small_tile, Vector2(1, 1), ctx_small.rotation))
   # Placing away from occupied spaces should fit
-  assert_true(layout.does_tile_fit(small_tile, Vector2(3, 3), ctx_small.rotation))
+  assert_true(layout.does_tile_fit(test_layer_id, small_tile, Vector2(3, 3), ctx_small.rotation))
 
   # Out of bounds placement should fail
-  assert_false(layout.does_tile_fit(small_tile, Vector2(-1, 0), ctx_small.rotation))
-  assert_false(layout.does_tile_fit(small_tile, Vector2(TileLayout.SIZE.x, 0), ctx_small.rotation))
+  assert_false(layout.does_tile_fit(test_layer_id, small_tile, Vector2(-1, 0), ctx_small.rotation))
+  assert_false(layout.does_tile_fit(test_layer_id, small_tile, Vector2(TileLayout.SIZE.x, 0), ctx_small.rotation))
 
 func test_get_unique_tile_ids():
   # Place tiles using set_tile_at so PlacedTile objects are created correctly
@@ -98,20 +104,20 @@ func test_get_unique_tile_ids():
   var ctx_a = SceneTileViewModel.new()
   ctx_a.tile = tile_a
   ctx_a.rotation = Vector3.ZERO
-  layout.set_tile_at(0, 0, ctx_a)
+  layout.set_tile_at(test_layer_id, 0, 0, ctx_a)
 
   var tile_b = Tile.new(); tile_b.id = "id_b"; tile_b.x_size = 1; tile_b.y_size = 1
   var ctx_b = SceneTileViewModel.new()
   ctx_b.tile = tile_b
   ctx_b.rotation = Vector3.ZERO
-  layout.set_tile_at(1, 1, ctx_b)
+  layout.set_tile_at(test_layer_id, 1, 1, ctx_b)
 
   # duplicate id should only appear once
   var tile_a_dup = Tile.new(); tile_a_dup.id = "id_a"; tile_a_dup.x_size = 1; tile_a_dup.y_size = 1
   var ctx_a_dup = SceneTileViewModel.new()
   ctx_a_dup.tile = tile_a_dup
   ctx_a_dup.rotation = Vector3.ZERO
-  layout.set_tile_at(2, 2, ctx_a_dup)
+  layout.set_tile_at(test_layer_id, 2, 2, ctx_a_dup)
 
   var unique = layout.get_unique_tile_ids()
   assert_true(unique.has("id_a"))

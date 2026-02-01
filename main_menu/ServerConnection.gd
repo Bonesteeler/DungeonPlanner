@@ -1,5 +1,12 @@
 class_name ServerConnection
 extends Node
+## ServerConnection
+##
+## [i]Manages HTTP communication with the scene server for listing and uploading scenes.[/i][br]
+## [b]Signals:[/b][br]
+## - [code]new_scene_list(scenes: SceneListResponse)[/code]: Emitted when a scene list is successfully retrieved from the server.[br]
+## - [code]upload_success(scene_name: String)[/code]: Emitted when a scene is successfully uploaded to the server.[br]
+## - [code]upload_failure(scene_name: String)[/code]: Emitted when a scene upload fails.[br]
 
 signal new_scene_list(scenes: SceneListResponse)
 signal upload_success(scene_name: String)
@@ -9,6 +16,10 @@ const SCENE_ADD_URL = DOMAIN + "/scenes/add"
 const SCENE_LIST_URL_TEMPLATE = DOMAIN + "/scenes/list/%d"
 const DOMAIN = "http://localhost:8080"
 
+## Request a list of scenes from the server starting at a specific index[br]
+## [b]Parameters:[/b][br]
+## [code]startIdx[/code] : [int] — The starting index for pagination (default: 0).[br]
+## [b]Returns:[/b] [void][br]
 func request_scene_list(startIdx: int = 0) -> void:
   var http_request := HTTPRequest.new()
   add_child(http_request)
@@ -40,6 +51,10 @@ func request_scene_list(startIdx: int = 0) -> void:
   var uri: String = SCENE_LIST_URL_TEMPLATE % startIdx
   http_request.request(uri)
 
+## Upload a scene to the server[br]
+## [b]Parameters:[/b][br]
+## [code]scene[/code] : [Scene] — The scene to upload to the server.[br]
+## [b]Returns:[/b] [void][br]
 func upload_scene(scene: Scene) -> void:
   var http_request := HTTPRequest.new()
   add_child(http_request)

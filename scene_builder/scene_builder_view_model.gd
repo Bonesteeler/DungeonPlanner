@@ -8,14 +8,18 @@ extends RefCounted
 ## - [code]id_updated[/code]: Emitted when the scene ID is updated.[br]
 ## - [code]scene_name_updated[/code]: Emitted when the scene name is updated.[br]
 
+signal current_tool_updated()
 signal id_updated()
 signal scene_name_updated()
 
 const DEFAULT_SCENE_NAME = "Untitled Scene"
 
+var current_tool: CustomEnums.ToolType = CustomEnums.ToolType.ADD_TILE
 var scene: Scene
+var selected_layer: TileLayerViewModel
 var selected_tile: SceneTileViewModel
 var preview_space: Space
+var tile_layer_vms: Array = []
 
 ## Initializes a new SceneBuilderViewModel with an optional existing scene.[br]
 ## [b]Parameters:[/b][br]
@@ -28,6 +32,16 @@ func _init(data: Scene = null):
   else:
     scene = data
   selected_tile = SceneTileViewModel.new()
+  tile_layer_vms = []
+  for layer in scene.data.layers:
+    var layer_vm = TileLayerViewModel.new()
+    layer_vm.set_layer(layer)
+    tile_layer_vms.append(layer_vm)
+  if tile_layer_vms.size() == 0:
+    var new_vm = TileLayerViewModel.new()
+    scene.data.layers.append(new_vm.layer)
+    tile_layer_vms.append(new_vm)
+  selected_layer = tile_layer_vms[0]
 
 ## Rotates the selected tile 90 degrees counter-clockwise.[br]
 func rotate_left():
@@ -79,7 +93,7 @@ func set_hovered_space(space: Space):
 func does_selected_tile_fit() -> bool:
   if preview_space == null or selected_tile.tile == null:
     return false
-  return scene.data.does_tile_fit(selected_tile.tile, Vector2(preview_space.x, preview_space.z), selected_tile.rotation)
+  return selected_layer.does_tile_fit(selected_tile.tile, Vector2(preview_space.x, preview_space.z), selected_tile.rotation)
 
 ## Updates the scene ID and emits the [code]id_updated[/code] signal.[br]
 ## [b]Parameters:[/b][br]
@@ -108,7 +122,7 @@ func update_scene_name(new_name: String) -> void:
 func can_set_tile_at(x: int, y: int, tile_vm: SceneTileViewModel) -> bool:
   if tile_vm.tile == null:
     return false
-  return scene.data.does_tile_fit(tile_vm.tile, Vector2(x, y), tile_vm.rotation)
+  return selected_layer.does_tile_fit(tile_vm.tile, Vector2(x, y), tile_vm.rotation)
 
 ## Checks if the selected tile can be placed at the specified coordinates.[br]
 ## [b]Parameters:[/b][br]
@@ -118,7 +132,7 @@ func can_set_tile_at(x: int, y: int, tile_vm: SceneTileViewModel) -> bool:
 func can_set_selected_tile_at(x: int, y: int) -> bool:
   if selected_tile.tile == null:
     return false
-  return scene.data.does_tile_fit(selected_tile.tile, Vector2(x, y), selected_tile.rotation)
+  return selected_layer.does_tile_fit(selected_tile.tile, Vector2(x, y), selected_tile.rotation)
 
 ## Places a tile at the specified coordinates if able.[br]
 ## [b]Parameters:[/b][br]
@@ -129,7 +143,7 @@ func set_tile_in_layout_at(x: int, y: int, tile_vm: SceneTileViewModel) -> void:
   if not can_set_tile_at(x, y, tile_vm):
     print("Cannot set tile at position: ", x, ", ", y)
     return
-  scene.data.set_tile_at(x, y, tile_vm)
+  selected_layer.set_tile_at(x, y, tile_vm)
 
 ## Places the selected tile at the specified coordinates if able.[br]
 ## [b]Parameters:[/b][br]
@@ -143,11 +157,32 @@ func set_selected_tile_in_layout_at(x: int, y: int) -> void:
 ## [code]x[/code] : [int] — x coordinate.[br]
 ## [code]y[/code] : [int] — y coordinate.[br]
 func remove_tile_in_layout_at(x: int, y: int) -> void:
-  scene.data.remove_tile_at(x, y)
+  selected_layer.remove_tile_at(x, y)
 
 ## Returns the tile that occupies the specified position.[br]
 ## [b]Parameters:[/b][br]
 ## [code]position[/code] : [Vector2] — the position to query.[br]
 ## [b]Returns:[/b] [PlacedTile][br]
 func get_origin_tile(position: Vector2) -> PlacedTile:
-  return scene.data.get_origin_tile(position)
+  return selected_layer.get_origin_tile(position)
+
+## Gets the currently selected layer index.[br]
+## [b]Returns:[/b] [int][br]
+func get_selected_layer() -> TileLayer:
+  return selected_layer.layer
+
+## Gets all layers in the scene.[br]
+## [b]Returns:[/b] [Array][br]
+func get_all_layer_vms() -> Array:
+  return tile_layer_vms
+
+## Adds a new tile layer to the scene.[br]
+## [b]Parameters:[/b][br]
+## [code]layer_vm[/code] : [TileLayerViewModel] — the layer
+func add_tile_layer(layer_vm: TileLayerViewModel) -> void:
+  tile_layer_vms.append(layer_vm)
+  scene.data.layers.append(layer_vm.layer)
+
+func set_tool_type(tool_type: CustomEnums.ToolType) -> void:
+  current_tool = tool_type
+  current_tool_updated.emit()

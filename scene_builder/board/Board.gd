@@ -17,17 +17,20 @@ extends Node3D
 ## - [code]SPACE_SIZE[/code] : Size in world units of a single planning space.[br]
 
 signal updated()
-signal tile_selected(tile_id: String)
+signal tile_selected(tile_id: String) 
 
 const START_ROWS = 20
 const START_COLS = 20
 const SPACE_SIZE = 5
 
+var alt_pressed: bool = false
 var board_nodes: Array = []
 var current_tool = CustomEnums.ToolType.ADD_TILE
 var hovered_space: Space
-var vm: SceneBuilderViewModel
+var layer_vm: TileLayerViewModel
+var shift_pressed: bool = false
 var space_scene = preload("res://scene_builder/board/Space.tscn")
+var vm: SceneBuilderViewModel
 
 ## Create the initial grid of space nodes and wire up their signals.[br]
 ## [b]Returns:[/b] [void][br]
@@ -50,17 +53,34 @@ func create_board():
       new_space.space_clicked.connect(on_space_clicked)
       new_space.set_preview_vm(vm.selected_tile)
 
-func set_vm(view_model: SceneBuilderViewModel):
+func set_vm(view_model: SceneBuilderViewModel, layer_view_model: TileLayerViewModel):
   vm = view_model
+  layer_vm = layer_view_model
+  layer_vm.layer_updated.connect(on_board_updated)
+  layer_vm.visibility_changed.connect(update_board_visibility)
+  layer_vm.selected_updated.connect(update_board_selected)
+  vm.current_tool_updated.connect(update_current_tool)
   create_board()
-  load_scene(vm.scene.data)
-
+  on_board_updated()
+  load_layer(layer_vm.layer)
+  update_board_visibility(layer_vm.layer.id)
+  update_board_selected()
+  update_current_tool()
 ## Handle hover enter on a space for the currently selected tool.[br]
 ## [b]Parameters:[/b][br]
 ## [code]space[/code] : [Node3D] — the space node that the pointer entered.[br]
 ## [b]Returns:[/b] [void][br]
 func on_space_hover_enter(space: Node3D):
   hovered_space = space
+  if is_camera_mode_active():
+    return
+  start_preview()
+  
+## Configures the preview for the currently hovered space based on the active tool.[br]
+## [b]Returns:[/b] [void][br]
+func start_preview():
+  if hovered_space == null:
+    return
   var space_position = Vector2(hovered_space.x, hovered_space.z)
   match current_tool: 
     CustomEnums.ToolType.ADD_TILE:
@@ -68,7 +88,7 @@ func on_space_hover_enter(space: Node3D):
       vm.set_hovered_space(hovered_space)
       hovered_space.preview_vm.enable_rotation()
     CustomEnums.ToolType.SELECT_TILE:
-      var hovered_tile = vm.get_origin_tile(space_position)
+      var hovered_tile = layer_vm.get_origin_tile(space_position)
       if hovered_tile == null:
         return
       hovered_space = board_nodes[hovered_tile.position.x][hovered_tile.position.y]
@@ -77,7 +97,7 @@ func on_space_hover_enter(space: Node3D):
       hovered_space.preview_vm.set_validity(true)
       hovered_space.preview_vm.disable_rotation()
     CustomEnums.ToolType.REMOVE_TILE:
-      var hovered_tile = vm.get_origin_tile(space_position)
+      var hovered_tile = layer_vm.get_origin_tile(space_position)
       if hovered_tile == null:
         return
       hovered_space = board_nodes[hovered_tile.position.x][hovered_tile.position.y]
@@ -111,32 +131,56 @@ func on_space_hover_exit(space: Node3D):
 ## - [code]tile_selected(tile_id: String)[/code][br]
 ## [b]Returns:[/b] [void][br]
 func on_space_clicked(space: Node3D, x: int, y: int):
+  if is_camera_mode_active():
+    return
   match current_tool:
     CustomEnums.ToolType.ADD_TILE:
-      if vm.can_set_selected_tile_at(x, y):
-        vm.set_selected_tile_in_layout_at(x, y)
+      if layer_vm.does_tile_fit(vm.get_selected_tile().tile, Vector2(x, y), vm.get_selected_tile().rotation):
+        layer_vm.set_tile_at(x, y, vm.get_selected_tile())
         space.set_view_model(vm.get_selected_tile().duplicate())
         updated.emit()
     CustomEnums.ToolType.SELECT_TILE:
-      var selected_tile = vm.get_origin_tile(Vector2(x, y))
+      var selected_tile = layer_vm.get_origin_tile(Vector2(x, y))
       if selected_tile == null:
         return
       tile_selected.emit(selected_tile.id)
     CustomEnums.ToolType.REMOVE_TILE:
-      var selected_tile = vm.get_origin_tile(Vector2(x, y))
+      var selected_tile = layer_vm.get_origin_tile(Vector2(x, y))
       if selected_tile == null:
         return
-      vm.remove_tile_in_layout_at(selected_tile.position.x, selected_tile.position.y)
+      layer_vm.remove_tile_at(selected_tile.position.x, selected_tile.position.y)
       var origin_space = board_nodes[selected_tile.position.x][selected_tile.position.y]
       origin_space.set_empty()
       updated.emit()
 
-## Load a saved TileLayout into the board, instantiating tile contexts and meshes as needed.[br]
+## Updates shift state for board interactions.[br]
 ## [b]Parameters:[/b][br]
-## [code]scene[/code] : [TileLayout] — saved scene data containing tiles to place on the board.[br]
+## [code]pressed[/code] : [bool] — whether the shift key is currently pressed.[br]
 ## [b]Returns:[/b] [void][br]
-func load_scene(scene: TileLayout):
-  if scene == null:
+func set_shift_pressed(pressed: bool):
+  shift_pressed = pressed
+  if not is_camera_mode_active():
+    start_preview()
+  elif hovered_space != null:
+    hovered_space.end_preview()
+
+## Updates alt state for board interactions.[br]
+## [b]Parameters:[/b][br]
+## [code]pressed[/code] : [bool] — whether the alt key is currently pressed.[br]
+## [b]Returns:[/b] [void][br]
+func set_alt_pressed(pressed: bool):
+  alt_pressed = pressed
+  if not is_camera_mode_active():
+    start_preview()
+  elif hovered_space != null:
+    hovered_space.end_preview()
+
+## Load a saved TileLayer into the board, instantiating tile contexts and meshes as needed.[br]
+## [b]Parameters:[/b][br]
+## [code]layer[/code] : [TileLayer] — saved scene data containing tiles to place on the board.[br]
+## [b]Returns:[/b] [void][br]
+func load_layer(layer: TileLayer):
+  if layer == null:
     return
   var is_updated = []
   for i in START_ROWS:
@@ -144,7 +188,7 @@ func load_scene(scene: TileLayout):
     for j in START_COLS:
       new_row.append(false)
     is_updated.append(new_row)
-  for tile in scene.tiles:
+  for tile in layer.tiles:
     var tile_data = TileSets.get_tile_from_id(tile.id)
     if tile_data == null:
       print("Tile ID not found: %s" % tile.id)
@@ -166,5 +210,50 @@ func load_scene(scene: TileLayout):
 ## [b]Parameters:[/b][br]
 ## [code]tool_type[/code] : [CustomEnums.ToolType] — new tool to use for user interactions.[br]
 ## [b]Returns:[/b] [void][br]
-func update_current_tool(tool_type: CustomEnums.ToolType):
-  current_tool = tool_type
+func update_current_tool():
+  current_tool = vm.current_tool
+
+## Returns if a camera mode is active that should disable board interactions.[br]
+## [b]Returns:[/b] [bool][br]
+func is_camera_mode_active() -> bool:
+  return shift_pressed or alt_pressed
+
+## Handle board updates from the layer view model.[br]
+## [b]Returns:[/b] [void][br]
+func on_board_updated():
+  var new_position = Vector3.ZERO
+  new_position.y = layer_vm.layer.height
+  position = new_position
+
+## Handle visibility changes from the layer view model.[br]
+## [b]Parameters:[/b][br]
+## [code]layer_id[/code] : [int] — the layer ID (unused, signal compatibility).[br]
+## [b]Returns:[/b] [void][br]
+func update_board_visibility(_layer_id: int):
+  visible = layer_vm.visible
+  set_process_input(layer_vm.visible)
+  # Disable Area3D input monitoring when invisible
+  for i in START_ROWS:
+    for j in START_COLS:
+      var space = board_nodes[i][j] as Space
+      space.get_node("Area3D").input_ray_pickable = layer_vm.visible
+
+## Handle selection state changes from the layer view model.[br]
+## [b]Returns:[/b] [void][br]
+func update_board_selected():
+  set_process_input(layer_vm.selected)
+  for i in START_ROWS:
+    for j in START_COLS:
+      var space = board_nodes[i][j] as Space
+      var area = space.get_node("Area3D")
+      area.input_ray_pickable = layer_vm.selected
+      
+      if layer_vm.selected:
+        # Show all meshes (including placeholders for empty spaces)
+        space.mesh_node.visible = true
+      else:
+        # Only show meshes for tiles that have been placed
+        if space.vm == null or space.vm.tile == null:
+          space.mesh_node.visible = false
+        else:
+          space.mesh_node.visible = true

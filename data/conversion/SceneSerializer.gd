@@ -5,7 +5,7 @@ extends RefCounted
 ## Serializes and deserializes [code]Scene[/code] objects to and from JSON. [br]
 
 const KEY_AUTHOR = "author"
-const KEY_TILES = "tiles"
+const KEY_LAYERS = "layers"
 const KEY_ID = "id"
 const KEY_SCENE_NAME = "name"
 const KEY_VERSION = "version"
@@ -19,7 +19,7 @@ static func serialize(scene: Scene) -> String:
     KEY_AUTHOR: scene.author,
     KEY_ID: scene.id,
     KEY_SCENE_NAME: scene.scene_name,
-    KEY_TILES: TileLayoutSerializer.serialize(scene.data),
+    KEY_LAYERS: TileLayoutSerializer.serialize(scene.data),
     KEY_VERSION: VERSION
   }
   return JSON.stringify(data)
@@ -39,7 +39,7 @@ static func deserialize_dict(json: Dictionary) -> Scene:
   var scene = Scene.new()
   scene.version = int(json.get(KEY_VERSION, 0))
   scene.author = json.get(KEY_AUTHOR, "Unknown")
-  scene.data = TileLayoutSerializer.deserialize_dict({KEY_TILES: json.get(KEY_TILES, [])})
+  scene.data = TileLayoutSerializer.deserialize_array(json.get(KEY_LAYERS, []))
   scene.id = json.get(KEY_ID, UUID.v7())
   if scene.id == "":
     scene.id = UUID.v7()

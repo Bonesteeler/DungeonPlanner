@@ -20,6 +20,18 @@ color = Color(0, 0.45098, 0, 1)
 layout_mode = 2
 size_flags_horizontal = 4
 
+[node name="Label" type="Label" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+text = "News:
+- Added a navigation bar to the top of the planner.
+- Added the sets UI, with more details on the items
+in the set
+- Allowed for multiple scenes to be open at once.
+- Old saved scenes are no longer supported,
+hopefully this will be the last time this happens"
+
 [node name="LoadScene" type="VBoxContainer" parent="HBoxContainer"]
 layout_mode = 2
 
