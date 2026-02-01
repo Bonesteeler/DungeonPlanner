@@ -6,7 +6,7 @@ First, add class-level documentation directly after the extends line. Include an
 - A brief description of the class
 - A [b]Signals:[/b] section listing all signals with descriptions
 
-Here is an example of correcly formatted class-level documentation
+Here is an example of correctly formatted class-level documentation
 extends StlToMesh (Included for formatting purposes, do not copy this line)
 ## StlToMesh
 ##
@@ -20,7 +20,7 @@ Second, add function documentation above each func line. The documentation shoul
 - A [b]Emits:[/b] section (only if the function emits signals)
 - A [b]Returns:[/b] section (only if the function has a non-void return type)
 
-Here is an example of correcly formatted function documentation
+Here is an example of correctly formatted function documentation
 ## Import a directory of STL files into a new DragonbiteTileSet[br]
 ## [b]Parameters:[/b][br]
 ## [code]path[/code] : [String] — filesystem path to the directory containing

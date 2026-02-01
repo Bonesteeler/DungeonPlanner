@@ -80,7 +80,7 @@ func set_shift_pressed(pressed: bool):
 ## Update alt key state[br]
 ## [b]Parameters:[/b][br]
 ## [code]pressed[/code] : [bool] — true if the Alt key is pressed, false if released.[br]
-## [b]Returns:[/b] [void][
+## [b]Returns:[/b] [void][br]
 func set_alt_pressed(pressed: bool):
   alt_pressed = pressed 
 

@@ -2,13 +2,7 @@ class_name PlanningScene
 extends Node
 ## PlanningScene
 ##
-## [i]Controller for the planning scene. Initializes the board, wires the UI to scene and save logic, and forwards viewport resize events to the UI.[/i][br]
-## [b]Properties:[/b][br]
-## - [b]save_manager[/b]: Instance of [code]SaveManager[/code] used to persist and expose recent scenes.[br]
-## - [b]viewport[/b]: The current [code]Viewport[/code] used to observe size changes.[br]
-## - [b]board[/b]: Onready reference to the [code]Board[/code] node.[br]
-## - [b]planner_ui[/b]: Onready reference to the planner UI node that provides tile selection and scene controls.[br]
-## - [b]input_listener[/b]: Onready reference to the [code]InputListener[/code] node.[br]
+## [i]Controller for the planning scene that initializes the board, wires the UI to scene and save logic, and forwards viewport resize events to the UI.[/i][br]
 
 const board_scene = preload("res://scene_builder/board/Board.tscn")
 
@@ -20,13 +14,17 @@ var vm: SceneBuilderViewModel
 @onready var planner_ui = $%PlannerUI
 @onready var input_listener = $InputListener
 
-## Initialize the planning scene, create the board, load the current scene data, wire UI signals, and track viewport size.[br]
+## Initializes the planning scene by connecting UI signals and tracking viewport size changes.[br]
 ## [b]Returns:[/b] [void][br]
 func _ready():
   planner_ui.save_current_scene.connect(save_scene)
   viewport = get_viewport()
   viewport.size_changed.connect(on_viewport_resized)
 
+## Sets the scene view model and wires all input and UI signals.[br]
+## [b]Parameters:[/b][br]
+## [code]scene_vm[/code] : [SceneBuilderViewModel] — the view model for the scene builder.[br]
+## [b]Returns:[/b] [void][br]
 func set_scene_view_model(scene_vm: SceneBuilderViewModel):
   vm = scene_vm
   input_listener.rotate_left.connect(func():
@@ -51,18 +49,20 @@ func set_scene_view_model(scene_vm: SceneBuilderViewModel):
   for layer_vm in vm.get_all_layer_vms():
     add_tile_layer(layer_vm)
 
-## Save the provided scene with the save manager and update the current scene context.[br]
+## Saves the current scene using the save manager.[br]
 ## [b]Returns:[/b] [void][br]
 func save_scene():
   save_manager.save_scene_to_user(vm.scene)
 
-## Forward viewport resize notifications to the planner UI.[br]
+## Forwards viewport resize notifications to the planner UI.[br]
 ## [b]Returns:[/b] [void][br]
 func on_viewport_resized():
   planner_ui.on_viewport_resized(viewport.size)
 
-## Adds a new tile layer to the board and UI.[br]
+## Adds a new tile layer to the board container and connects its signals.[br]
 ## [b]Parameters:[/b][br]
+## [code]layer_vm[/code] : [TileLayerViewModel] — the layer view model to add.[br]
+## [b]Returns:[/b] [void][br]
 func add_tile_layer(layer_vm: TileLayerViewModel):
   var new_board = board_scene.instantiate() as Board
   board_container.add_child(new_board)

@@ -21,7 +21,7 @@ func has_tile_at(x: int, z: int) -> bool:
       return true
   return false
 
-  ## Determine if the provided position is occupied by any tile's occupied spaces, excluding the tile at a specified origin.
+## Determine if the provided position is occupied by any tile's occupied spaces, excluding the tile at a specified origin.
 ## [b]Parameters:[/b][br]
 ## [code]position[/code] : [Vector2] — The grid position to check.[br]
 ## [code]tile_origin[/code] : [Vector2] — The origin position of the tile to exclude from the check.[br]

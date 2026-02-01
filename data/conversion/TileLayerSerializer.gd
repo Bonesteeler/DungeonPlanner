@@ -1,9 +1,9 @@
 class_name TileLayerSerializer
 extends RefCounted
-## TileLayoutSerializer
+## TileLayerSerializer
 ## 
-## [i]Helpers to serialize and deserialize TileLayout objects to and from JSON.[/i][br]
-## [b]Usage:[/b] Use the static methods to convert a TileLayout into a JSON string or reconstruct a TileLayout from JSON data.[br]
+## [i]Helpers to serialize and deserialize TileLayer objects to and from JSON.[/i][br]
+## [b]Usage:[/b] Use the static methods to convert a TileLayer into a JSON string or reconstruct a TileLayer from JSON data.[br]
 const KEY_HEIGHT = "height"
 const KEY_ID = "id"
 const KEY_ROTATION = "rotation"
