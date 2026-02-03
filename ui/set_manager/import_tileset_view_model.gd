@@ -25,17 +25,20 @@ signal validity_updated()
 
 const IMPORT_STATUS_LABEL_TEMPLATE = "Importing %d tiles, currently %d/%d"
 
-var file_loader = LoadSavedFiles.new()
+var file_loader: LoadSavedFiles
 var import_path: String = ""
 var import_tile_amount: int = 0
 var imported_tiles_count: int = 0
 var import_thread = Thread.new()
 var is_valid: bool = false
+var photographer: Photographer
 var show_import_progress: bool = false
 var tileset_name: String = ""
 
 ## Initialize the view model and connect file loader signals[br]
-func _init() -> void:
+func _init(di_file_loader: LoadSavedFiles, di_photographer: Photographer) -> void:
+  file_loader = di_file_loader
+  photographer = di_photographer
   file_loader.import_started.connect(initialize_import_label)
   file_loader.tile_imported.connect(update_import_label)
   file_loader.import_complete.connect(on_import_complete)
@@ -84,7 +87,8 @@ func update_import_label() -> void:
 ## Forward import_complete signal[br]
 ## [b]Emits:[/b][br]
 ## - [code]import_complete()[/code][br]
-func on_import_complete() -> void:
+func on_import_complete(new_set: DragonbiteTileSet) -> void:
+  photographer.generate_images_of_tiles(new_set.get_all_tiles())
   import_complete.emit()
 
 ## Update the tile set name and check validity[br]

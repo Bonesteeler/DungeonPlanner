@@ -6,7 +6,7 @@ extends RefCounted
 ## files. This class coordinates file validation, import progress signalling,[br]
 ## and writing the resulting set definition to disk.[br]
 
-signal import_complete()
+signal import_complete(DragonbiteTileSet)
 signal import_started(int)
 signal tile_imported()
 
@@ -87,8 +87,7 @@ func import_tile_set_from_directory(path: String, set_name: String):
   var result = JSON.stringify(set_definition, "  ")
   var json_path = TileSets.SET_DEFINITIONS_PATH + set_name + ".json"
   File.write_file_as_text(json_path, result)
-  call_deferred("add_set", new_set)
-  call_deferred("emit_import_complete")
+  call_deferred("import_completed", new_set)
 
 func cancel_import():
   cancel_requested = true
@@ -102,10 +101,6 @@ func emit_import_started(total_tiles: int):
 func emit_tile_imported():
   tile_imported.emit()
 
-## [b]Emits:[/b] [code]import_complete()[/code]
-func emit_import_complete():
-  import_complete.emit()
-
-## Adds a new tile set to resources
-func add_set(new_set: DragonbiteTileSet):
+func import_completed(new_set: DragonbiteTileSet):
   TileSets.add_set(new_set)
+  import_complete.emit(new_set)

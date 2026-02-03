@@ -51,3 +51,9 @@ func set_tile(tile: Tile) -> void:
 ## [code]value[/code] : [bool] — whether rotation should be enabled.[br]
 func set_rotating(value: bool) -> void:
   rotating = value
+
+## Get image from current camera view[br]
+## [b]Returns:[/b] [Image] — image captured from the camera's
+func get_image() -> Image:
+  var img: Image = camera.get_viewport().get_texture().get_image()
+  return img
