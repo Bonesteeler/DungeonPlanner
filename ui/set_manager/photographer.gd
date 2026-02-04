@@ -10,7 +10,6 @@ func generate_images_of_tiles(subjects: Array[Tile]):
   for subject in subjects:
     var img_path = IMAGE_PATH + subject.id + ".png"
     if File.file_exists(img_path):
-      print("Image already exists at %s" % img_path)
       continue
     tile_preview.set_tile(subject)
     subviewport.render_target_update_mode = SubViewport.UPDATE_ONCE
