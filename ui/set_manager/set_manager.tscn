@@ -1,10 +1,11 @@
-[gd_scene load_steps=8 format=3 uid="uid://dsa4vwpi18sk6"]
+[gd_scene load_steps=9 format=3 uid="uid://dsa4vwpi18sk6"]
 
 [ext_resource type="PackedScene" uid="uid://4d52h1ninu7c" path="res://ui/set_manager/set_list.tscn" id="1_701mt"]
 [ext_resource type="Script" uid="uid://b7urdu84o7dq6" path="res://ui/set_manager/set_manager_view_model.gd" id="1_fa8gm"]
 [ext_resource type="PackedScene" uid="uid://doatq5mh2eluk" path="res://ui/set_manager/set_details.tscn" id="3_b0xsl"]
 [ext_resource type="PackedScene" uid="uid://8vpb02c07miu" path="res://ui/set_manager/tile_details.tscn" id="4_03jg5"]
 [ext_resource type="PackedScene" uid="uid://lnnbvuy548v7" path="res://ui/set_manager/import_tileset.tscn" id="5_03jg5"]
+[ext_resource type="PackedScene" uid="uid://dy8l7uefoavr1" path="res://ui/set_manager/photographer.tscn" id="6_c7sdl"]
 
 [sub_resource type="Gradient" id="Gradient_jkn8m"]
 colors = PackedColorArray(0.050260514, 0.17144808, 0.34460405, 1, 0.2627451, 0.3137255, 0.45882353, 1)
@@ -70,6 +71,10 @@ visible = false
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
+
+[node name="Photographer" parent="." instance=ExtResource("6_c7sdl")]
+unique_name_in_owner = true
+layout_mode = 2
 
 [connection signal="delete_set" from="MarginContainer/Columns/Left/Sets" to="." method="delete_set"]
 [connection signal="import_set" from="MarginContainer/Columns/Left/Sets" to="." method="import_set_started"]

@@ -17,7 +17,7 @@ const KEY_TILE_RES_PATH = "resPath"
 const KEY_TILE_X_SIZE = "xSize"
 const KEY_TILE_Y_SIZE = "ySize"
 
-var tiles: Array = []
+var tiles: Array[Tile] = []
 var name: String = ""
 
 ## Load a tileset from a JSON dictionary produced by the tile exporter.[br]
@@ -46,10 +46,7 @@ func import_set(set_name: String, stl_file_paths: PackedStringArray):
   name = set_name
   var start_time = Time.get_ticks_msec()
   for path in stl_file_paths:
-    var new_tile := Tile.new()
-    var dest_file = File.name_sans_extension(path.get_file())
-    var dest_path = MESHES_PATH + name + "/" + dest_file + ".res"
-    new_tile.create_tile(path, dest_path)
+    import_tile(path)
   var end_time = Time.get_ticks_msec()
   print("Imported tileset " + name + " in " + str(end_time - start_time) + "ms")
 
@@ -98,3 +95,8 @@ func get_tile(index: int) -> Tile:
 ## [b]Returns:[/b] [int] — count of entries in [code]tiles[/code].[br]
 func get_size() -> int:
   return tiles.size()
+
+## Get all tiles in this tileset as an array.[br]
+## [b]Returns:[/b] [Array] — array of all tiles in [code]tiles[/code].[br]
+func get_all_tiles() -> Array[Tile]:
+  return tiles.duplicate()

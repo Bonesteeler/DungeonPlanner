@@ -12,10 +12,12 @@ extends MarginContainer
 ## - [b]tile_details[/b]: [TileDetails] individual tile details display.[br]
 ## - [b]tile_res[/b]: [TileResources] singleton for tile resource management.[br]
 
+var file_loader: LoadSavedFiles = LoadSavedFiles.new()
 var set_details_vm: SetDetailsViewModel
 var tile_details_vm: TileDetailsViewModel
 
 @onready var import_tileset = $%ImportTileSet
+@onready var photographer = $%Photographer
 @onready var set_details = $%SetDetails
 @onready var set_list = $%Sets
 @onready var tile_details = $%TileDetails
@@ -27,7 +29,7 @@ func _ready():
   set_list.set_vm(set_list_vm)
   set_details_vm = SetDetailsViewModel.new()
   set_details.set_vm(set_details_vm)
-  var import_tileset_vm = ImportTilesetViewModel.new()
+  var import_tileset_vm = ImportTilesetViewModel.new(file_loader, photographer)
   import_tileset.set_vm(import_tileset_vm)
   tile_details_vm = TileDetailsViewModel.new()
   tile_details.set_vm(tile_details_vm)
@@ -47,6 +49,7 @@ func delete_set(tile_set_name: String) -> void:
 ## [code]tile_set_name[/code] : [String] — name of the tile set to display.[br]
 func select_set(tile_set_name: String) -> void:
   var selected_set := tile_res.get_set(tile_set_name)
+  await photographer.generate_images_of_tiles(selected_set.tiles)
   set_details_vm.set_current_set(selected_set)
 
 ## Update tile details view with a selected tile[br]

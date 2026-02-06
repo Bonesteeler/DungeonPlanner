@@ -89,3 +89,12 @@ static func write_file_as_text(path: String, content: String) -> bool:
   file.store_string(content)
   file.close()
   return true
+
+##
+## Write the given image to a file as PNG.
+static func write_image_as_png(path: String, image: Image) -> bool:
+  var err = image.save_png(path)
+  if err != OK:
+    push_error("Failed to save texture as PNG: %s" % path)
+    return false
+  return true
