@@ -11,9 +11,8 @@ var view_model: SceneManagerViewModel
 @onready var scene_selector: SceneSelector = $%SceneSelector
 
 func _ready():
-    # Initialize view model with SaveManager and set it to the selector
-    var save_manager = SaveManager.new()
-    view_model = SceneManagerViewModel.new(save_manager)
+    # Initialize view model with SceneSaveService and set it to the selector
+    view_model = SceneManagerViewModel.new(SceneSaveService)
     scene_selector.set_vm(view_model)
     
     # Connect signals

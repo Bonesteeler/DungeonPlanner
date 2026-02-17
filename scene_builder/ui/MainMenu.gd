@@ -16,7 +16,6 @@ signal scene_selected(vm: SceneBuilderViewModel)
 
 var confirmation_dialog_target: String
 var export_scene_name: String = ""
-var save_manager: SaveManager
 
 @onready var confirmation_dialog: ConfirmationDialog = $ConfirmationDialog
 @onready var recent_scenes_container: VBoxContainer = $%RecentScenes
@@ -27,9 +26,8 @@ var save_manager: SaveManager
 ## Initialize the save manager and connect signals for scene management[br]
 ## [b]Returns:[/b] [void][br]
 func _ready():
-  save_manager = SaveManager.new()
-  scene_browser.scene_import.connect(save_manager.add_scene)
-  save_manager.scene_added.connect(update_recent_scenes)
+  scene_browser.scene_import.connect(SceneSaveService.add_scene)
+  SceneSaveService.scene_added.connect(update_recent_scenes)
   update_recent_scenes()
 
 ## Refresh the list of recent scenes displayed in the UI[br]
@@ -38,7 +36,7 @@ func update_recent_scenes():
   #Delete existing scenes
   for child in recent_scenes_container.get_children():
     child.queue_free()
-  var recent_scenes = save_manager.scenes
+  var recent_scenes = SceneSaveService.scenes
   for scene in recent_scenes:
     var button = RECENT_SCENE_ITEM_SCENE.instantiate()
     button.set_recent_scene_data(scene)
@@ -59,7 +57,7 @@ func on_set_imported():
 ## - [code]scene_selected(vm: SceneBuilderViewModel)[/code] when the scene is successfully loaded[br]
 ## [b]Returns:[/b] [void][br]
 func load_recent_scene(scene_name: String):
-  var scene_data = save_manager.load_scene_from_user(scene_name)
+  var scene_data = SceneSaveService.load_scene_from_user(scene_name)
   var scene_view_model = SceneBuilderViewModel.new(scene_data)
   scene_selected.emit(scene_view_model)
 
@@ -68,7 +66,7 @@ func load_recent_scene(scene_name: String):
 ## [code]scene_name[/code] : [String] — name of the scene to upload.[br]
 ## [b]Returns:[/b] [void][br]
 func upload_scene(scene_name: String):
-  var scene_to_upload := save_manager.load_scene_from_user(scene_name)
+  var scene_to_upload := SceneSaveService.load_scene_from_user(scene_name)
   server_connection.upload_scene(scene_to_upload)
 
 ## Display a success message after a scene is uploaded[br]
@@ -123,7 +121,7 @@ func delete_recent_scene(scene_name: String):
 ## [b]Returns:[/b] [void][br]
 func delete_scene_confirmed():
   confirmation_dialog.confirmed.disconnect(delete_scene_confirmed)
-  save_manager.delete_scene(confirmation_dialog_target)
+  SceneSaveService.delete_scene(confirmation_dialog_target)
   update_recent_scenes()
 
 ## Create and select a new empty scene[br]
@@ -153,6 +151,6 @@ func _on_import_scene_pressed() -> void:
 ## [code]path[/code] : [String] — filesystem path to the JSON scene file.[br]
 ## [b]Returns:[/b] [void][br]
 func _on_scene_import_dialog_file_selected(path: String) -> void:
-  var scene_data = save_manager.load_scene_from_json(path)
-  save_manager.save_scene_to_user(scene_data)
+  var scene_data = SceneSaveService.load_scene_from_json(path)
+  SceneSaveService.save_scene_to_user(scene_data)
   change_to_planning_scene()

@@ -1,6 +1,6 @@
-class_name SaveManager
+class_name SceneSaveServiceImpl
 extends Node
-## SaveManager
+## SceneSaveServiceImpl
 ##
 ## [i]Manages saving, loading and tracking of user-created scenes stored under user://SavedScenes/.[/i][br]
 ## [b]Properties:[/b][br]

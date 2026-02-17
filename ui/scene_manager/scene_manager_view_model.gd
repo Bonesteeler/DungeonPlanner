@@ -2,7 +2,7 @@ class_name SceneManagerViewModel
 extends RefCounted
 ## SceneManagerViewModel
 ##
-## [i]View model wrapping SaveManager to provide sorted scene lists and recent scene tracking.[/i][br]
+## [i]View model wrapping SceneSaveService to provide sorted scene lists and recent scene tracking.[/i][br]
 ## [b]Signals:[/b][br]
 ## - [code]scenes_updated()[/code]: Emitted when the scene list changes.[br]
 ## - [code]recent_scenes_updated()[/code]: Emitted when recent scenes are modified.[br]
@@ -12,13 +12,13 @@ signal recent_scenes_updated()
 
 const MAX_RECENT_SCENES = 10
 
-var save_manager: SaveManager
+var save_manager: SceneSaveService
 var _recent_scene_ids: Array[String] = []
 
-## Initialize with a SaveManager instance and connect to its signals.[br]
+## Initialize with a SceneSaveService instance and connect to its signals.[br]
 ## [b]Parameters:[/b][br]
-## [code]manager[/code] : [SaveManager] — the save manager to wrap.[br]
-func _init(manager: SaveManager):
+## [code]manager[/code] : [SceneSaveService] — the save service to wrap.[br]
+func _init(manager: SceneSaveService):
     save_manager = manager
     save_manager.scene_added.connect(_on_scene_added)
     _load_recent_scenes()
@@ -111,7 +111,7 @@ func delete_scene(scene_name: String) -> void:
 func get_scene_count() -> int:
     return save_manager.scenes.size()
 
-## Internal callback when SaveManager adds a scene.[br]
+## Internal callback when SceneSaveService adds a scene.[br]
 func _on_scene_added() -> void:
     scenes_updated.emit()
 

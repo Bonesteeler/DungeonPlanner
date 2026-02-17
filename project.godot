@@ -17,6 +17,7 @@ config/features=PackedStringArray("4.5", "Forward Plus")
 [autoload]
 
 TileSets="*res://data/models/TileResources.gd"
+SceneSaveService="*res://data/models/scene_save_service.gd"
 
 [debug]
 
