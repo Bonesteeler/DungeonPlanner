@@ -36,9 +36,14 @@ layout_mode = 2
 layout_mode = 2
 text = "Home"
 
-[node name="Button" type="Button" parent="ButtonMargin/HBoxContainer"]
+[node name="Sets" type="Button" parent="ButtonMargin/HBoxContainer"]
 layout_mode = 2
 text = "Sets"
 
+[node name="Scenes" type="Button" parent="ButtonMargin/HBoxContainer"]
+layout_mode = 2
+text = "Scenes"
+
 [connection signal="pressed" from="ButtonMargin/HBoxContainer/Home" to="." method="forward_home_selected"]
-[connection signal="pressed" from="ButtonMargin/HBoxContainer/Button" to="." method="forward_sets_selected"]
+[connection signal="pressed" from="ButtonMargin/HBoxContainer/Sets" to="." method="forward_sets_selected"]
+[connection signal="pressed" from="ButtonMargin/HBoxContainer/Scenes" to="." method="forward_scene_manager_selected"]

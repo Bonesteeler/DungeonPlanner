@@ -8,12 +8,14 @@ extends Container
 ## - home_selected() - Emitted when the home tab is selected.
 ## - planner_selected(String) - Emitted when the planner tab is selected.
 ## - set_selected() - Emitted when the sets tab is selected.
+## - scene_manager_selected() - Emitted when the scene manager tab is selected.
 
 signal home_selected()
 signal planner_selected(String)
+signal scene_manager_selected()
 signal sets_selected()
 
-const STATIC_BUTTON_COUNT = 2
+const STATIC_BUTTON_COUNT = 3
 
 var PLANNER_BUTTON_SCENE = preload("res://navigation/scene_button.tscn")
 
@@ -43,3 +45,6 @@ func forward_planner_selected(scene_id: String):
 
 func forward_sets_selected():
     sets_selected.emit()
+
+func forward_scene_manager_selected():
+    scene_manager_selected.emit()

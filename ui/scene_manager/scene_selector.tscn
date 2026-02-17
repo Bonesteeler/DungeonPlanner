@@ -1,0 +1,23 @@
+[gd_scene load_steps=2 format=3 uid="uid://c42are06t5e2j"]
+
+[ext_resource type="Script" uid="uid://ywprimmomjjp" path="res://ui/scene_manager/scene_selector.gd" id="1_inene"]
+
+[node name="SceneSelector" type="VBoxContainer"]
+size_flags_horizontal = 3
+script = ExtResource("1_inene")
+
+[node name="NewSceneButton" type="Button" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+text = "New Scene"
+
+[node name="ScrollContainer" type="ScrollContainer" parent="."]
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="SceneListContainer" type="VBoxContainer" parent="ScrollContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[connection signal="pressed" from="NewSceneButton" to="." method="_new_scene_button_pressed"]
