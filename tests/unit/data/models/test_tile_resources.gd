@@ -12,7 +12,7 @@ func test_add_single_set():
   var tile_test = Tile.new()
   tile_test.id = "id_a"
   tile_test.name = "Tile A"
-  set_test.tiles = [tile_test]
+  set_test.tiles = [tile_test] as Array[Tile]
   resources.add_set(set_test)
 
   assert_true(resources.unique_tile_ids.has("id_a"))
@@ -28,7 +28,7 @@ func test_has_tile_ids():
   set_test.name = "set_c"
   var tile1_test = Tile.new(); tile1_test.id = "t1"
   var tile2_test = Tile.new(); tile2_test.id = "t2"
-  set_test.tiles = [tile1_test, tile2_test]
+  set_test.tiles = [tile1_test, tile2_test] as Array[Tile]
   resources.add_set(set_test)
 
   assert_true(resources.has_tile_ids(["t1"]))
@@ -39,13 +39,13 @@ func test_has_tile_ids_multiple_sets():
   var set1 = DragonbiteTileSet.new()
   set1.name = "set_1"
   var tile1 = Tile.new(); tile1.id = "t1"
-  set1.tiles = [tile1]
+  set1.tiles = [tile1] as Array[Tile]
   resources.add_set(set1)
 
   var set2 = DragonbiteTileSet.new()
   set2.name = "set_2"
   var tile2 = Tile.new(); tile2.id = "t2"
-  set2.tiles = [tile2]
+  set2.tiles = [tile2] as Array[Tile]
   resources.add_set(set2)
 
   assert_true(resources.has_tile_ids(["t1", "t2"]))
@@ -55,7 +55,7 @@ func test_remove_set_cleans_ids_and_sets():
   set_test.name = "set_d"
   var tile_test = Tile.new()
   tile_test.id = "id_d"
-  set_test.tiles = [tile_test]
+  set_test.tiles = [tile_test] as Array[Tile]
   resources.add_set(set_test)
 
   # Ensure added

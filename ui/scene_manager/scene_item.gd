@@ -1,7 +1,8 @@
 class_name SceneItem
 extends HBoxContainer
 
-signal scene_selected(String)
+signal delete_pressed(scene_name: String)
+signal scene_selected(scene_id: String)
 
 var scene_id: String
 var scene_name: String
@@ -15,3 +16,6 @@ func set_scene_name(new_name: String) -> void:
 
 func forward_scene_selected():
     scene_selected.emit(scene_id)
+
+func forward_delete_pressed() -> void:
+    delete_pressed.emit(scene_name)

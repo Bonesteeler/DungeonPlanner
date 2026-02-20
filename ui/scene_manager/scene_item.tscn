@@ -15,8 +15,13 @@ script = ExtResource("1_c24q3")
 layout_mode = 2
 text = "Name"
 
-[node name="Button" type="Button" parent="."]
+[node name="Select" type="Button" parent="."]
 layout_mode = 2
 text = "Select"
 
-[connection signal="pressed" from="Button" to="." method="forward_scene_selected"]
+[node name="Delete" type="Button" parent="."]
+layout_mode = 2
+text = "Delete"
+
+[connection signal="pressed" from="Select" to="." method="forward_scene_selected"]
+[connection signal="pressed" from="Delete" to="." method="forward_delete_pressed"]

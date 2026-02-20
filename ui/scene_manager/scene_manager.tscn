@@ -41,3 +41,10 @@ layout_mode = 2
 
 [node name="OnlineScenes" type="VBoxContainer" parent="MarginContainer/Columns"]
 layout_mode = 2
+
+[node name="ConfirmationDialog" type="ConfirmationDialog" parent="."]
+unique_name_in_owner = true
+oversampling_override = 1.0
+title = "Confirm delete"
+initial_position = 2
+dialog_text = "Deleting map "
