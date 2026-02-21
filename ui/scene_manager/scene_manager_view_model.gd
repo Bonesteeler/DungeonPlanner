@@ -136,15 +136,22 @@ func _find_scene_by_name(scene_name: String) -> Scene:
     return null
 
 ## Load recent scene IDs from persistent storage (stub).[br]
-## [b]TODO:[/b] Implement persistent storage of recent scenes.[br]
 func _load_recent_scenes() -> void:
-    # TODO: Load from user:// config file or similar
-    # For now, just initialize empty
-    _recent_scene_ids = []
+  var loaded_ids: Array[String] = SceneSaveService.load_recent_scene_ids()
+
+  var sanitized: Array[String] = []
+  for id in loaded_ids:
+    if sanitized.size() >= MAX_RECENT_SCENES:
+      break
+    if not find_scene_by_id(id):
+      continue
+    if sanitized.has(id):
+      continue
+    sanitized.append(id)
+
+  _recent_scene_ids = sanitized
+  recent_scenes_updated.emit()
 
 ## Save recent scene IDs to persistent storage (stub).[br]
-## [b]TODO:[/b] Implement persistent storage of recent scenes.[br]
 func _save_recent_scenes() -> void:
-    # TODO: Save to user:// config file or similar
-    # Stub implementation - would persist _recent_scene_ids array
-    pass
+  SceneSaveService.save_recent_scene_ids(_recent_scene_ids)

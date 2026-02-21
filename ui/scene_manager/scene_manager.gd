@@ -13,19 +13,23 @@ var view_model: SceneManagerViewModel
 
 @onready var confirmation_dialog: ConfirmationDialog = $%ConfirmationDialog
 @onready var scene_selector: SceneSelector = $%SceneSelector
+@onready var recent_scenes: RecentScenes = $%RecentScenes
 
 func _ready():
-    # Initialize view model with SceneSaveService and set it to the selector
     view_model = SceneManagerViewModel.new(SceneSaveService)
+
     scene_selector.set_vm(view_model)
-    
-    # Connect signals
     scene_selector.scene_selected.connect(_on_scene_selected)
     scene_selector.new_scene_requested.connect(_on_new_scene_requested)
     scene_selector.delete_scene_requested.connect(_on_delete_scene_requested)
 
+    recent_scenes.set_vm(view_model)
+    recent_scenes.scene_selected.connect(_on_scene_selected)
+    recent_scenes.delete_scene_requested.connect(_on_delete_scene_requested)
+
 func _on_scene_selected(scene_id: String) -> void:
     var scene_data = view_model.find_scene_by_id(scene_id)
+    view_model.mark_scene_as_recent(scene_data)
     if scene_data != null:
       var new_scene_vm = SceneBuilderViewModel.new(scene_data)
       scene_selected.emit(new_scene_vm)
