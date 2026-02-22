@@ -32,25 +32,6 @@ in the set
 - Old saved scenes are no longer supported,
 hopefully this will be the last time this happens"
 
-[node name="LoadScene" type="VBoxContainer" parent="HBoxContainer"]
-layout_mode = 2
-
-[node name="SceneButtons" type="HBoxContainer" parent="HBoxContainer/LoadScene"]
-layout_mode = 2
-
-[node name="New Scene" type="Button" parent="HBoxContainer/LoadScene/SceneButtons"]
-layout_mode = 2
-size_flags_horizontal = 4
-text = "New Scene"
-
-[node name="Import" type="Button" parent="HBoxContainer/LoadScene/SceneButtons"]
-layout_mode = 2
-text = "Import Scene"
-
-[node name="RecentScenes" type="VBoxContainer" parent="HBoxContainer/LoadScene"]
-unique_name_in_owner = true
-layout_mode = 2
-
 [node name="SceneBrowser" type="VBoxContainer" parent="HBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
@@ -100,8 +81,6 @@ use_native_dialog = true
 unique_name_in_owner = true
 script = ExtResource("4_yt4ty")
 
-[connection signal="pressed" from="HBoxContainer/LoadScene/SceneButtons/New Scene" to="." method="on_new_scene"]
-[connection signal="pressed" from="HBoxContainer/LoadScene/SceneButtons/Import" to="." method="_on_import_scene_pressed"]
 [connection signal="request_scene_list" from="HBoxContainer/SceneBrowser" to="ServerConnection" method="request_scene_list"]
 [connection signal="pressed" from="HBoxContainer/SceneBrowser/HBoxContainer/Previous" to="HBoxContainer/SceneBrowser" method="_on_prev_button_pressed"]
 [connection signal="pressed" from="HBoxContainer/SceneBrowser/HBoxContainer/Next" to="HBoxContainer/SceneBrowser" method="_on_next_button_pressed"]
