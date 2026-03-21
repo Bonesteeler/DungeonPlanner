@@ -25,8 +25,7 @@ func _ready() -> void:
 ## Loads the main menu scene and connects signal.[br]
 ## [b]Returns:[/b] [void][br]
 func home_selected() -> void:
-  var home_scene = change_scene(MAIN_MENU)
-  home_scene.scene_selected.connect(vm.add_scene_builder)
+  change_scene(MAIN_MENU)
 
 ## Loads the planner scene for the specified scene ID.[br]
 ## [b]Parameters:[/b][br]
