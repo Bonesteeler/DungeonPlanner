@@ -26,6 +26,7 @@ func _ready():
     recent_scenes.set_vm(view_model)
     recent_scenes.scene_selected.connect(_on_scene_selected)
     recent_scenes.delete_scene_requested.connect(_on_delete_scene_requested)
+    recent_scenes.upload_scene.connect(_on_upload_scene_request)
 
 func _on_scene_selected(scene_id: String) -> void:
     var scene_data = view_model.find_scene_by_id(scene_id)
@@ -55,3 +56,10 @@ func delete_scene_confirmed():
   confirmation_dialog.confirmed.disconnect(delete_scene_confirmed)
   SceneSaveService.delete_scene(confirmation_dialog_target)
   scene_selector.set_scene_list()
+
+## Send upload request[br]
+## [b]Parameters:[/b][br]## [code]scene_id[/code] : [String] — ID of the scene to upload
+## [b]Returns:[/b] [void][br]
+func _on_upload_scene_request(scene_id: String):
+    if scene_id != "":
+        view_model.upload_scene(scene_id)

@@ -9,6 +9,7 @@ var view_model: SceneManagerViewModel
 
 signal delete_scene_requested(scene_id: String)
 signal scene_selected(scene_id: String)
+signal upload_scene(scene_id: String)
 
 ## Set vm which provides data for this view
 func set_vm(vm: SceneManagerViewModel):
@@ -30,6 +31,7 @@ func set_scene_list():
         item.set_scene_name(scene.scene_name)
         item.scene_selected.connect(_on_scene_item_selected)
         item.delete_pressed.connect(_on_scene_item_delete)
+        item.upload_pressed.connect(_on_scene_item_upload)
         recent_scenes_container.add_child(item)
 
 ## Find scene from view model by ID and emit scene_selected signal[br]
@@ -45,3 +47,10 @@ func _on_scene_item_selected(scene_id: String):
 func _on_scene_item_delete(scene_id: String):
     if scene_id != "":
         delete_scene_requested.emit(scene_id)
+
+## Emit upload_pressed signal[br]
+## [b]Parameters:[/b][br]
+## - [code]scene_id[/code] : [String] — ID of the scene to upload.[br]
+func _on_scene_item_upload(scene_id: String):
+    if scene_id != "":
+        upload_scene.emit(scene_id)

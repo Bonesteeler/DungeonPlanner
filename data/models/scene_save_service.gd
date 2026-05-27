@@ -127,3 +127,8 @@ func load_recent_scene_ids() -> Array[String]:
       ids.append(value)
 
   return ids
+
+func send_scene_upload_request(scene_id: String):
+    var sceneIdx = scenes.find_custom((func(s): return s.id == scene_id))
+    if sceneIdx != -1:
+        server_connection.upload_scene(scenes[sceneIdx])

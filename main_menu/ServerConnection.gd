@@ -12,9 +12,10 @@ signal new_scene_list(scenes: SceneListResponse)
 signal upload_success(scene_name: String)
 signal upload_failure(scene_name: String)
 
-const SCENE_ADD_URL = DOMAIN + "/scenes/add"
-const SCENE_LIST_URL_TEMPLATE = DOMAIN + "/scenes/list/%d"
-const DOMAIN = "http://localhost:8080"
+const DOMAIN = "https://stg-dungeon-planner-backend-ae630eb1efb3.herokuapp.com/"
+const SCENES_URL = DOMAIN + "v1/scenes"
+const SCENE_ADD_URL = SCENES_URL + "/add"
+const SCENE_LIST_URL_TEMPLATE = SCENES_URL + "/list/%d"
 
 ## Request a list of scenes from the server starting at a specific index[br]
 ## [b]Parameters:[/b][br]

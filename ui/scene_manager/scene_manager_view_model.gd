@@ -155,3 +155,8 @@ func _load_recent_scenes() -> void:
 ## Save recent scene IDs to persistent storage (stub).[br]
 func _save_recent_scenes() -> void:
   SceneSaveService.save_recent_scene_ids(_recent_scene_ids)
+
+## Send upload scene request to the save manager[br]
+## [b]Parameters:[/b][br]## [code]scene_id[/code] : [String] — ID of the scene to upload.[br]
+func upload_scene(scene_id: String) -> void:
+    save_manager.send_scene_upload_request(scene_id)

@@ -23,5 +23,10 @@ text = "Select"
 layout_mode = 2
 text = "Delete"
 
+[node name="Upload" type="Button" parent="."]
+layout_mode = 2
+text = "Upload"
+
 [connection signal="pressed" from="Select" to="." method="forward_scene_selected"]
 [connection signal="pressed" from="Delete" to="." method="forward_delete_pressed"]
+[connection signal="pressed" from="Upload" to="." method="forward_upload_pressed"]

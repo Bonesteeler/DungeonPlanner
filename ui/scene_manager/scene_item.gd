@@ -3,6 +3,7 @@ extends HBoxContainer
 
 signal delete_pressed(scene_name: String)
 signal scene_selected(scene_id: String)
+signal upload_pressed(scene_id: String)
 
 var scene_id: String
 var scene_name: String
@@ -19,3 +20,6 @@ func forward_scene_selected():
 
 func forward_delete_pressed() -> void:
     delete_pressed.emit(scene_name)
+
+func forward_upload_pressed() -> void:
+    upload_pressed.emit(scene_id)
