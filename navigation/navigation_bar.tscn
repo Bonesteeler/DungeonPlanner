@@ -44,6 +44,11 @@ text = "Sets"
 layout_mode = 2
 text = "Scenes"
 
+[node name="Cloud" type="Button" parent="ButtonMargin/HBoxContainer"]
+layout_mode = 2
+text = "Cloud"
+
 [connection signal="pressed" from="ButtonMargin/HBoxContainer/Home" to="." method="forward_home_selected"]
 [connection signal="pressed" from="ButtonMargin/HBoxContainer/Sets" to="." method="forward_sets_selected"]
 [connection signal="pressed" from="ButtonMargin/HBoxContainer/Scenes" to="." method="forward_scene_manager_selected"]
+[connection signal="pressed" from="ButtonMargin/HBoxContainer/Cloud" to="." method="forward_cloud_selected"]

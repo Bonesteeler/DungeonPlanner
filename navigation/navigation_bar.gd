@@ -14,8 +14,9 @@ signal home_selected()
 signal planner_selected(String)
 signal scene_manager_selected()
 signal sets_selected()
+signal cloud_selected()
 
-const STATIC_BUTTON_COUNT = 3
+const STATIC_BUTTON_COUNT = 4
 
 var PLANNER_BUTTON_SCENE = preload("res://navigation/scene_button.tscn")
 
@@ -48,3 +49,6 @@ func forward_sets_selected():
 
 func forward_scene_manager_selected():
     scene_manager_selected.emit()
+
+func forward_cloud_selected():
+    cloud_selected.emit()

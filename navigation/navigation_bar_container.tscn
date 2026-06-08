@@ -34,3 +34,4 @@ render_target_update_mode = 4
 [connection signal="planner_selected" from="NavigationBar" to="." method="planner_selected"]
 [connection signal="scene_manager_selected" from="NavigationBar" to="." method="scene_manager_selected"]
 [connection signal="sets_selected" from="NavigationBar" to="." method="sets_selected"]
+[connection signal="cloud_selected" from="NavigationBar" to="." method="cloud_selected"]

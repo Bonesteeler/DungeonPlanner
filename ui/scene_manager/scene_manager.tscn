@@ -1,7 +1,6 @@
-[gd_scene load_steps=8 format=3 uid="uid://cpb6j5o38lih0"]
+[gd_scene load_steps=7 format=3 uid="uid://cpb6j5o38lih0"]
 
 [ext_resource type="Script" uid="uid://cv1fakjtxwgf4" path="res://ui/scene_manager/scene_manager.gd" id="1_3lohl"]
-[ext_resource type="PackedScene" uid="uid://c7ploj8ccb0vk" path="res://ui/scene_manager/online_scenes.tscn" id="2_bvqkv"]
 [ext_resource type="PackedScene" uid="uid://b6ghi0v6ekd7o" path="res://ui/scene_manager/recent_scenes.tscn" id="2_c5wsp"]
 [ext_resource type="PackedScene" uid="uid://c42are06t5e2j" path="res://ui/scene_manager/scene_selector.tscn" id="2_vn32t"]
 [ext_resource type="Script" uid="uid://bmgtjiuv33c2u" path="res://main_menu/backend.gd" id="5_885lr"]
@@ -33,10 +32,6 @@ theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
 [node name="Columns" type="HBoxContainer" parent="MarginContainer"]
-layout_mode = 2
-
-[node name="OnlineScenes" parent="MarginContainer/Columns" instance=ExtResource("2_bvqkv")]
-unique_name_in_owner = true
 layout_mode = 2
 
 [node name="RecentScenes" parent="MarginContainer/Columns" instance=ExtResource("2_c5wsp")]
