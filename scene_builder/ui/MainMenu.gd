@@ -11,10 +11,8 @@ var confirmation_dialog_target: String
 var export_scene_name: String = ""
 
 @onready var confirmation_dialog: ConfirmationDialog = $ConfirmationDialog
-@onready var recent_scenes_container: VBoxContainer = $%RecentScenes
 @onready var scene_browser: SceneBrowser = $%SceneBrowser
 @onready var scene_import_dialog: FileDialog = $%SceneImportDialog
-@onready var server_connection: ServerConnection = $%ServerConnection
 
 ## Initialize the save manager and connect signals for scene management[br]
 ## [b]Returns:[/b] [void][br]
@@ -27,7 +25,7 @@ func _ready():
 ## [b]Returns:[/b] [void][br]
 func upload_scene(scene_name: String):
   var scene_to_upload := SceneSaveService.load_scene_from_user(scene_name)
-  server_connection.upload_scene(scene_to_upload)
+  Backend.upload_scene(scene_to_upload)
 
 ## Display a success message after a scene is uploaded[br]
 ## [b]Parameters:[/b][br]
@@ -37,9 +35,6 @@ func on_upload_success(scene_name: String):
   confirmation_dialog_target = scene_name
   confirmation_dialog.dialog_text = UPLOAD_SUCCESS_STRING_TEMPLATE % confirmation_dialog_target
   confirmation_dialog.popup_centered()
-  for recent_scene_node in recent_scenes_container.get_children():
-    if recent_scene_node.is_scene(scene_name):
-      recent_scene_node.disable_upload()
 
 ## Display a failure message when a scene upload fails[br]
 ## [b]Parameters:[/b][br]

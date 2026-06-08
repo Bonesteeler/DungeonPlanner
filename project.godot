@@ -18,6 +18,7 @@ config/features=PackedStringArray("4.5", "Forward Plus")
 
 TileSets="*res://data/models/TileResources.gd"
 SceneSaveService="*res://data/models/scene_save_service.gd"
+Backend="*res://main_menu/backend.gd"
 
 [debug]
 

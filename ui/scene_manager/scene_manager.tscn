@@ -4,7 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://c7ploj8ccb0vk" path="res://ui/scene_manager/online_scenes.tscn" id="2_bvqkv"]
 [ext_resource type="PackedScene" uid="uid://b6ghi0v6ekd7o" path="res://ui/scene_manager/recent_scenes.tscn" id="2_c5wsp"]
 [ext_resource type="PackedScene" uid="uid://c42are06t5e2j" path="res://ui/scene_manager/scene_selector.tscn" id="2_vn32t"]
-[ext_resource type="Script" uid="uid://bmgtjiuv33c2u" path="res://main_menu/ServerConnection.gd" id="5_885lr"]
+[ext_resource type="Script" uid="uid://bmgtjiuv33c2u" path="res://main_menu/backend.gd" id="5_885lr"]
 
 [sub_resource type="Gradient" id="Gradient_jkn8m"]
 colors = PackedColorArray(0.050260514, 0.17144808, 0.34460405, 1, 0.2627451, 0.3137255, 0.45882353, 1)

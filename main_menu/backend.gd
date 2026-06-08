@@ -1,6 +1,6 @@
-class_name ServerConnection
+class_name BackendImpl
 extends Node
-## ServerConnection
+## BackendImpl
 ##
 ## [i]Manages HTTP communication with the scene server for listing and uploading scenes.[/i][br]
 ## [b]Signals:[/b][br]
@@ -17,20 +17,24 @@ const SCENES_URL = DOMAIN + "v1/scenes"
 const SCENE_ADD_URL = SCENES_URL + "/add"
 const SCENE_LIST_URL_TEMPLATE = SCENES_URL + "/list/%d"
 
+var _logger := NetworkLogger.new()
+
 ## Request a list of scenes from the server starting at a specific index[br]
 ## [b]Parameters:[/b][br]
 ## [code]startIdx[/code] : [int] — The starting index for pagination (default: 0).[br]
 ## [b]Returns:[/b] [void][br]
 func request_scene_list(startIdx: int = 0) -> void:
   var http_request := HTTPRequest.new()
+  var uri: String = SCENE_LIST_URL_TEMPLATE % startIdx
   add_child(http_request)
   http_request.request_completed.connect(
     func(_result, response_code, _headers, body: PackedByteArray) -> void:
       if response_code != 200:
-        print("Failed to get scene list from server, response code: %d" % response_code)
         http_request.queue_free()
         return
-      var json: Dictionary = JSON.parse_string(body.get_string_from_utf8())
+      var json_string = body.get_string_from_utf8()
+      var json: Dictionary = JSON.parse_string(json_string)
+      _logger.log_response(uri, "GET", response_code, json_string)
       var response = SceneListResponse.new()
       if json.has("sceneCount"):
         response.scene_count = json.sceneCount
@@ -47,9 +51,10 @@ func request_scene_list(startIdx: int = 0) -> void:
         var new_scene = SceneSerializer.deserialize(scene_json)
         response.scenes.append(new_scene)
       http_request.queue_free()
+      _logger.log_success("request_scene_list", "received %d scene(s)" % response.scenes.size())
       new_scene_list.emit(response)
   )
-  var uri: String = SCENE_LIST_URL_TEMPLATE % startIdx
+  _logger.log_request("GET", uri)
   http_request.request(uri)
 
 ## Upload a scene to the server[br]
@@ -61,6 +66,7 @@ func upload_scene(scene: Scene) -> void:
   add_child(http_request)
   http_request.request_completed.connect(
     func(_result, response_code: int, _headers, _body) -> void:
+      _logger.log_response(SCENE_ADD_URL, "PUT", response_code)
       if response_code == 200:
         upload_success.emit(scene.scene_name)
       else:
@@ -69,7 +75,7 @@ func upload_scene(scene: Scene) -> void:
   )
   var json_string = scene.to_server_json()
   var headers: PackedStringArray = ["Content-Type: application/json"]
+  _logger.log_request("PUT", SCENE_ADD_URL, json_string.length())
   var error = http_request.request(SCENE_ADD_URL, headers, HTTPClient.METHOD_PUT, json_string)
   if error != OK:
-    print("Failed to upload scene: %s with error: %s" % [scene.scene_name, error])
     http_request.queue_free()
