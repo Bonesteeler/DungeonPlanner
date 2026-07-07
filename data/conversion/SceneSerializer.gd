@@ -34,10 +34,7 @@ static func deserialize(json: String) -> Scene:
 ## [b]Parameters:[/b] [code]json: Dictionary[/code] - Dictionary with keys matching the serialized format. [br]
 ## [b]Returns:[/b] A [code]Scene[/code] object, or [code]null[/code] when required fields (like [code]version[/code]) are missing.
 static func deserialize_dict(json: Dictionary) -> Scene:
-  if not json.has(KEY_VERSION):
-    return null
   var scene = Scene.new()
-  scene.version = int(json.get(KEY_VERSION, 0))
   scene.author = json.get(KEY_AUTHOR, "Unknown")
   scene.data = TileLayoutSerializer.deserialize_array(json.get(KEY_LAYERS, []))
   scene.id = json.get(KEY_ID, UUID.v7())

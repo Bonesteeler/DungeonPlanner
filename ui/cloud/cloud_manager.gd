@@ -18,7 +18,8 @@ func _ready() -> void:
 	online_scenes.scene_import.connect(view_model.import_scene)
 
 	upload_scenes.upload_requested.connect(view_model.upload_scene)
+	upload_scenes.set_scenes(view_model.get_local_scenes())
 
 	view_model.scene_list_updated.connect(online_scenes.set_scene_items)
 
-	upload_scenes.set_scenes(view_model.get_local_scenes())
+	view_model.request_scene_list(0)
