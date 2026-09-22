@@ -31,6 +31,7 @@ func request_scene_list(startIdx: int = 0) -> void:
     func(_result, response_code, _headers, body: PackedByteArray) -> void:
       if response_code != 200:
         http_request.queue_free()
+        print("Failed to retrieve scene list from server. Response code: %d" % response_code)
         return
       var json_string = body.get_string_from_utf8()
       var json: Dictionary = JSON.parse_string(json_string)

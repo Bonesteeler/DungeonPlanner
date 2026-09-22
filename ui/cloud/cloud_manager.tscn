@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://c7ploj8ccb0vk"]
+[gd_scene load_steps=5 format=3 uid="uid://c7ploj8ccb0vk"]
 
-[ext_resource type="Script" path="res://ui/cloud/cloud_manager.gd" id="1_mgr"]
-[ext_resource type="PackedScene" path="res://ui/cloud/online_scenes.tscn" id="2_online"]
-[ext_resource type="PackedScene" path="res://ui/cloud/upload_scenes.tscn" id="3_upload"]
+[ext_resource type="Script" uid="uid://cw5smtahm3rqm" path="res://ui/cloud/cloud_manager.gd" id="1_mgr"]
+[ext_resource type="PackedScene" uid="uid://donlinescn1aa" path="res://ui/cloud/online_scenes.tscn" id="2_online"]
+[ext_resource type="PackedScene" uid="uid://cvxs1m5lbqvrl" path="res://ui/cloud/upload_scenes.tscn" id="3_upload"]
+[ext_resource type="PackedScene" uid="uid://cihnerxqeb2k8" path="res://ui/cloud/profile.tscn" id="3_vlje8"]
 
 [node name="CloudManager" type="MarginContainer"]
 anchors_preset = 15
@@ -19,8 +20,8 @@ size_flags_vertical = 3
 
 [node name="Label" type="Label" parent="VBoxContainer"]
 layout_mode = 2
-text = "Cloud"
 theme_override_font_sizes/font_size = 18
+text = "Cloud"
 
 [node name="HSeparator" type="HSeparator" parent="VBoxContainer"]
 layout_mode = 2
@@ -32,14 +33,17 @@ size_flags_vertical = 3
 [node name="OnlineScenes" parent="VBoxContainer/HBoxContainer" instance=ExtResource("2_online")]
 unique_name_in_owner = true
 layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
 
 [node name="VSeparator" type="VSeparator" parent="VBoxContainer/HBoxContainer"]
 layout_mode = 2
 
-[node name="UploadScenes" parent="VBoxContainer/HBoxContainer" instance=ExtResource("3_upload")]
-unique_name_in_owner = true
+[node name="RightColumn" type="VBoxContainer" parent="VBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-size_flags_vertical = 3
+
+[node name="Profile" parent="VBoxContainer/HBoxContainer/RightColumn" instance=ExtResource("3_vlje8")]
+layout_mode = 2
+
+[node name="UploadScenes" parent="VBoxContainer/HBoxContainer/RightColumn" instance=ExtResource("3_upload")]
+unique_name_in_owner = true
+layout_mode = 2
