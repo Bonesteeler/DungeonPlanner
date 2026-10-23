@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://c1bnd4kldsshq"]
+
+[ext_resource type="Script" uid="uid://c61n42aqf2qxi" path="res://services/auth/auth_service.gd" id="1_7ocem"]
+
+[node name="AuthServiceNode" type="Node"]
+script = ExtResource("1_7ocem")
