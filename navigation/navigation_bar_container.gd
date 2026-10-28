@@ -59,7 +59,7 @@ func cloud_selected() -> void:
 ## [b]Returns:[/b] [Node][br]
 func change_scene(new_scene: PackedScene) -> Node:
   for i in range(content_container.get_child_count()):
-	content_container.get_child(i).queue_free()
+    content_container.get_child(i).queue_free()
   var scene_instance = new_scene.instantiate()
   content_container.add_child(scene_instance)
   return scene_instance
