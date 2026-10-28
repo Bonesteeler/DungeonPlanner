@@ -35,7 +35,7 @@ func request_scene_list(startIdx: int = 0) -> void:
         return
       var json_string = body.get_string_from_utf8()
       var json: Dictionary = JSON.parse_string(json_string)
-      _logger.log_response(uri, "GET", response_code, json_string)
+      _logger.log_response(uri, HTTPClient.METHOD_GET, response_code, json_string)
       var response = SceneListResponse.new()
       if json.has("total_count"):
         response.scene_count = json.total_count
@@ -54,7 +54,7 @@ func request_scene_list(startIdx: int = 0) -> void:
       http_request.queue_free()
       new_scene_list.emit(response)
   )
-  _logger.log_request("GET", uri)
+  _logger.log_request(HTTPClient.METHOD_GET, uri)
   http_request.request(uri)
 
 ## Upload a scene to the server[br]
@@ -66,7 +66,7 @@ func upload_scene(scene: Scene) -> void:
   add_child(http_request)
   http_request.request_completed.connect(
     func(_result, response_code: int, _headers, body) -> void:
-      _logger.log_response(SCENE_ADD_URL, "POST", response_code, body.get_string_from_utf8())
+      _logger.log_response(SCENE_ADD_URL, HTTPClient.METHOD_POST, response_code, body.get_string_from_utf8())
       if response_code == 200:
         upload_success.emit(scene.scene_name)
       else:
@@ -75,7 +75,7 @@ func upload_scene(scene: Scene) -> void:
   )
   var json_string = UploadSceneRequest.serialize(scene)
   var headers: PackedStringArray = ["Content-Type: application/json"]
-  _logger.log_request("POST", SCENE_ADD_URL, json_string)
+  _logger.log_request(HTTPClient.METHOD_POST, SCENE_ADD_URL, json_string)
   var error = http_request.request(SCENE_ADD_URL, headers, HTTPClient.METHOD_POST, json_string)
   if error != OK:
     http_request.queue_free()

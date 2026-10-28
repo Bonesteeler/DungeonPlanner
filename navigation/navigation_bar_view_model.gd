@@ -20,7 +20,7 @@ var scene_builders: Array = []
 ## - [code]scene_builders_updated[/code] if the scene builder was successfully added[br]
 func add_scene_builder(vm: SceneBuilderViewModel) -> void:
   if has_scene_with_id(vm.scene.id):
-    return
+	return
   scene_builders.append(vm)
   vm.id_updated.connect(func(): scene_builders_updated.emit())
   scene_builders_updated.emit()
@@ -31,8 +31,8 @@ func add_scene_builder(vm: SceneBuilderViewModel) -> void:
 ## [b]Returns:[/b] [bool][br]
 func has_scene_with_id(id: String) -> bool:
   for vm in scene_builders:
-    if vm.scene.id == id:
-      return true
+	if vm.scene.id == id:
+	  return true
   return false
 
 ## Retrieves the scene builder with the specified ID.[br]
@@ -41,6 +41,6 @@ func has_scene_with_id(id: String) -> bool:
 ## [b]Returns:[/b] [SceneBuilderViewModel] or [code]null[/code] if not found[br]
 func get_scene_by_id(id: String) -> SceneBuilderViewModel:
   for vm in scene_builders:
-    if vm.scene.id == id:
-      return vm
+	if vm.scene.id == id:
+	  return vm
   return null

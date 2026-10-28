@@ -66,21 +66,35 @@ func _write(level: LogLevel, tag: String, message: String) -> void:
     _log_file.flush()
 
 
+func _method_to_string(method: HTTPClient.Method) -> String:
+  match method:
+    HTTPClient.METHOD_GET: return "GET"
+    HTTPClient.METHOD_HEAD: return "HEAD"
+    HTTPClient.METHOD_POST: return "POST"
+    HTTPClient.METHOD_PUT: return "PUT"
+    HTTPClient.METHOD_DELETE: return "DELETE"
+    HTTPClient.METHOD_OPTIONS: return "OPTIONS"
+    HTTPClient.METHOD_TRACE: return "TRACE"
+    HTTPClient.METHOD_CONNECT: return "CONNECT"
+    HTTPClient.METHOD_PATCH: return "PATCH"
+    _: return "UNKNOWN"
+
+
 ## Log an outgoing HTTP request.[br]
-func log_request(method: String, url: String, body: String = "") -> void:
+func log_request(method: HTTPClient.Method, url: String, body: String = "") -> void:
   var msg: String
   if body.length() > 0:
-    msg = "%s %s body: %s" % [method, url, body]
+    msg = "%s %s body: %s" % [_method_to_string(method), url, body]
   else:
-    msg = "%s %s" % [method, url]
+    msg = "%s %s" % [_method_to_string(method), url]
   _write(LogLevel.INFO, "REQUEST ", msg)
 
 
 ## Log a completed HTTP response.[br]
 ## Level is determined by [code]response_code[/code]: INFO for 2xx, WARNING for 4xx, ERROR for 5xx or 0.
-func log_response(url: String, method: String, response_code: int, body: String = "") -> void:
+func log_response(url: String, method: HTTPClient.Method, response_code: int, body: String = "") -> void:
   var response_class = response_code / 100
-  var msg := "%d %s %s" % [response_code, method, url]
+  var msg := "%d %s %s" % [response_code, _method_to_string(method), url]
   if body.length() > 0:
     msg += " body: %s" % [body]
   var level: LogLevel

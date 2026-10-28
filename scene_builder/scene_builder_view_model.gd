@@ -26,21 +26,21 @@ var tile_layer_vms: Array = []
 ## [code]data[/code] : [Scene] — existing scene to load, or [code]null[/code] if not provided.[br]
 func _init(data: Scene = null):
   if data == null:
-    scene = Scene.new()
-    scene.scene_name = DEFAULT_SCENE_NAME
-    scene.id = UUID.v7()
+	scene = Scene.new()
+	scene.scene_name = DEFAULT_SCENE_NAME
+	scene.id = UUID.v7()
   else:
-    scene = data
+	scene = data
   selected_tile = SceneTileViewModel.new()
   tile_layer_vms = []
   for layer in scene.data.layers:
-    var layer_vm = TileLayerViewModel.new()
-    layer_vm.set_layer(layer)
-    tile_layer_vms.append(layer_vm)
+	var layer_vm = TileLayerViewModel.new()
+	layer_vm.set_layer(layer)
+	tile_layer_vms.append(layer_vm)
   if tile_layer_vms.size() == 0:
-    var new_vm = TileLayerViewModel.new()
-    scene.data.layers.append(new_vm.layer)
-    tile_layer_vms.append(new_vm)
+	var new_vm = TileLayerViewModel.new()
+	scene.data.layers.append(new_vm.layer)
+	tile_layer_vms.append(new_vm)
   selected_layer = tile_layer_vms[0]
 
 ## Rotates the selected tile 90 degrees counter-clockwise.[br]
@@ -92,7 +92,7 @@ func set_hovered_space(space: Space):
 ## [b]Returns:[/b] [bool][br]
 func does_selected_tile_fit() -> bool:
   if preview_space == null or selected_tile.tile == null:
-    return false
+	return false
   return selected_layer.does_tile_fit(selected_tile.tile, Vector2(preview_space.x, preview_space.z), selected_tile.rotation)
 
 ## Updates the scene ID and emits the [code]id_updated[/code] signal.[br]
@@ -121,7 +121,7 @@ func update_scene_name(new_name: String) -> void:
 ## [b]Returns:[/b] [bool][br]
 func can_set_tile_at(x: int, y: int, tile_vm: SceneTileViewModel) -> bool:
   if tile_vm.tile == null:
-    return false
+	return false
   return selected_layer.does_tile_fit(tile_vm.tile, Vector2(x, y), tile_vm.rotation)
 
 ## Checks if the selected tile can be placed at the specified coordinates.[br]
@@ -131,7 +131,7 @@ func can_set_tile_at(x: int, y: int, tile_vm: SceneTileViewModel) -> bool:
 ## [b]Returns:[/b] [bool][br]
 func can_set_selected_tile_at(x: int, y: int) -> bool:
   if selected_tile.tile == null:
-    return false
+	return false
   return selected_layer.does_tile_fit(selected_tile.tile, Vector2(x, y), selected_tile.rotation)
 
 ## Places a tile at the specified coordinates if able.[br]
@@ -141,8 +141,8 @@ func can_set_selected_tile_at(x: int, y: int) -> bool:
 ## [code]tile_vm[/code] : [SceneTileViewModel] — the view model to place.[br]
 func set_tile_in_layout_at(x: int, y: int, tile_vm: SceneTileViewModel) -> void:
   if not can_set_tile_at(x, y, tile_vm):
-    print("Cannot set tile at position: ", x, ", ", y)
-    return
+	print("Cannot set tile at position: ", x, ", ", y)
+	return
   selected_layer.set_tile_at(x, y, tile_vm)
 
 ## Places the selected tile at the specified coordinates if able.[br]
