@@ -50,7 +50,7 @@ func request(
   var response := await _send(url, method, payload, token)
   if response.status_code == 401:
     if not await _refresh_tokens():
-      return response
+      return Response.new()
     response = await _send(url, method, payload, Auth.get_access_token())
   return response
 
@@ -105,6 +105,9 @@ func _do_refresh() -> bool:
   var access_token: String = data.get("access_token", "")
   if access_token.is_empty():
     return false
+  refresh_token = data.get("refresh_token", "")
+  if refresh_token.is_empty():
+    return false
   var expires_at := int(Time.get_unix_time_from_system()) + int(data.get("expires_in", 0))
-  Auth.set_session(access_token, data.get("refresh_token", ""), expires_at)
+  Auth.set_session(access_token, refresh_token, expires_at)
   return true

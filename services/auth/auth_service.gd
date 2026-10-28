@@ -19,7 +19,7 @@ const EXPIRY_BUFFER_SECONDS := 30
 
 var _access_token: String = ""
 var _refresh_token: String = ""
-## Unix time at which the access token expires. 0 means unknown.
+## Unix time at which the access token expires.
 var _access_token_expires_at: int = 0
 
 func _ready() -> void:
