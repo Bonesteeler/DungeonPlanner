@@ -6,10 +6,12 @@ extends Node
 ## Call [code]get_access_token()[/code] before any authenticated API call. Access tokens
 ## stay in memory; the refresh token is persisted for use by the authentication flow.[br]
 ## [b]Signals:[/b][br]
-## - [code]signed_in()[/code]: Tokens were set via [code]set_session()[/code].[br]
-## - [code]signed_out()[/code]: The session was cleared.[br]
+## - [code]signed_in()[/code]: [code]set_session()[/code] was called while no access token was held[br]
+## - [code]tokens_refreshed()[/code]: [code]set_session()[/code] replaced an access token that was already held.[br]
+## - [code]signed_out()[/code]: The session was cleared, for any reason.[br]
 
 signal signed_in()
+signal tokens_refreshed()
 signal signed_out()
 
 const STORAGE_PATH := "user://auth.cfg"
@@ -35,12 +37,16 @@ func has_session() -> bool:
 ## [code]refresh_token[/code] : [String] — The new refresh token.[br]
 ## [code]expires_at[/code] : [int] — Unix time at which the access token expires.[br]
 func set_session(access_token: String, refresh_token: String, expires_at: int) -> void:
+  var was_active := not _access_token.is_empty()
   _access_token = access_token
   if not refresh_token.is_empty():
     _refresh_token = refresh_token
   _access_token_expires_at = expires_at
   _save()
-  signed_in.emit()
+  if was_active:
+    tokens_refreshed.emit()
+  else:
+    signed_in.emit()
 
 ## Clears the session from memory and disk.[br]
 func sign_out() -> void:

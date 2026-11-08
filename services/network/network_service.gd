@@ -13,6 +13,8 @@ extends Node
 signal session_expired()
 signal _refresh_finished(success: bool)
 
+const DEFAULT_TIMEOUT := 30
+const REDACTED := "[redacted]"
 const DOMAIN := "http://localhost:8080/"
 const REFRESH_URL := DOMAIN + "v1/auth/refresh"
 
@@ -44,6 +46,8 @@ func request(
 
   var token: String = Auth.get_access_token()
   if token.is_empty():
+    if not Auth.has_session():
+      return Response.new()
     if not await _refresh_tokens():
       return Response.new()
     token = Auth.get_access_token()
@@ -54,7 +58,7 @@ func request(
     response = await _send(url, method, payload, Auth.get_access_token())
   return response
 
-func _send(url: String, method: HTTPClient.Method, payload: Variant, token: String) -> Response:
+func _send(url: String, method: HTTPClient.Method, payload: Variant, token: String, sensitive: bool = false) -> Response:
   var headers := PackedStringArray()
   var body := ""
   if payload is String:
@@ -66,8 +70,9 @@ func _send(url: String, method: HTTPClient.Method, payload: Variant, token: Stri
     headers.append("Authorization: Bearer " + token)
 
   var http := HTTPRequest.new()
+  http.timeout = DEFAULT_TIMEOUT
   add_child(http)
-  _logger.log_request(method, url, body)
+  _logger.log_request(method, url, REDACTED if sensitive else body)
   var response := Response.new()
   if http.request(url, headers, method, body) != OK:
     http.queue_free()
@@ -78,13 +83,15 @@ func _send(url: String, method: HTTPClient.Method, payload: Variant, token: Stri
   response.body = (result[3] as PackedByteArray).get_string_from_utf8()
   response.ok = result[0] == HTTPRequest.RESULT_SUCCESS and response.status_code >= 200 and response.status_code < 300
   response.json = JSON.parse_string(response.body)
-  _logger.log_response(url, method, response.status_code, response.body)
+  _logger.log_response(url, method, response.status_code, REDACTED if sensitive else response.body)
   return response
 
 ## Refreshes tokens; concurrent callers share a single refresh.
 func _refresh_tokens() -> bool:
   if _is_refreshing:
     return await _refresh_finished
+  if not Auth.has_session():
+    return false
   _is_refreshing = true
   var success := await _do_refresh()
   _is_refreshing = false
@@ -98,7 +105,7 @@ func _do_refresh() -> bool:
   var refresh_token: String = Auth.get_refresh_token()
   if refresh_token.is_empty():
     return false
-  var response := await _send(REFRESH_URL, HTTPClient.METHOD_POST, {"refresh_token": refresh_token}, "")
+  var response := await _send(REFRESH_URL, HTTPClient.METHOD_POST, {"refresh_token": refresh_token}, "", true)
   if not response.ok or not (response.json is Dictionary):
     return false
   var data: Dictionary = response.json
