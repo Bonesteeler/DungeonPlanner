@@ -16,7 +16,7 @@ signal _refresh_finished(success: bool)
 const DEFAULT_TIMEOUT := 30
 const REDACTED := "[redacted]"
 const DOMAIN := "http://localhost:8080/"
-const REFRESH_URL := DOMAIN + "v1/auth/refresh"
+const REFRESH_URL := DOMAIN + "auth/refresh"
 
 ## Result of a network call.[br]
 ## [code]ok[/code] is true when the request completed with a 2xx status.
@@ -29,6 +29,9 @@ class Response:
 var auth: AuthService = Auth
 var _logger := NetworkLogger.new()
 var _is_refreshing := false
+
+func _ready() -> void:
+  await _do_refresh()
 
 ## Performs a request and returns a [Response].[br]
 ## [b]Parameters:[/b][br]
@@ -121,6 +124,4 @@ func _do_refresh() -> bool:
   refresh_token = data.get("refresh_token", "")
   if refresh_token.is_empty():
     return false
-  var expires_at := int(Time.get_unix_time_from_system()) + int(data.get("expires_in", 0))
-  auth.set_session(access_token, refresh_token, expires_at)
-  return true
+  return auth.set_session(access_token, refresh_token)

@@ -57,6 +57,4 @@ func _authenticate(path: String, payload: Dictionary) -> bool:
   var refresh_token: String = data.get("refresh_token", "")
   if access_token.is_empty() or refresh_token.is_empty():
     return false
-  var expires_at := int(Time.get_unix_time_from_system()) + int(data.get("expires_in", 0))
-  auth.set_session(access_token, refresh_token, expires_at, payload.get("email", ""))
-  return true
+  return auth.set_session(access_token, refresh_token, payload.get("email", ""))

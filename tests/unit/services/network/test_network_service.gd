@@ -1,5 +1,7 @@
 extends GutTest
 
+const Jwt := preload("res://tests/unit/jwt_helper.gd")
+
 class FakeNetwork extends NetworkService:
   signal release_refresh()
   var queue: Array = []
@@ -18,6 +20,8 @@ var net: FakeNetwork
 var auth: AuthService
 var storage_path: String
 var _results: Array = []
+var _valid_token: String
+var _new_token: String
 
 func _now() -> int:
   return int(Time.get_unix_time_from_system())
@@ -29,14 +33,17 @@ func _resp(status: int, json: Variant = null) -> NetworkService.Response:
   response.json = json
   return response
 
-func _refresh_ok(expires_in: int = 3600) -> NetworkService.Response:
-  return _resp(200, {"access_token": "new_access", "refresh_token": "new_refresh", "expires_in": expires_in})
+## Refresh response whose new access token expires [param seconds_from_now] seconds from now.
+func _refresh_ok(seconds_from_now: int = 3600) -> NetworkService.Response:
+  _new_token = Jwt.make(_now() + seconds_from_now)
+  return _resp(200, {"access_token": _new_token, "refresh_token": "new_refresh"})
 
 func _sign_in_expired() -> void:
-  auth.set_session("old_access", "old_refresh", _now() - 10)
+  auth.set_session(Jwt.make(_now() - 10), "old_refresh")
 
 func _sign_in_valid() -> void:
-  auth.set_session("access", "refresh", _now() + 3600)
+  _valid_token = Jwt.make(_now() + 3600)
+  auth.set_session(_valid_token, "refresh")
 
 func _run_request(path: String) -> void:
   var response := await net.request(path, HTTPClient.METHOD_GET)
@@ -90,7 +97,7 @@ func test_authenticated_call_sends_valid_token():
   var response := await net.request("v1/x", HTTPClient.METHOD_GET)
   assert_true(response.ok)
   assert_eq(net.calls.size(), 1)
-  assert_eq(net.calls[0].token, "access")
+  assert_eq(net.calls[0].token, _valid_token)
 
 func test_authenticated_call_without_session_returns_empty_response():
   var response := await net.request("v1/x", HTTPClient.METHOD_GET)
@@ -110,7 +117,7 @@ func test_expired_token_refreshes_before_sending():
   assert_eq(net.calls[0].payload, {"refresh_token": "old_refresh"})
   assert_eq(net.calls[0].token, "")
   assert_true(net.calls[0].sensitive, "Refresh traffic must be redacted in logs")
-  assert_eq(net.calls[1].token, "new_access")
+  assert_eq(net.calls[1].token, _new_token)
   assert_eq(auth.get_refresh_token(), "new_refresh")
 
 func test_expired_token_with_failed_refresh_returns_empty_and_signs_out():
@@ -134,10 +141,10 @@ func test_401_refreshes_and_retries_once_with_new_token():
   var response := await net.request("v1/x", HTTPClient.METHOD_GET)
   assert_true(response.ok)
   assert_eq(net.calls.size(), 3)
-  assert_eq(net.calls[0].token, "access")
+  assert_eq(net.calls[0].token, _valid_token)
   assert_eq(net.calls[1].url, NetworkService.REFRESH_URL)
   assert_eq(net.calls[2].url, NetworkService.DOMAIN + "v1/x")
-  assert_eq(net.calls[2].token, "new_access")
+  assert_eq(net.calls[2].token, _new_token)
 
 func test_401_after_retry_is_returned_without_further_refresh():
   _sign_in_valid()
@@ -176,25 +183,25 @@ func test_refresh_fails_when_json_is_not_a_dictionary():
 
 func test_refresh_fails_without_access_token():
   _sign_in_expired()
-  net.queue.append(_resp(200, {"refresh_token": "r", "expires_in": 3600}))
+  net.queue.append(_resp(200, {"refresh_token": "r"}))
   assert_false(await net._do_refresh())
 
 func test_refresh_fails_without_refresh_token():
   _sign_in_expired()
-  net.queue.append(_resp(200, {"access_token": "a", "expires_in": 3600}))
+  net.queue.append(_resp(200, {"access_token": Jwt.make(_now() + 3600)}))
   assert_false(await net._do_refresh())
 
 func test_refresh_fails_without_stored_refresh_token():
   assert_false(await net._do_refresh())
   assert_eq(net.calls.size(), 0)
 
-func test_refresh_stores_expiry_from_expires_in():
+func test_refresh_stores_expiry_from_access_token():
   _sign_in_expired()
   net.queue.append(_refresh_ok(AuthService.EXPIRY_BUFFER_SECONDS + 60))
   assert_true(await net._do_refresh())
-  assert_eq(auth.get_access_token(), "new_access")
+  assert_eq(auth.get_access_token(), _new_token)
 
-func test_refresh_with_short_expires_in_yields_no_valid_token():
+func test_refresh_with_short_lived_token_yields_no_valid_token():
   _sign_in_expired()
   net.queue.append(_refresh_ok(AuthService.EXPIRY_BUFFER_SECONDS - 10))
   assert_true(await net._do_refresh())

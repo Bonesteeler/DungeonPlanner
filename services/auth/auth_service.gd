@@ -19,6 +19,8 @@ const STORAGE_SECTION := "auth"
 const REFRESH_TOKEN := "refresh_token"
 const EMAIL := "email"
 const EXPIRY_BUFFER_SECONDS := 30
+## Matches unpadded standard base64.
+static var _BASE64_PATTERN := RegEx.create_from_string("^[A-Za-z0-9+/]+$")
 
 var _storage_path := STORAGE_PATH
 var _access_token: String = ""
@@ -38,9 +40,13 @@ func has_session() -> bool:
 ## [b]Parameters:[/b][br]
 ## [code]access_token[/code] : [String] — The new access token.[br]
 ## [code]refresh_token[/code] : [String] — The new refresh token.[br]
-## [code]expires_at[/code] : [int] — Unix time at which the access token expires.[br]
 ## [code]email[/code] : [String] — The signed in user's email.[br]
-func set_session(access_token: String, refresh_token: String, expires_at: int, email: String = "") -> void:
+## [b]Returns:[/b] [bool] — false if a token was empty or the access token's expiry could not be read; the session is cleared.[br]
+func set_session(access_token: String, refresh_token: String, email: String = "") -> bool:
+  var expires_at := _read_expiry(access_token)
+  if refresh_token.is_empty() or expires_at < 0:
+    sign_out()
+    return false
   var was_active := not _access_token.is_empty()
   _access_token = access_token
   _refresh_token = refresh_token
@@ -48,13 +54,11 @@ func set_session(access_token: String, refresh_token: String, expires_at: int, e
   if not email.is_empty():
     _email = email
   _save()
-  if _access_token.is_empty() or _refresh_token.is_empty():
-    sign_out()
-    return
   if was_active:
     tokens_refreshed.emit()
   else:
     signed_in.emit()
+  return true
 
 ## Clears the session from memory and disk.[br]
 func sign_out() -> void:
@@ -79,10 +83,32 @@ func get_refresh_token() -> String:
 func get_email() -> String:
   return _email
 
+## Returns the JWT's [code]exp[/code] claim, or -1 if it cannot be read.[br]
+func _read_expiry(token: String) -> int:
+  var parts := token.split(".")
+  if parts.size() != 3:
+    return -1
+  var payload := parts[1].replace("-", "+").replace("_", "/")
+  if payload.length() % 4 == 1 or not _BASE64_PATTERN.search(payload):
+    return -1
+  while payload.length() % 4 != 0:
+    payload += "="
+  var bytes := Marshalls.base64_to_raw(payload)
+  if bytes.is_empty():
+    return -1
+  var json := JSON.new()
+  if json.parse(bytes.get_string_from_utf8()) != OK or not (json.data is Dictionary):
+    return -1
+  var expiry: Variant = json.data.get("exp")
+  if not (expiry is float or expiry is int) or expiry < 0:
+    return -1
+  return int(expiry)
+
 func _is_access_token_valid() -> bool:
   if _access_token.is_empty():
     return false
-  return Time.get_unix_time_from_system() < _access_token_expires_at - EXPIRY_BUFFER_SECONDS
+  var current_time := Time.get_unix_time_from_system()
+  return current_time < _access_token_expires_at - EXPIRY_BUFFER_SECONDS
 
 func _save() -> void:
   var config := ConfigFile.new()
