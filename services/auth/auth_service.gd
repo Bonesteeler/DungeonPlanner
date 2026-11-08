@@ -19,6 +19,7 @@ const STORAGE_SECTION := "auth"
 const REFRESH_TOKEN := "refresh_token"
 const EXPIRY_BUFFER_SECONDS := 30
 
+var _storage_path := STORAGE_PATH
 var _access_token: String = ""
 var _refresh_token: String = ""
 ## Unix time at which the access token expires.
@@ -39,10 +40,12 @@ func has_session() -> bool:
 func set_session(access_token: String, refresh_token: String, expires_at: int) -> void:
   var was_active := not _access_token.is_empty()
   _access_token = access_token
-  if not refresh_token.is_empty():
-    _refresh_token = refresh_token
+  _refresh_token = refresh_token
   _access_token_expires_at = expires_at
   _save()
+  if _access_token.is_empty() or _refresh_token.is_empty():
+    signed_out.emit()
+    return
   if was_active:
     tokens_refreshed.emit()
   else:
@@ -53,7 +56,7 @@ func sign_out() -> void:
   _access_token = ""
   _refresh_token = ""
   _access_token_expires_at = 0
-  DirAccess.remove_absolute(ProjectSettings.globalize_path(STORAGE_PATH))
+  DirAccess.remove_absolute(ProjectSettings.globalize_path(_storage_path))
   signed_out.emit()
 
 ## Returns the access token if it is valid, or an empty string otherwise.[br]
@@ -74,10 +77,10 @@ func _is_access_token_valid() -> bool:
 func _save() -> void:
   var config := ConfigFile.new()
   config.set_value(STORAGE_SECTION, REFRESH_TOKEN, _refresh_token)
-  config.save_encrypted_pass(STORAGE_PATH, OS.get_unique_id())
+  config.save_encrypted_pass(_storage_path, OS.get_unique_id())
 
 func _load() -> void:
   var config := ConfigFile.new()
-  if config.load_encrypted_pass(STORAGE_PATH, OS.get_unique_id()) != OK:
+  if config.load_encrypted_pass(_storage_path, OS.get_unique_id()) != OK:
     return
   _refresh_token = config.get_value(STORAGE_SECTION, REFRESH_TOKEN, "")

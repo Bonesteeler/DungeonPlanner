@@ -26,6 +26,7 @@ class Response:
   var body: String = ""
   var json: Variant = null
 
+var auth: AuthService = Auth
 var _logger := NetworkLogger.new()
 var _is_refreshing := false
 
@@ -44,19 +45,22 @@ func request(
   if not authenticated:
     return await _send(url, method, payload, "")
 
-  var token: String = Auth.get_access_token()
+  var token: String = auth.get_access_token()
   if token.is_empty():
-    if not Auth.has_session():
+    if not auth.has_session():
       return Response.new()
     if not await _refresh_tokens():
       return Response.new()
-    token = Auth.get_access_token()
+    token = auth.get_access_token()
   var response := await _send(url, method, payload, token)
   if response.status_code == 401:
     if not await _refresh_tokens():
       return Response.new()
-    response = await _send(url, method, payload, Auth.get_access_token())
+    response = await _send(url, method, payload, auth.get_access_token())
   return response
+
+func _start_request(http: HTTPRequest, url: String, headers: PackedStringArray, method: HTTPClient.Method, body: String) -> Error:
+  return http.request(url, headers, method, body)
 
 func _send(url: String, method: HTTPClient.Method, payload: Variant, token: String, sensitive: bool = false) -> Response:
   var headers := PackedStringArray()
@@ -74,7 +78,7 @@ func _send(url: String, method: HTTPClient.Method, payload: Variant, token: Stri
   add_child(http)
   _logger.log_request(method, url, REDACTED if sensitive else body)
   var response := Response.new()
-  if http.request(url, headers, method, body) != OK:
+  if _start_request(http, url, headers, method, body) != OK:
     http.queue_free()
     return response
   var result: Array = await http.request_completed
@@ -90,19 +94,19 @@ func _send(url: String, method: HTTPClient.Method, payload: Variant, token: Stri
 func _refresh_tokens() -> bool:
   if _is_refreshing:
     return await _refresh_finished
-  if not Auth.has_session():
+  if not auth.has_session():
     return false
   _is_refreshing = true
   var success := await _do_refresh()
   _is_refreshing = false
   if not success:
-    Auth.sign_out()
+    auth.sign_out()
     session_expired.emit()
   _refresh_finished.emit(success)
   return success
 
 func _do_refresh() -> bool:
-  var refresh_token: String = Auth.get_refresh_token()
+  var refresh_token: String = auth.get_refresh_token()
   if refresh_token.is_empty():
     return false
   var response := await _send(REFRESH_URL, HTTPClient.METHOD_POST, {"refresh_token": refresh_token}, "", true)
@@ -116,5 +120,5 @@ func _do_refresh() -> bool:
   if refresh_token.is_empty():
     return false
   var expires_at := int(Time.get_unix_time_from_system()) + int(data.get("expires_in", 0))
-  Auth.set_session(access_token, refresh_token, expires_at)
+  auth.set_session(access_token, refresh_token, expires_at)
   return true
