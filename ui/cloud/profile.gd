@@ -23,15 +23,31 @@ enum State {LOGIN, SIGNUP, LOGGED_IN}
 
 var _state: State = State.LOGIN
 
-@onready var username_entry: TextEdit = $%UsernameEntry
-@onready var email_entry: TextEdit = $%EmailEntry
-@onready var password_entry: TextEdit = $%PasswordEntry
+@onready var username_entry: LineEdit = $%UsernameEntry
+@onready var email_entry: LineEdit = $%EmailEntry
+@onready var password_entry: LineEdit = $%PasswordEntry
 @onready var username_label: Label = $%UsernameLabel
 @onready var error_label: Label = $%ErrorLabel
 @onready var primary_button: Button = $%PrimaryButton
 
 func _ready() -> void:
   set_login_state()
+
+## Returns the text typed in the username field.[br]
+func get_username() -> String:
+  return username_entry.text
+
+## Returns the text typed in the email field.[br]
+func get_email() -> String:
+  return email_entry.text
+
+## Returns the text typed in the password field.[br]
+func get_password() -> String:
+  return password_entry.text
+
+## Empties the password field.[br]
+func clear_password() -> void:
+  password_entry.clear()
 
 ## Show the login form: email, password, and login button.[br]
 ## [b]Parameters:[/b][br]
@@ -57,9 +73,9 @@ func set_signup_state(has_error: bool = false) -> void:
   primary_button.text = SIGN_UP_TEXT
   set_error(has_error)
 
-## Show the logged in view: username label and log out button.[br]
+## Show the logged in view: user label and log out button.[br]
 ## [b]Parameters:[/b][br]
-## [code]username[/code] : [String] — the logged in user's display name.[br]
+## [code]username[/code] : [String] — the text shown for the logged in user.[br]
 func set_logged_in_state(username: String) -> void:
   _state = State.LOGGED_IN
   username_entry.visible = false

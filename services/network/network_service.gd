@@ -36,14 +36,16 @@ var _is_refreshing := false
 ## [code]method[/code] : [HTTPClient.Method] — HTTP method.[br]
 ## [code]payload[/code] : [Variant] — Dictionary/Array (sent as JSON), String, or null.[br]
 ## [code]authenticated[/code] : [bool] — Attach the bearer token and refresh it when needed.[br]
+## [code]sensitive[/code] : [bool] — Redact the request and response bodies in the network log.[br]
 func request(
     path: String,
     method: HTTPClient.Method,
     payload: Variant = null,
-    authenticated: bool = true) -> Response:
+    authenticated: bool = true,
+    sensitive: bool = false) -> Response:
   var url := path if path.begins_with("http") else DOMAIN + path.trim_prefix("/")
   if not authenticated:
-    return await _send(url, method, payload, "")
+    return await _send(url, method, payload, "", sensitive)
 
   var token: String = auth.get_access_token()
   if token.is_empty():
@@ -52,11 +54,11 @@ func request(
     if not await _refresh_tokens():
       return Response.new()
     token = auth.get_access_token()
-  var response := await _send(url, method, payload, token)
+  var response := await _send(url, method, payload, token, sensitive)
   if response.status_code == 401:
     if not await _refresh_tokens():
       return Response.new()
-    response = await _send(url, method, payload, auth.get_access_token())
+    response = await _send(url, method, payload, auth.get_access_token(), sensitive)
   return response
 
 func _start_request(http: HTTPRequest, url: String, headers: PackedStringArray, method: HTTPClient.Method, body: String) -> Error:

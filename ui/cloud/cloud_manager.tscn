@@ -42,6 +42,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 
 [node name="Profile" parent="VBoxContainer/HBoxContainer/RightColumn" instance=ExtResource("3_vlje8")]
+unique_name_in_owner = true
 layout_mode = 2
 
 [node name="UploadScenes" parent="VBoxContainer/HBoxContainer/RightColumn" instance=ExtResource("3_upload")]

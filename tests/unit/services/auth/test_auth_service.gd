@@ -112,3 +112,25 @@ func test_set_session_after_sign_out_emits_signed_in():
   watch_signals(auth)
   auth.set_session("access2", "refresh2", _now() + 3600)
   assert_signal_emitted(auth, "signed_in")
+
+func test_email_is_stored_persisted_and_loaded():
+  auth.set_session("access", "refresh", _now() + 3600, "a@b.c")
+  assert_eq(auth.get_email(), "a@b.c")
+  var other := _new_auth()
+  other._load()
+  assert_eq(other.get_email(), "a@b.c")
+
+func test_refresh_without_email_keeps_existing_email():
+  auth.set_session("access", "refresh", _now() + 3600, "a@b.c")
+  auth.set_session("access2", "refresh2", _now() + 3600)
+  assert_eq(auth.get_email(), "a@b.c")
+
+func test_sign_out_clears_email():
+  auth.set_session("access", "refresh", _now() + 3600, "a@b.c")
+  auth.sign_out()
+  assert_eq(auth.get_email(), "")
+
+func test_empty_tokens_clear_email():
+  auth.set_session("access", "refresh", _now() + 3600, "a@b.c")
+  auth.set_session("", "", _now() + 3600)
+  assert_eq(auth.get_email(), "")

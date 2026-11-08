@@ -17,11 +17,13 @@ signal signed_out()
 const STORAGE_PATH := "user://auth.cfg"
 const STORAGE_SECTION := "auth"
 const REFRESH_TOKEN := "refresh_token"
+const EMAIL := "email"
 const EXPIRY_BUFFER_SECONDS := 30
 
 var _storage_path := STORAGE_PATH
 var _access_token: String = ""
 var _refresh_token: String = ""
+var _email: String = ""
 ## Unix time at which the access token expires.
 var _access_token_expires_at: int = 0
 
@@ -32,19 +34,22 @@ func _ready() -> void:
 func has_session() -> bool:
   return not _refresh_token.is_empty()
 
-## Stores an access token in memory and persists the refresh token.[br]
+## Stores an access token in memory and persists the refresh token and email.[br]
 ## [b]Parameters:[/b][br]
 ## [code]access_token[/code] : [String] — The new access token.[br]
 ## [code]refresh_token[/code] : [String] — The new refresh token.[br]
 ## [code]expires_at[/code] : [int] — Unix time at which the access token expires.[br]
-func set_session(access_token: String, refresh_token: String, expires_at: int) -> void:
+## [code]email[/code] : [String] — The signed in user's email.[br]
+func set_session(access_token: String, refresh_token: String, expires_at: int, email: String = "") -> void:
   var was_active := not _access_token.is_empty()
   _access_token = access_token
   _refresh_token = refresh_token
   _access_token_expires_at = expires_at
+  if not email.is_empty():
+    _email = email
   _save()
   if _access_token.is_empty() or _refresh_token.is_empty():
-    signed_out.emit()
+    sign_out()
     return
   if was_active:
     tokens_refreshed.emit()
@@ -55,6 +60,7 @@ func set_session(access_token: String, refresh_token: String, expires_at: int) -
 func sign_out() -> void:
   _access_token = ""
   _refresh_token = ""
+  _email = ""
   _access_token_expires_at = 0
   DirAccess.remove_absolute(ProjectSettings.globalize_path(_storage_path))
   signed_out.emit()
@@ -69,6 +75,10 @@ func get_access_token() -> String:
 func get_refresh_token() -> String:
   return _refresh_token
 
+## Returns the stored email, or an empty string if there is none.[br]
+func get_email() -> String:
+  return _email
+
 func _is_access_token_valid() -> bool:
   if _access_token.is_empty():
     return false
@@ -77,6 +87,7 @@ func _is_access_token_valid() -> bool:
 func _save() -> void:
   var config := ConfigFile.new()
   config.set_value(STORAGE_SECTION, REFRESH_TOKEN, _refresh_token)
+  config.set_value(STORAGE_SECTION, EMAIL, _email)
   config.save_encrypted_pass(_storage_path, OS.get_unique_id())
 
 func _load() -> void:
@@ -84,3 +95,4 @@ func _load() -> void:
   if config.load_encrypted_pass(_storage_path, OS.get_unique_id()) != OK:
     return
   _refresh_token = config.get_value(STORAGE_SECTION, REFRESH_TOKEN, "")
+  _email = config.get_value(STORAGE_SECTION, EMAIL, "")
