@@ -50,9 +50,13 @@ func upload_scene(scene_id: String) -> void:
 
 ## Import a scene from the server into local storage.[br]
 ## [b]Parameters:[/b][br]
-## [code]scene[/code] : [Scene] — the scene received from the server.[br]
+## [code]scene[/code] : [Scene] — the partial scene from the list.[br]
 func import_scene(scene: Scene) -> void:
-	SceneSaveService.add_scene(scene)
+	var response := await network.request(GetSceneRequest.path(scene.id), HTTPClient.METHOD_GET, null, true)
+	if not response.ok or not (response.json is Dictionary):
+		print("Failed to retrieve scene %s from server. Response code: %d" % [scene.id, response.status_code])
+		return
+	SceneSaveService.add_scene(GetSceneRequest.deserialize(response.json))
 
 ## Get all locally saved scenes.[br]
 ## [b]Returns:[/b] [Array[Scene]][br]

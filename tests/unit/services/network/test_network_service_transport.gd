@@ -20,6 +20,8 @@ var net: TransportNetwork
 
 func before_each():
   net = TransportNetwork.new()
+  # A session-less auth keeps _ready() from sending a refresh through the fake transport.
+  net.auth = autofree(AuthService.new())
   add_child_autofree(net)
 
 func _send(payload: Variant = null, token: String = "") -> NetworkService.Response:

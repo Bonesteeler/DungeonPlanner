@@ -24,12 +24,12 @@ func before_each():
   vm = CloudManagerViewModel.new(net)
   watch_signals(vm)
 
-func test_request_scene_list_gets_page_unauthenticated():
+func test_request_scene_list_gets_page_authenticated():
   net.response = _response(200, {"scenes": []})
   await vm.request_scene_list(10)
   assert_eq(net.calls[0].path, "v1/scenes/list/10")
   assert_eq(net.calls[0].method, HTTPClient.METHOD_GET)
-  assert_false(net.calls[0].authenticated)
+  assert_true(net.calls[0].authenticated)
 
 func test_request_scene_list_emits_parsed_response():
   net.response = _response(200, {"total_count": 12, "page_size": 3, "scenes": []})
@@ -108,3 +108,41 @@ func test_upload_scene_emits_failure():
 func test_upload_scene_ignores_unknown_id():
   await vm.upload_scene("missing")
   assert_eq(net.calls.size(), 0)
+
+func _remove_imported(scene_name: String) -> void:
+  for scene in SceneSaveService.scenes.filter(func(s): return s.scene_name == scene_name):
+    SceneSaveService.scenes.erase(scene)
+  DirAccess.remove_absolute(SceneSaveService.LOCAL_SCENES_PATH + scene_name + ".json")
+
+func test_import_scene_fetches_full_scene_by_id():
+  var partial := Scene.new()
+  partial.id = "scene-42"
+  net.response = _response(200, {"id": "scene-42", "name": "Cloud Import Test", "layers": []})
+  await vm.import_scene(partial)
+  _remove_imported("Cloud Import Test")
+  assert_eq(net.calls[0].path, "v1/scenes/scene-42")
+  assert_eq(net.calls[0].method, HTTPClient.METHOD_GET)
+  assert_true(net.calls[0].authenticated)
+
+func test_import_scene_saves_fetched_scene_locally():
+  var partial := Scene.new()
+  partial.id = "scene-42"
+  partial.scene_name = "Partial"
+  net.response = _response(200, {"id": "scene-42", "name": "Cloud Import Test", "layers": []})
+  await vm.import_scene(partial)
+  var saved := SceneSaveService.scenes.filter(func(s): return s.scene_name == "Cloud Import Test")
+  var file_exists := FileAccess.file_exists(SceneSaveService.LOCAL_SCENES_PATH + "Cloud Import Test.json")
+  var partial_saved := SceneSaveService.scenes.any(func(s): return s.scene_name == "Partial")
+  _remove_imported("Cloud Import Test")
+  assert_eq(saved.size(), 1)
+  assert_true(file_exists)
+  assert_false(partial_saved)
+
+func test_import_scene_does_not_save_on_failure():
+  var partial := Scene.new()
+  partial.id = "scene-42"
+  partial.scene_name = "Cloud Import Failure Test"
+  net.response = _response(500)
+  await vm.import_scene(partial)
+  var saved := SceneSaveService.scenes.any(func(s): return s.scene_name == "Cloud Import Failure Test")
+  assert_false(saved)
