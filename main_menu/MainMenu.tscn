@@ -1,9 +1,9 @@
 [gd_scene load_steps=3 format=3 uid="uid://dhqcdwpxul6uo"]
 
 [ext_resource type="Script" uid="uid://d3ickkox8vwuo" path="res://scene_builder/ui/MainMenu.gd" id="1_les83"]
-[ext_resource type="Script" uid="uid://b0liuxw30plba" path="res://main_menu/scene_browser.gd" id="2_yt4ty"]
+[ext_resource type="Texture2D" path="res://ui/background_gradient.tres" id="2_bg"]
 
-[node name="MainMenu" type="PanelContainer"]
+[node name="MainMenu" type="MarginContainer"]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -11,15 +11,35 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_les83")
 
-[node name="Background" type="ColorRect" parent="."]
+[node name="Background" type="TextureRect" parent="."]
 layout_mode = 2
-color = Color(0, 0.45098, 0, 1)
+texture = ExtResource("2_bg")
 
-[node name="HBoxContainer" type="HBoxContainer" parent="."]
+[node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2
-size_flags_horizontal = 4
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
 
-[node name="Label" type="Label" parent="HBoxContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Title" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Home"
+
+[node name="HSeparator" type="HSeparator" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
@@ -30,37 +50,6 @@ in the set
 - Allowed for multiple scenes to be open at once.
 - Old saved scenes are no longer supported,
 hopefully this will be the last time this happens"
-
-[node name="SceneBrowser" type="VBoxContainer" parent="HBoxContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-script = ExtResource("2_yt4ty")
-
-[node name="Title" type="Label" parent="HBoxContainer/SceneBrowser"]
-layout_mode = 2
-text = "Online Scene Browser"
-
-[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/SceneBrowser"]
-layout_mode = 2
-
-[node name="Previous" type="Button" parent="HBoxContainer/SceneBrowser/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "Prev"
-
-[node name="Next" type="Button" parent="HBoxContainer/SceneBrowser/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "Next"
-
-[node name="ScrollContainer" type="ScrollContainer" parent="HBoxContainer/SceneBrowser"]
-layout_mode = 2
-size_flags_vertical = 3
-horizontal_scroll_mode = 0
-
-[node name="SceneListContainer" type="VBoxContainer" parent="HBoxContainer/SceneBrowser/ScrollContainer"]
-unique_name_in_owner = true
-layout_mode = 2
 
 [node name="ConfirmationDialog" type="ConfirmationDialog" parent="."]
 title = "Confirm delete"
@@ -76,6 +65,4 @@ access = 2
 filters = PackedStringArray("*.json")
 use_native_dialog = true
 
-[connection signal="pressed" from="HBoxContainer/SceneBrowser/HBoxContainer/Previous" to="HBoxContainer/SceneBrowser" method="_on_prev_button_pressed"]
-[connection signal="pressed" from="HBoxContainer/SceneBrowser/HBoxContainer/Next" to="HBoxContainer/SceneBrowser" method="_on_next_button_pressed"]
 [connection signal="file_selected" from="SceneImportDialog" to="." method="_on_scene_import_dialog_file_selected"]

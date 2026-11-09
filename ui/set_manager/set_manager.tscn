@@ -27,34 +27,51 @@ theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
-[node name="Columns" type="HBoxContainer" parent="MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Sets"
+
+[node name="HSeparator" type="HSeparator" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="Left" type="MarginContainer" parent="MarginContainer/Columns"]
+[node name="Columns" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Left" type="MarginContainer" parent="MarginContainer/VBoxContainer/Columns"]
 layout_mode = 2
 
-[node name="Sets" parent="MarginContainer/Columns/Left" instance=ExtResource("1_701mt")]
+[node name="Sets" parent="MarginContainer/VBoxContainer/Columns/Left" instance=ExtResource("1_701mt")]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="Middle" type="MarginContainer" parent="MarginContainer/Columns"]
+[node name="VSeparator" type="VSeparator" parent="MarginContainer/VBoxContainer/Columns"]
+layout_mode = 2
+
+[node name="Middle" type="MarginContainer" parent="MarginContainer/VBoxContainer/Columns"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 3.0
 
-[node name="SetDetails" parent="MarginContainer/Columns/Middle" instance=ExtResource("3_b0xsl")]
+[node name="SetDetails" parent="MarginContainer/VBoxContainer/Columns/Middle" instance=ExtResource("3_b0xsl")]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="Right" type="MarginContainer" parent="MarginContainer/Columns"]
+[node name="Right" type="MarginContainer" parent="MarginContainer/VBoxContainer/Columns"]
 layout_mode = 2
 theme_override_constants/margin_left = 5
 theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 5
 
-[node name="TileDetails" parent="MarginContainer/Columns/Right" instance=ExtResource("4_03jg5")]
+[node name="TileDetails" parent="MarginContainer/VBoxContainer/Columns/Right" instance=ExtResource("4_03jg5")]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
@@ -69,8 +86,3 @@ size_flags_vertical = 4
 [node name="Photographer" parent="." instance=ExtResource("6_c7sdl")]
 unique_name_in_owner = true
 layout_mode = 2
-
-[connection signal="delete_set" from="MarginContainer/Columns/Left/Sets" to="." method="delete_set"]
-[connection signal="import_set" from="MarginContainer/Columns/Left/Sets" to="." method="import_set_started"]
-[connection signal="select_set" from="MarginContainer/Columns/Left/Sets" to="." method="select_set"]
-[connection signal="tile_selected" from="MarginContainer/Columns/Middle/SetDetails" to="." method="set_tile_in_details"]

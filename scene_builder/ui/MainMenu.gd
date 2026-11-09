@@ -1,5 +1,5 @@
 class_name MainMenu
-extends PanelContainer
+extends MarginContainer
 ## MainMenu
 ##
 ## [i]Main menu UI for managing scene files, including creating new scenes, loading recent scenes, and importing/exporting scene data.[/i][br]
@@ -11,13 +11,7 @@ var confirmation_dialog_target: String
 var export_scene_name: String = ""
 
 @onready var confirmation_dialog: ConfirmationDialog = $ConfirmationDialog
-@onready var scene_browser: SceneBrowser = $%SceneBrowser
 @onready var scene_import_dialog: FileDialog = $%SceneImportDialog
-
-## Initialize the save manager and connect signals for scene management[br]
-## [b]Returns:[/b] [void][br]
-func _ready():
-  scene_browser.scene_import.connect(SceneSaveService.add_scene)
 
 ## Display a success message after a scene is uploaded[br]
 ## [b]Parameters:[/b][br]
