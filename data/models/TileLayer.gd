@@ -103,6 +103,8 @@ func remove_tile_at(x: int, z: int):
 ## [code]rotation[/code] : [Vector3] — Rotation to apply when calculating occupied spaces.[br]
 ## [b]Returns:[/b] [bool] — `true` if the tile fits, otherwise `false`.[br]
 func does_tile_fit(tile: Tile, position: Vector2, rotation: Vector3) -> bool:
+  if tile == null:
+    return false
   var target_tile: PlacedTile = PlacedTile.new()
   target_tile.position = position
   target_tile.rotation = rotation

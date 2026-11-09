@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://dsa4vwpi18sk6"]
+[gd_scene load_steps=8 format=3 uid="uid://dsa4vwpi18sk6"]
 
 [ext_resource type="PackedScene" uid="uid://4d52h1ninu7c" path="res://ui/set_manager/set_list.tscn" id="1_701mt"]
 [ext_resource type="Script" uid="uid://b7urdu84o7dq6" path="res://ui/set_manager/set_manager_view_model.gd" id="1_fa8gm"]
@@ -6,13 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://8vpb02c07miu" path="res://ui/set_manager/tile_details.tscn" id="4_03jg5"]
 [ext_resource type="PackedScene" uid="uid://lnnbvuy548v7" path="res://ui/set_manager/import_tileset.tscn" id="5_03jg5"]
 [ext_resource type="PackedScene" uid="uid://dy8l7uefoavr1" path="res://ui/set_manager/photographer.tscn" id="6_c7sdl"]
-
-[sub_resource type="Gradient" id="Gradient_jkn8m"]
-colors = PackedColorArray(0.050260514, 0.17144808, 0.34460405, 1, 0.2627451, 0.3137255, 0.45882353, 1)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_701mt"]
-gradient = SubResource("Gradient_jkn8m")
-width = 1024
+[ext_resource type="Texture2D" path="res://ui/background_gradient.tres" id="7_bg"]
 
 [node name="SetManager" type="MarginContainer"]
 anchors_preset = 15
@@ -24,7 +18,7 @@ script = ExtResource("1_fa8gm")
 
 [node name="Background" type="TextureRect" parent="."]
 layout_mode = 2
-texture = SubResource("GradientTexture2D_701mt")
+texture = ExtResource("7_bg")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2
@@ -33,34 +27,51 @@ theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
-[node name="Columns" type="HBoxContainer" parent="MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Sets"
+
+[node name="HSeparator" type="HSeparator" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="Left" type="MarginContainer" parent="MarginContainer/Columns"]
+[node name="Columns" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Left" type="MarginContainer" parent="MarginContainer/VBoxContainer/Columns"]
 layout_mode = 2
 
-[node name="Sets" parent="MarginContainer/Columns/Left" instance=ExtResource("1_701mt")]
+[node name="Sets" parent="MarginContainer/VBoxContainer/Columns/Left" instance=ExtResource("1_701mt")]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="Middle" type="MarginContainer" parent="MarginContainer/Columns"]
+[node name="VSeparator" type="VSeparator" parent="MarginContainer/VBoxContainer/Columns"]
+layout_mode = 2
+
+[node name="Middle" type="MarginContainer" parent="MarginContainer/VBoxContainer/Columns"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 3.0
 
-[node name="SetDetails" parent="MarginContainer/Columns/Middle" instance=ExtResource("3_b0xsl")]
+[node name="SetDetails" parent="MarginContainer/VBoxContainer/Columns/Middle" instance=ExtResource("3_b0xsl")]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="Right" type="MarginContainer" parent="MarginContainer/Columns"]
+[node name="Right" type="MarginContainer" parent="MarginContainer/VBoxContainer/Columns"]
 layout_mode = 2
 theme_override_constants/margin_left = 5
 theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 5
 
-[node name="TileDetails" parent="MarginContainer/Columns/Right" instance=ExtResource("4_03jg5")]
+[node name="TileDetails" parent="MarginContainer/VBoxContainer/Columns/Right" instance=ExtResource("4_03jg5")]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
@@ -75,8 +86,3 @@ size_flags_vertical = 4
 [node name="Photographer" parent="." instance=ExtResource("6_c7sdl")]
 unique_name_in_owner = true
 layout_mode = 2
-
-[connection signal="delete_set" from="MarginContainer/Columns/Left/Sets" to="." method="delete_set"]
-[connection signal="import_set" from="MarginContainer/Columns/Left/Sets" to="." method="import_set_started"]
-[connection signal="select_set" from="MarginContainer/Columns/Left/Sets" to="." method="select_set"]
-[connection signal="tile_selected" from="MarginContainer/Columns/Middle/SetDetails" to="." method="set_tile_in_details"]

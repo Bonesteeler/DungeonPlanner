@@ -10,8 +10,9 @@ var scene_data: Scene
 @onready var author_label = $%Author
 
 func _ready() -> void:
-  name_label.text = scene_data.scene_name
-  author_label.text = AUTHOR_STRING_TEMPLATE % scene_data.author
+  if scene_data != null:
+    name_label.text = scene_data.scene_name
+    author_label.text = AUTHOR_STRING_TEMPLATE % scene_data.author
 
 func set_scene(scene: Scene) -> void:
   scene_data = scene

@@ -34,6 +34,8 @@ func update_tile_offset():
 ## Calculates which grid cells are occupied by this tile based on its [code]tile_data[/code], [code]position[/code], and [code]rotation[/code].[br]
 ## [b]Returns:[/b] [Array] — an array of [code]Vector2[/code] positions representing occupied grid cells.[br]
 func calculate_occupied_spaces() -> Array:
+  if tile_data == null:
+    return []
   # Create base offsets based on tile size
   var x_size = tile_data.x_size
   var y_size = tile_data.y_size

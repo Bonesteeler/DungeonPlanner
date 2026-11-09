@@ -28,16 +28,16 @@ static func serialize(scene: Scene) -> String:
 ## [b]Parameters:[/b] [code]json: String[/code] - JSON string produced by [code]serialize[/code]. [br]
 ## [b]Returns:[/b] A [code]Scene[/code] instance, or [code]null[/code] if parsing/validation fails.
 static func deserialize(json: String) -> Scene:
-  return deserialize_dict(JSON.parse_string(json))
+  var parsed = JSON.parse_string(json)
+  if not (parsed is Dictionary):
+    return null
+  return deserialize_dict(parsed)
 
 ## Builds a [code]Scene[/code] from a Dictionary (already parsed JSON). [br]
 ## [b]Parameters:[/b] [code]json: Dictionary[/code] - Dictionary with keys matching the serialized format. [br]
 ## [b]Returns:[/b] A [code]Scene[/code] object, or [code]null[/code] when required fields (like [code]version[/code]) are missing.
 static func deserialize_dict(json: Dictionary) -> Scene:
-  if not json.has(KEY_VERSION):
-    return null
   var scene = Scene.new()
-  scene.version = int(json.get(KEY_VERSION, 0))
   scene.author = json.get(KEY_AUTHOR, "Unknown")
   scene.data = TileLayoutSerializer.deserialize_array(json.get(KEY_LAYERS, []))
   scene.id = json.get(KEY_ID, UUID.v7())

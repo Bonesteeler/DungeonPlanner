@@ -8,7 +8,9 @@ extends VBoxContainer
 
 var MAIN_MENU = load("res://main_menu/MainMenu.tscn")
 var PLANNING_SCENE = load("res://scene_builder/PlannerScene.tscn")
+var SCENE_MANAGER_SCENE = load("res://ui/scene_manager/scene_manager.tscn")
 var SETS_SCENE = load("res://ui/set_manager/set_manager.tscn")
+var CLOUD_SCENE = load("res://ui/cloud/cloud_manager.tscn")
 
 var vm: NavigationBarViewModel
 
@@ -24,8 +26,7 @@ func _ready() -> void:
 ## Loads the main menu scene and connects signal.[br]
 ## [b]Returns:[/b] [void][br]
 func home_selected() -> void:
-  var home_scene = change_scene(MAIN_MENU)
-  home_scene.scene_selected.connect(vm.add_scene_builder)
+  change_scene(MAIN_MENU)
 
 ## Loads the planner scene for the specified scene ID.[br]
 ## [b]Parameters:[/b][br]
@@ -40,6 +41,17 @@ func planner_selected(selected_id: String) -> void:
 ## [b]Returns:[/b] [void][br]
 func sets_selected() -> void:
   change_scene(SETS_SCENE)
+
+## Loads the scene manager scene.[br]
+## [b]Returns:[/b] [void][br]
+func scene_manager_selected() -> void:
+  var scene_manager_scene = change_scene(SCENE_MANAGER_SCENE)
+  scene_manager_scene.scene_selected.connect(vm.add_scene_builder)
+
+## Loads the cloud manager scene.[br]
+## [b]Returns:[/b] [void][br]
+func cloud_selected() -> void:
+  change_scene(CLOUD_SCENE)
 
 ## Unloads the current scene and instantiates a new scene.[br]
 ## [b]Parameters:[/b][br]

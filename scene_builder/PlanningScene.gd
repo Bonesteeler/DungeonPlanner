@@ -6,7 +6,6 @@ extends Node
 
 const board_scene = preload("res://scene_builder/board/Board.tscn")
 
-var save_manager: SaveManager = SaveManager.new()
 var viewport: Viewport
 var vm: SceneBuilderViewModel
 
@@ -49,10 +48,10 @@ func set_scene_view_model(scene_vm: SceneBuilderViewModel):
   for layer_vm in vm.get_all_layer_vms():
     add_tile_layer(layer_vm)
 
-## Saves the current scene using the save manager.[br]
+## Saves the current scene using the SceneSaveService.[br]
 ## [b]Returns:[/b] [void][br]
 func save_scene():
-  save_manager.save_scene_to_user(vm.scene)
+  SceneSaveService.save_scene_to_user(vm.scene)
 
 ## Forwards viewport resize notifications to the planner UI.[br]
 ## [b]Returns:[/b] [void][br]

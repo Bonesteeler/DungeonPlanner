@@ -33,6 +33,10 @@ func _ready():
   import_tileset.set_vm(import_tileset_vm)
   tile_details_vm = TileDetailsViewModel.new()
   tile_details.set_vm(tile_details_vm)
+  set_list.delete_set.connect(delete_set)
+  set_list.import_set.connect(import_set_started)
+  set_list.select_set.connect(select_set)
+  set_details.tile_selected.connect(set_tile_in_details)
 
 ## Show the import dialog[br]
 func import_set_started() -> void:
