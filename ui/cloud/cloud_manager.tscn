@@ -49,6 +49,10 @@ layout_mode = 2
 unique_name_in_owner = true
 layout_mode = 2
 
+[node name="AuthToggleButton" type="Button" parent="VBoxContainer/HBoxContainer/RightColumn"]
+unique_name_in_owner = true
+layout_mode = 2
+
 [node name="UploadScenes" parent="VBoxContainer/HBoxContainer/RightColumn" instance=ExtResource("3_upload")]
 unique_name_in_owner = true
 layout_mode = 2

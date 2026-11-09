@@ -32,6 +32,7 @@ func set_scene_list():
     var scenes = view_model.get_scenes_alphabetically()
     for scene in scenes:
         var item = SCENE_ITEM_SCENE.instantiate()
+        item.upload_enabled = false
         item.set_id(scene.id)
         item.set_scene_name(scene.scene_name)
         item.scene_selected.connect(_on_scene_item_selected)

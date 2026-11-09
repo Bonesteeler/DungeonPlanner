@@ -5,8 +5,29 @@ signal delete_pressed(scene_name: String)
 signal scene_selected(scene_id: String)
 signal upload_pressed(scene_id: String)
 
+@export var select_enabled: bool = true:
+    set(value):
+        select_enabled = value
+        if is_node_ready():
+            $Select.visible = value
+@export var delete_enabled: bool = true:
+    set(value):
+        delete_enabled = value
+        if is_node_ready():
+            $Delete.visible = value
+@export var upload_enabled: bool = true:
+    set(value):
+        upload_enabled = value
+        if is_node_ready():
+            $Upload.visible = value
+
 var scene_id: String
 var scene_name: String
+
+func _ready() -> void:
+    $Select.visible = select_enabled
+    $Delete.visible = delete_enabled
+    $Upload.visible = upload_enabled
 
 func set_id(new_id: String) -> void:
     scene_id = new_id

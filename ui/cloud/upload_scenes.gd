@@ -8,7 +8,7 @@ extends VBoxContainer
 
 signal upload_requested(scene_id: String)
 
-const RECENT_SCENE_ITEM_SCENE = preload("res://main_menu/RecentSceneItem.tscn")
+const SCENE_ITEM_SCENE = preload("res://ui/scene_manager/scene_item.tscn")
 
 @onready var upload_list_container: VBoxContainer = $%UploadListContainer
 
@@ -19,7 +19,10 @@ func set_scenes(scenes: Array[Scene]) -> void:
 	for child in upload_list_container.get_children():
 		child.queue_free()
 	for scene in scenes:
-		var item = RECENT_SCENE_ITEM_SCENE.instantiate()
-		item.set_recent_scene_data(scene)
+		var item = SCENE_ITEM_SCENE.instantiate()
+		item.select_enabled = false
+		item.delete_enabled = false
+		item.set_id(scene.id)
+		item.set_scene_name(scene.scene_name)
 		upload_list_container.add_child(item)
-		item.upload_pressed.connect(func(): upload_requested.emit(scene.id))
+		item.upload_pressed.connect(upload_requested.emit)
