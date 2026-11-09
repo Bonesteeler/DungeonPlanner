@@ -53,7 +53,7 @@ func load_scene_from_json(file_path: String) -> TileLayout:
 ## Load a saved Scene from the user save directory.[br]
 ## [b]Parameters:[/b][br]
 ## [code]file_name[/code] : [String] — base filename (without .json) of the saved scene under user://SavedScenes/.[br]
-## [b]Returns:[/b] [Scene] — the deserialized Scene. If the file cannot be opened, a new [code]Scene[/code] with [code]scene_name[/code] set to [code]file_name[/code] is returned.[br]
+## [b]Returns:[/b] [Scene] — the deserialized Scene. If the file cannot be opened, a new [code]Scene[/code] with [code]scene_name[/code] set to [code]file_name[/code] is returned. If the file is corrupt, it is deleted and [code]null[/code] is returned.[br]
 func load_scene_from_user(file_name: String) -> Scene:
     var file = FileAccess.open(LOCAL_SCENES_PATH + file_name + ".json", FileAccess.READ)
     if file == null:
@@ -65,6 +65,11 @@ func load_scene_from_user(file_name: String) -> Scene:
     var json_string = file.get_as_text()
     var parsed_scene = SceneSerializer.deserialize(json_string)
     file.close()
+    ## Assume a scene with author 'Unknown' and scene_name 'Untitled Scene' as error, and delete the json.
+    if parsed_scene == null or (parsed_scene.author == "Unknown" and parsed_scene.scene_name == "Untitled Scene"):
+      print("Discarding corrupt saved scene: %s" % file_name)
+      delete_scene(file_name)
+      return null
     return parsed_scene
 
 ## Serialize and write a Scene to the user save directory as JSON.[br]
