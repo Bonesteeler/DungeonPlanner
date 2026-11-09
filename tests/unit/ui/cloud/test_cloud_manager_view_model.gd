@@ -47,10 +47,13 @@ func test_request_scene_list_uses_defaults_when_fields_missing():
   assert_eq(result.scene_count, 0)
   assert_eq(result.page_size, CloudManagerViewModel.DEFAULT_PAGE_SIZE)
 
-func test_request_scene_list_does_not_emit_on_failure():
+func test_request_scene_list_emits_empty_result_on_failure():
   net.response = _response(500)
   await vm.request_scene_list()
-  assert_signal_not_emitted(vm, "scene_list_updated")
+  assert_signal_emitted(vm, "scene_list_updated")
+  var result: SceneListResponse = get_signal_parameters(vm, "scene_list_updated")[0]
+  assert_eq(result.scene_count, 0)
+  assert_eq(result.scenes.size(), 0)
 
 func _local_scene() -> Scene:
   var tile_data := Tile.new()

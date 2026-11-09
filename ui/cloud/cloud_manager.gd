@@ -43,6 +43,7 @@ func _ready() -> void:
 func _on_log_in_pressed() -> void:
 	if await profile_view_model.login(log_in_profile.get_email(), log_in_profile.get_password()):
 		_show_logged_in()
+		_refresh_scene_list()
 	else:
 		log_in_profile.set_login_state(true)
 
@@ -50,6 +51,7 @@ func _on_sign_up_pressed() -> void:
 	if await profile_view_model.signup(sign_up_profile.get_username(), sign_up_profile.get_email(), sign_up_profile.get_password()):
 		sign_up_profile.clear_password()
 		_show_logged_in()
+		_refresh_scene_list()
 	else:
 		sign_up_profile.set_signup_state(true)
 
@@ -57,6 +59,12 @@ func _on_signed_out() -> void:
 	log_in_profile.set_login_state()
 	sign_up_profile.set_signup_state()
 	_show_login_form()
+	_refresh_scene_list()
+
+# Page 1 because the total count can differ per user.
+func _refresh_scene_list() -> void:
+	online_scenes.start_idx = 0
+	view_model.request_scene_list(0)
 
 func _show_logged_in() -> void:
 	log_in_profile.clear_password()

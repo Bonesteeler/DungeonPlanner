@@ -27,6 +27,9 @@ func request_scene_list(start_idx: int = 0) -> void:
 	var response := await network.request(SCENE_LIST_URL_TEMPLATE % start_idx, HTTPClient.METHOD_GET, null, true)
 	if not response.ok or not (response.json is Dictionary):
 		print("Failed to retrieve scene list from server. Response code: %d" % response.status_code)
+		var empty := SceneListResponse.new()
+		empty.page_size = DEFAULT_PAGE_SIZE
+		scene_list_updated.emit(empty)
 		return
 	var json: Dictionary = response.json
 	var result := SceneListResponse.new()
