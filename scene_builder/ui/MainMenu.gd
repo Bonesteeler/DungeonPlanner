@@ -19,14 +19,6 @@ var export_scene_name: String = ""
 func _ready():
   scene_browser.scene_import.connect(SceneSaveService.add_scene)
 
-## Upload a saved scene to the server[br]
-## [b]Parameters:[/b][br]
-## [code]scene_name[/code] : [String] — name of the scene to upload.[br]
-## [b]Returns:[/b] [void][br]
-func upload_scene(scene_name: String):
-  var scene_to_upload := SceneSaveService.load_scene_from_user(scene_name)
-  Backend.upload_scene(scene_to_upload)
-
 ## Display a success message after a scene is uploaded[br]
 ## [b]Parameters:[/b][br]
 ## [code]scene_name[/code] : [String] — name of the successfully uploaded scene.[br]

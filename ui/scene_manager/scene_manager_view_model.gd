@@ -156,7 +156,9 @@ func _load_recent_scenes() -> void:
 func _save_recent_scenes() -> void:
   SceneSaveService.save_recent_scene_ids(_recent_scene_ids)
 
-## Send upload scene request to the save manager[br]
+## Upload a scene to the scene api[br]
 ## [b]Parameters:[/b][br]## [code]scene_id[/code] : [String] — ID of the scene to upload.[br]
 func upload_scene(scene_id: String) -> void:
-    save_manager.send_scene_upload_request(scene_id)
+    var scene := find_scene_by_id(scene_id)
+    if scene != null:
+        await UploadSceneRequest.send(Network, scene)
