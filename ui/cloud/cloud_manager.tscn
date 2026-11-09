@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://c7ploj8ccb0vk"]
+[gd_scene load_steps=6 format=3 uid="uid://c7ploj8ccb0vk"]
 
 [ext_resource type="Script" uid="uid://cw5smtahm3rqm" path="res://ui/cloud/cloud_manager.gd" id="1_mgr"]
 [ext_resource type="PackedScene" uid="uid://donlinescn1aa" path="res://ui/cloud/online_scenes.tscn" id="2_online"]
 [ext_resource type="PackedScene" uid="uid://cvxs1m5lbqvrl" path="res://ui/cloud/upload_scenes.tscn" id="3_upload"]
 [ext_resource type="PackedScene" uid="uid://cihnerxqeb2k8" path="res://ui/cloud/profile.tscn" id="3_vlje8"]
+[ext_resource type="Texture2D" path="res://ui/background_gradient.tres" id="4_bg"]
 
 [node name="CloudManager" type="MarginContainer"]
 anchors_preset = 15
@@ -13,46 +14,57 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_mgr")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="."]
+[node name="Background" type="TextureRect" parent="."]
+layout_mode = 2
+texture = ExtResource("4_bg")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="Label" type="Label" parent="VBoxContainer"]
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 18
 text = "Cloud"
 
-[node name="HSeparator" type="HSeparator" parent="VBoxContainer"]
+[node name="HSeparator" type="HSeparator" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="OnlineScenes" parent="VBoxContainer/HBoxContainer" instance=ExtResource("2_online")]
+[node name="OnlineScenes" parent="MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("2_online")]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="VSeparator" type="VSeparator" parent="VBoxContainer/HBoxContainer"]
+[node name="VSeparator" type="VSeparator" parent="MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 
-[node name="RightColumn" type="VBoxContainer" parent="VBoxContainer/HBoxContainer"]
+[node name="RightColumn" type="VBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Profile" parent="VBoxContainer/HBoxContainer/RightColumn" instance=ExtResource("3_vlje8")]
+[node name="Profile" parent="MarginContainer/VBoxContainer/HBoxContainer/RightColumn" instance=ExtResource("3_vlje8")]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="SignUpProfile" parent="VBoxContainer/HBoxContainer/RightColumn" instance=ExtResource("3_vlje8")]
+[node name="SignUpProfile" parent="MarginContainer/VBoxContainer/HBoxContainer/RightColumn" instance=ExtResource("3_vlje8")]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="AuthToggleButton" type="Button" parent="VBoxContainer/HBoxContainer/RightColumn"]
+[node name="AuthToggleButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/RightColumn"]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="UploadScenes" parent="VBoxContainer/HBoxContainer/RightColumn" instance=ExtResource("3_upload")]
+[node name="UploadScenes" parent="MarginContainer/VBoxContainer/HBoxContainer/RightColumn" instance=ExtResource("3_upload")]
 unique_name_in_owner = true
 layout_mode = 2

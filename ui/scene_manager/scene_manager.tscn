@@ -1,15 +1,9 @@
-[gd_scene load_steps=6 format=3 uid="uid://cpb6j5o38lih0"]
+[gd_scene load_steps=5 format=3 uid="uid://cpb6j5o38lih0"]
 
 [ext_resource type="Script" uid="uid://cv1fakjtxwgf4" path="res://ui/scene_manager/scene_manager.gd" id="1_3lohl"]
 [ext_resource type="PackedScene" uid="uid://b6ghi0v6ekd7o" path="res://ui/scene_manager/recent_scenes.tscn" id="2_c5wsp"]
 [ext_resource type="PackedScene" uid="uid://c42are06t5e2j" path="res://ui/scene_manager/scene_selector.tscn" id="2_vn32t"]
- 
-[sub_resource type="Gradient" id="Gradient_jkn8m"]
-colors = PackedColorArray(0.050260514, 0.17144808, 0.34460405, 1, 0.2627451, 0.3137255, 0.45882353, 1)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_3lohl"]
-gradient = SubResource("Gradient_jkn8m")
-width = 1024
+[ext_resource type="Texture2D" path="res://ui/background_gradient.tres" id="3_bg"]
 
 [node name="SceneManager" type="MarginContainer"]
 anchors_preset = 15
@@ -21,7 +15,7 @@ script = ExtResource("1_3lohl")
 
 [node name="Background" type="TextureRect" parent="."]
 layout_mode = 2
-texture = SubResource("GradientTexture2D_3lohl")
+texture = ExtResource("3_bg")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2
