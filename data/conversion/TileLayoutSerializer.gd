@@ -21,7 +21,10 @@ static func serialize(scene: TileLayout) -> Array:
 ## [b]Parameters:[/b] [code]json: String[/code][br]
 ## [b]Returns:[/b] [code]TileLayout[/code][br]
 static func deserialize(json: String) -> TileLayout:
-  return deserialize_array(JSON.parse_string(json))
+  var parser := JSON.new()
+  if parser.parse(json) != OK:
+    return TileLayout.new()
+  return deserialize_array(parser.data)
 
 ## Constructs a TileLayout from a parsed Dictionary representation.[br]
 ## [b]Parameters:[/b] [code]json: Dictionary[/code][br]

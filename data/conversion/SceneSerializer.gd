@@ -28,7 +28,10 @@ static func serialize(scene: Scene) -> String:
 ## [b]Parameters:[/b] [code]json: String[/code] - JSON string produced by [code]serialize[/code]. [br]
 ## [b]Returns:[/b] A [code]Scene[/code] instance, or [code]null[/code] if parsing/validation fails.
 static func deserialize(json: String) -> Scene:
-  var parsed = JSON.parse_string(json)
+  var parser := JSON.new()
+  if parser.parse(json) != OK:
+    return null
+  var parsed = parser.data
   if not (parsed is Dictionary):
     return null
   return deserialize_dict(parsed)
