@@ -5,7 +5,7 @@ const SCENE_ITEM_SCENE = preload("res://ui/scene_manager/scene_item.tscn")
 
 var view_model: SceneManagerViewModel
 
-@onready var recent_scenes_container: VBoxContainer = $%RecentScenesContainer
+@onready var recent_scenes_container: HFlowContainer = $%RecentScenesContainer
 
 signal delete_scene_requested(scene_id: String)
 signal scene_selected(scene_id: String)

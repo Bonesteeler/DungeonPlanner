@@ -6,7 +6,7 @@ const SCENE_ITEM_SCENE = preload("res://ui/scene_manager/scene_item.tscn")
 var view_model: SceneManagerViewModel
 
 @onready var new_scene_button: Button = $%NewSceneButton
-@onready var scene_list_container: VBoxContainer = $%SceneListContainer
+@onready var scene_list_container: HFlowContainer = $%SceneListContainer
 
 signal delete_scene_requested(scene_id: String)
 signal scene_selected(scene_id: String)

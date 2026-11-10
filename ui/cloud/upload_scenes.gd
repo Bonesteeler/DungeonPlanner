@@ -10,7 +10,7 @@ signal upload_requested(scene_id: String)
 
 const SCENE_ITEM_SCENE = preload("res://ui/scene_manager/scene_item.tscn")
 
-@onready var upload_list_container: VBoxContainer = $%UploadListContainer
+@onready var upload_list_container: HFlowContainer = $%UploadListContainer
 
 ## Populate the upload list with local scenes.[br]
 ## [b]Parameters:[/b][br]
