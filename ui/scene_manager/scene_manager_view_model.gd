@@ -11,15 +11,20 @@ signal scenes_updated()
 signal recent_scenes_updated()
 
 const MAX_RECENT_SCENES = 10
+const TILES_AVAILABLE_TEXT = "All tiles available"
+const TILES_MISSING_TEXT = "Missing tiles"
 
 var save_manager: SceneSaveService
+var tile_resources: TileResources
 var _recent_scene_ids: Array[String] = []
 
 ## Initialize with a SceneSaveService instance and connect to its signals.[br]
 ## [b]Parameters:[/b][br]
 ## [code]manager[/code] : [SceneSaveService] — the save service to wrap.[br]
-func _init(manager: SceneSaveService):
+## [code]resources[/code] : [TileResources] — tile service.[br]
+func _init(manager: SceneSaveService, resources: TileResources = TileSets):
     save_manager = manager
+    tile_resources = resources
     save_manager.scene_added.connect(_on_scene_added)
     _load_recent_scenes()
 
@@ -29,6 +34,15 @@ func get_scenes_alphabetically() -> Array[Scene]:
     var sorted_scenes = save_manager.scenes.duplicate()
     sorted_scenes.sort_custom(func(a: Scene, b: Scene): return a.scene_name.naturalnocasecmp_to(b.scene_name) < 0)
     return sorted_scenes
+
+## Gets text reflecting tile import state.[br]
+## [b]Parameters:[/b][br]
+## [code]scene[/code] : [Scene] — the scene to check.[br]
+## [b]Returns:[/b] [String] — display text for the scene item subtext.[br]
+func get_tiles_status_text(scene: Scene) -> String:
+    if tile_resources.has_tile_ids(scene.data.get_unique_tile_ids()):
+        return TILES_AVAILABLE_TEXT
+    return TILES_MISSING_TEXT
 
 ## Get recently edited scenes, ordered by most recent first.[br]
 ## [b]Returns:[/b] [Array[Scene]] — array of recently accessed scenes.[br]

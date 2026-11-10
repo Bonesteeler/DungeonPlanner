@@ -36,6 +36,10 @@ func set_scene_name(new_name: String) -> void:
     scene_name = new_name
     %Label.text = new_name
 
+func set_subtext(text: String) -> void:
+    %Subtext.text = text
+    %Subtext.visible = true
+
 func forward_scene_selected():
     scene_selected.emit(scene_id)
 

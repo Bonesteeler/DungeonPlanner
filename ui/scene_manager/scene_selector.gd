@@ -35,6 +35,7 @@ func set_scene_list():
         item.upload_enabled = false
         item.set_id(scene.id)
         item.set_scene_name(scene.scene_name)
+        item.set_subtext(view_model.get_tiles_status_text(scene))
         item.scene_selected.connect(_on_scene_item_selected)
         item.delete_pressed.connect(_on_scene_item_delete)
         scene_list_container.add_child(item)
