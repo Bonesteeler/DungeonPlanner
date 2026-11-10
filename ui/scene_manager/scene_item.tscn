@@ -31,12 +31,16 @@ theme_override_constants/margin_bottom = 4
 [node name="VBoxContainer" type="VBoxContainer" parent="Padding"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="Padding/VBoxContainer"]
+[node name="NameRow" type="HBoxContainer" parent="Padding/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Label" type="Label" parent="Padding/VBoxContainer/NameRow"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Name"
 
-[node name="Subtext" type="Label" parent="Padding/VBoxContainer"]
+[node name="Subtext" type="Label" parent="Padding/VBoxContainer/NameRow"]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
