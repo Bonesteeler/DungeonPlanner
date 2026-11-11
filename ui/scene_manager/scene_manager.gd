@@ -5,6 +5,7 @@ extends MarginContainer
 ## [i]UI component for managing scenes, allowing users to view, select, and create scenes.[/i][br]
 
 const DELETE_CONFIRMATION_STRING_TEMPLATE = "Are you sure you want to delete %s?"
+const ERROR_STRING_TEMPLATE = "The scene \"%s\" is missing the following tiles:\n\n%s"
 
 signal scene_selected(vm: SceneBuilderViewModel)
 
@@ -12,6 +13,7 @@ var confirmation_dialog_target: String
 var view_model: SceneManagerViewModel
 
 @onready var confirmation_dialog: ConfirmationDialog = $%ConfirmationDialog
+@onready var error_dialog: AcceptDialog = $%ErrorDialog
 @onready var scene_selector: SceneSelector = $%SceneSelector
 @onready var recent_scenes: RecentScenes = $%RecentScenes
 
@@ -22,11 +24,13 @@ func _ready():
     scene_selector.scene_selected.connect(_on_scene_selected)
     scene_selector.new_scene_requested.connect(_on_new_scene_requested)
     scene_selector.delete_scene_requested.connect(_on_delete_scene_requested)
+    scene_selector.show_error.connect(_on_show_error)
 
     recent_scenes.set_vm(view_model)
     recent_scenes.scene_selected.connect(_on_scene_selected)
     recent_scenes.delete_scene_requested.connect(_on_delete_scene_requested)
     recent_scenes.upload_scene.connect(_on_upload_scene_request)
+    recent_scenes.show_error.connect(_on_show_error)
 
 func _on_scene_selected(scene_id: String) -> void:
     var scene_data = view_model.find_scene_by_id(scene_id)
@@ -63,3 +67,12 @@ func delete_scene_confirmed():
 func _on_upload_scene_request(scene_id: String):
     if scene_id != "":
         view_model.upload_scene(scene_id)
+
+## Show dialog listing tiles that are missing from a scene[br]
+## [b]Parameters:[/b][br]
+## [code]scene_name[/code] : [String] — name of the scene with missing tiles.[br]
+## [code]missing_tile_ids[/code] : [Array] — tile ids referenced by the scene that are not imported.[br]
+## [b]Returns:[/b] [void][br]
+func _on_show_error(scene_name: String, missing_tile_ids: Array):
+    error_dialog.dialog_text = ERROR_STRING_TEMPLATE % [scene_name, "\n".join(missing_tile_ids)]
+    error_dialog.popup_centered()

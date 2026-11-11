@@ -26,6 +26,7 @@ func _init(manager: SceneSaveService, resources: TileResources = TileSets):
     save_manager = manager
     tile_resources = resources
     save_manager.scene_added.connect(_on_scene_added)
+    tile_resources.tile_sets_changed.connect(_on_tile_sets_changed)
     _load_recent_scenes()
 
 ## Get all scenes sorted alphabetically by scene name.[br]
@@ -40,9 +41,16 @@ func get_scenes_alphabetically() -> Array[Scene]:
 ## [code]scene[/code] : [Scene] — the scene to check.[br]
 ## [b]Returns:[/b] [String] — display text for the scene item subtext.[br]
 func get_tiles_status_text(scene: Scene) -> String:
-    if tile_resources.has_tile_ids(scene.data.get_unique_tile_ids()):
+    if get_missing_tile_ids(scene).is_empty():
         return TILES_AVAILABLE_TEXT
     return TILES_MISSING_TEXT
+
+## Get the ids of tiles referenced by the scene that are not imported.[br]
+## [b]Parameters:[/b][br]
+## [code]scene[/code] : [Scene] — the scene to check.[br]
+## [b]Returns:[/b] [Array[String]] — missing tile ids, empty when all tiles are available.[br]
+func get_missing_tile_ids(scene: Scene) -> Array[String]:
+    return tile_resources.get_missing_tile_ids(scene.data.get_unique_tile_ids())
 
 ## Get recently edited scenes, ordered by most recent first.[br]
 ## [b]Returns:[/b] [Array[Scene]] — array of recently accessed scenes.[br]
@@ -128,6 +136,11 @@ func get_scene_count() -> int:
 ## Internal callback when SceneSaveService adds a scene.[br]
 func _on_scene_added() -> void:
     scenes_updated.emit()
+
+## Internal callback when imported tile sets change, so scene items re-evaluate tile availability.[br]
+func _on_tile_sets_changed() -> void:
+    scenes_updated.emit()
+    recent_scenes_updated.emit()
 
 ## Find a scene by its ID.[br]
 ## [b]Parameters:[/b][br]

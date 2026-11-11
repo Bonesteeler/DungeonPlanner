@@ -130,10 +130,18 @@ func remove_set(name_set: String):
 ## [code]tile_ids[/code] : [Array] — list of tile id strings to verify.[br]
 ## [b]Returns:[/b] [bool] — [code]true[/code] if every id exists in [code]unique_tile_ids[/code], otherwise [code]false[/code].[br]
 func has_tile_ids(tile_ids: Array) -> bool:
+  return get_missing_tile_ids(tile_ids).is_empty()
+
+## Return the subset of provided tile ids that are not present in the manager's registry.[br]
+## [b]Parameters:[/b][br]
+## [code]tile_ids[/code] : [Array] — list of tile id strings to check.[br]
+## [b]Returns:[/b] [Array[String]] — ids from [code]tile_ids[/code] missing from [code]unique_tile_ids[/code], in the order provided.[br]
+func get_missing_tile_ids(tile_ids: Array) -> Array[String]:
+  var missing: Array[String] = []
   for tile_id in tile_ids:
     if not unique_tile_ids.has(tile_id):
-      return false
-  return true
+      missing.append(tile_id)
+  return missing
 
 ## Find and return a tile by its unique id.[br]
 ## [b]Parameters:[/b][br]

@@ -11,6 +11,7 @@ var view_model: SceneManagerViewModel
 signal delete_scene_requested(scene_id: String)
 signal scene_selected(scene_id: String)
 signal new_scene_requested()
+signal show_error(scene_name: String, missing_tile_ids: Array)
 
 ## Set vm which provides data for this view
 func set_vm(vm: SceneManagerViewModel):
@@ -36,8 +37,10 @@ func set_scene_list():
         item.set_id(scene.id)
         item.set_scene_name(scene.scene_name)
         item.set_subtext(view_model.get_tiles_status_text(scene))
+        item.set_missing_tile_ids(view_model.get_missing_tile_ids(scene))
         item.scene_selected.connect(_on_scene_item_selected)
         item.delete_pressed.connect(_on_scene_item_delete)
+        item.error_pressed.connect(_on_scene_item_error)
         scene_list_container.add_child(item)
 
 ## Find scene from view model by ID and emit scene_selected signal[br]
@@ -53,3 +56,10 @@ func _on_scene_item_selected(scene_id: String):
 func _on_scene_item_delete(scene_id: String):
     if scene_id != "":
         delete_scene_requested.emit(scene_id)
+
+## Forward error from a scene item[br]
+## [b]Parameters:[/b][br]
+## - [code]scene_name[/code] : [String] — name of the scene with missing tiles.[br]
+## - [code]missing_tile_ids[/code] : [Array] — tile ids referenced by the scene that are not imported.[br]
+func _on_scene_item_error(scene_name: String, missing_tile_ids: Array):
+    show_error.emit(scene_name, missing_tile_ids)
