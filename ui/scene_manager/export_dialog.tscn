@@ -1,0 +1,37 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://ui/scene_manager/export_dialog.gd" id="1_export"]
+
+[node name="ExportDialog" type="AcceptDialog"]
+title = "Export"
+initial_position = 2
+wrap_controls = true
+max_size = Vector2i(1080, 480)
+script = ExtResource("1_export")
+
+[node name="Content" type="VBoxContainer" parent="."]
+theme_override_constants/separation = 8
+
+[node name="CopyAllButton" type="Button" parent="Content"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Copy All"
+
+[node name="EmptyLabel" type="Label" parent="Content"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+text = "No tiles in scene"
+
+[node name="ScrollContainer" type="ScrollContainer" parent="Content"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(1080, 0)
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Rows" type="VBoxContainer" parent="Content/ScrollContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[connection signal="pressed" from="Content/CopyAllButton" to="." method="_on_copy_all_pressed"]

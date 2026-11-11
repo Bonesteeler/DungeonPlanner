@@ -79,7 +79,13 @@ unique_name_in_owner = true
 layout_mode = 2
 text = "Upload"
 
+[node name="Export" type="Button" parent="Padding/VBoxContainer/Buttons"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Export"
+
 [connection signal="pressed" from="Padding/VBoxContainer/Buttons/Select" to="." method="forward_scene_selected"]
 [connection signal="pressed" from="Padding/VBoxContainer/Buttons/Error" to="." method="forward_error_pressed"]
 [connection signal="pressed" from="Padding/VBoxContainer/Buttons/Delete" to="." method="forward_delete_pressed"]
 [connection signal="pressed" from="Padding/VBoxContainer/Buttons/Upload" to="." method="forward_upload_pressed"]
+[connection signal="pressed" from="Padding/VBoxContainer/Buttons/Export" to="." method="forward_export_pressed"]

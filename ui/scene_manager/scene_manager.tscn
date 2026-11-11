@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://cpb6j5o38lih0"]
+[gd_scene load_steps=6 format=3 uid="uid://cpb6j5o38lih0"]
 
 [ext_resource type="Script" uid="uid://cv1fakjtxwgf4" path="res://ui/scene_manager/scene_manager.gd" id="1_3lohl"]
 [ext_resource type="PackedScene" uid="uid://b6ghi0v6ekd7o" path="res://ui/scene_manager/recent_scenes.tscn" id="2_c5wsp"]
 [ext_resource type="PackedScene" uid="uid://c42are06t5e2j" path="res://ui/scene_manager/scene_selector.tscn" id="2_vn32t"]
 [ext_resource type="Texture2D" path="res://ui/background_gradient.tres" id="3_bg"]
+[ext_resource type="PackedScene" path="res://ui/scene_manager/export_dialog.tscn" id="4_export"]
 
 [node name="SceneManager" type="MarginContainer"]
 anchors_preset = 15
@@ -65,4 +66,7 @@ oversampling_override = 1.0
 title = "Missing tiles"
 initial_position = 2
 dialog_text = "Missing tiles"
+
+[node name="ExportDialog" parent="." instance=ExtResource("4_export")]
+unique_name_in_owner = true
 

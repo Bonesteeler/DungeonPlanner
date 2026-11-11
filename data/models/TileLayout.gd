@@ -27,6 +27,15 @@ func get_unique_tile_ids() -> Array:
         unique_tile_ids.set(tile.id, 1)
   return unique_tile_ids.keys()
 
+## Returns a count of how many times each tile id is placed.[br]
+## [b]Returns:[/b] [Dictionary] — keys are tile id [String]s, values are occurrence counts [int].
+func get_tile_counts() -> Dictionary:
+  var counts: Dictionary = {}
+  for layer in layers:
+    for tile in layer.tiles:
+      counts[tile.id] = counts.get(tile.id, 0) + 1
+  return counts
+
 ## Gets layer by its id.[br]
 ## [b]Parameters:[/b][br]
 ## [code]layer_id[/code] : [int] — ID of the layer to retrieve.[br]

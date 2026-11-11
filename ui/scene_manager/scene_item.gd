@@ -4,6 +4,7 @@ extends MarginContainer
 signal delete_pressed(scene_name: String)
 signal scene_selected(scene_id: String)
 signal upload_pressed(scene_id: String)
+signal export_pressed(scene_id: String)
 signal error_pressed(scene_name: String, missing_tile_ids: Array)
 
 @export var select_enabled: bool = true:
@@ -60,6 +61,9 @@ func forward_delete_pressed() -> void:
 
 func forward_upload_pressed() -> void:
     upload_pressed.emit(scene_id)
+
+func forward_export_pressed() -> void:
+    export_pressed.emit(scene_id)
 
 func forward_error_pressed() -> void:
     error_pressed.emit(scene_name, missing_tile_ids)
