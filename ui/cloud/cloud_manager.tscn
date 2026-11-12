@@ -1,9 +1,10 @@
-[gd_scene load_steps=6 format=3 uid="uid://c7ploj8ccb0vk"]
+[gd_scene load_steps=7 format=3 uid="uid://c7ploj8ccb0vk"]
 
 [ext_resource type="Script" uid="uid://cw5smtahm3rqm" path="res://ui/cloud/cloud_manager.gd" id="1_mgr"]
 [ext_resource type="PackedScene" uid="uid://donlinescn1aa" path="res://ui/cloud/online_scenes.tscn" id="2_online"]
 [ext_resource type="PackedScene" uid="uid://cvxs1m5lbqvrl" path="res://ui/cloud/upload_scenes.tscn" id="3_upload"]
 [ext_resource type="PackedScene" uid="uid://cihnerxqeb2k8" path="res://ui/cloud/profile.tscn" id="3_vlje8"]
+[ext_resource type="PackedScene" path="res://ui/scene_manager/export_dialog.tscn" id="5_export"]
 [ext_resource type="Texture2D" path="res://ui/background_gradient.tres" id="4_bg"]
 
 [node name="CloudManager" type="MarginContainer"]
@@ -68,3 +69,6 @@ layout_mode = 2
 [node name="UploadScenes" parent="MarginContainer/VBoxContainer/HBoxContainer/RightColumn" instance=ExtResource("3_upload")]
 unique_name_in_owner = true
 layout_mode = 2
+
+[node name="ExportDialog" parent="." instance=ExtResource("5_export")]
+unique_name_in_owner = true

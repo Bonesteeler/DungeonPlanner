@@ -5,8 +5,10 @@ extends VBoxContainer
 ## [i]Displays a list of locally saved scenes with an option to upload each to the server.[/i][br]
 ## [b]Signals:[/b][br]
 ## - [code]upload_requested(scene_id: String)[/code]: Emitted when the user requests uploading a scene.[br]
+## - [code]export_requested(scene_id: String)[/code]: Emitted when the user requests exporting a scene.[br]
 
 signal upload_requested(scene_id: String)
+signal export_requested(scene_id: String)
 
 const SCENE_ITEM_SCENE = preload("res://ui/scene_manager/scene_item.tscn")
 
@@ -26,3 +28,4 @@ func set_scenes(scenes: Array[Scene]) -> void:
 		item.set_scene_name(scene.scene_name)
 		upload_list_container.add_child(item)
 		item.upload_pressed.connect(upload_requested.emit)
+		item.export_pressed.connect(export_requested.emit)

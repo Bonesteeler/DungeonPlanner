@@ -36,7 +36,7 @@ func _ready():
     recent_scenes.show_error.connect(_on_show_error)
 
 func _on_scene_selected(scene_id: String) -> void:
-    var scene_data = view_model.find_scene_by_id(scene_id)
+    var scene_data = SceneSaveService.find_scene_by_id(scene_id)
     view_model.mark_scene_as_recent(scene_data)
     if scene_data != null:
       var new_scene_vm = SceneBuilderViewModel.new(scene_data)
@@ -77,7 +77,7 @@ func _on_upload_scene_request(scene_id: String):
 ## [b]Returns:[/b] [void][br]
 func _on_export_scene_request(scene_id: String):
     if scene_id != "":
-        var scene = view_model.find_scene_by_id(scene_id)
+        var scene = SceneSaveService.find_scene_by_id(scene_id)
         if scene != null:
             export_dialog.open(scene)
 

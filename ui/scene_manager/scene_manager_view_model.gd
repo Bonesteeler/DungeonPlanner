@@ -57,7 +57,7 @@ func get_missing_tile_ids(scene: Scene) -> Array[String]:
 func get_recent_scenes() -> Array[Scene]:
     var recent_scenes: Array[Scene] = []
     for scene_id in _recent_scene_ids:
-        var scene = find_scene_by_id(scene_id)
+        var scene = save_manager.find_scene_by_id(scene_id)
         if scene != null:
             recent_scenes.append(scene)
     return recent_scenes
@@ -142,16 +142,6 @@ func _on_tile_sets_changed() -> void:
     scenes_updated.emit()
     recent_scenes_updated.emit()
 
-## Find a scene by its ID.[br]
-## [b]Parameters:[/b][br]
-## [code]scene_id[/code] : [String] — the scene ID to search for.[br]
-## [b]Returns:[/b] [Scene] or [null].[br]
-func find_scene_by_id(scene_id: String) -> Scene:
-    for scene in save_manager.scenes:
-        if scene.id == scene_id:
-            return scene
-    return null
-
 ## Find a scene by its name.[br]
 ## [b]Parameters:[/b][br]
 ## [code]scene_name[/code] : [String] — the scene name to search for.[br]
@@ -170,7 +160,7 @@ func _load_recent_scenes() -> void:
   for id in loaded_ids:
     if sanitized.size() >= MAX_RECENT_SCENES:
       break
-    if not find_scene_by_id(id):
+    if not save_manager.find_scene_by_id(id):
       continue
     if sanitized.has(id):
       continue
@@ -186,6 +176,6 @@ func _save_recent_scenes() -> void:
 ## Upload a scene to the scene api[br]
 ## [b]Parameters:[/b][br]## [code]scene_id[/code] : [String] — ID of the scene to upload.[br]
 func upload_scene(scene_id: String) -> void:
-    var scene := find_scene_by_id(scene_id)
+    var scene := save_manager.find_scene_by_id(scene_id)
     if scene != null:
         await UploadSceneRequest.send(Network, scene)

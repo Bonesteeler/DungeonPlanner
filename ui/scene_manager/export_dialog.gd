@@ -7,7 +7,7 @@ extends AcceptDialog
 
 const EXPORT_TILE_ROW_SCENE = preload("res://ui/scene_manager/export_tile_row.tscn")
 
-const COPY_ALL_TEXT = "Copy All"
+const COPY_ALL_TEXT = "Copy All Tiles to Clipboard"
 const COPIED_TEXT = "Copied"
 const COPIED_REVERT_SECONDS = 1.5
 const MAX_SCROLL_HEIGHT = 300

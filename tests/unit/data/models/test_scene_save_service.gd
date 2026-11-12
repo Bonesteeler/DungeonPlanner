@@ -40,3 +40,12 @@ func test_load_scene_from_user_keeps_valid_scene():
   assert_not_null(loaded)
   assert_eq(loaded.scene_name, "Valid Scene")
   assert_true(_file_exists())
+
+func test_find_scene_by_id_returns_matching_scene():
+  var scene := Scene.new()
+  scene.id = "find-me"
+  service.scenes.append(scene)
+  assert_eq(service.find_scene_by_id("find-me"), scene)
+
+func test_find_scene_by_id_returns_null_when_not_found():
+  assert_null(service.find_scene_by_id("missing"))
