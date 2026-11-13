@@ -6,6 +6,7 @@ extends RefCounted
 ## [b]Properties:[/b][br]
 ## - [b]name[/b][br]
 ## - [b]mesh_path[/b]: Filesystem path to the saved [code]ArrayMesh[/code] resource.[br]
+## - [b]source_path[/b]: Filesystem path to the source .stl file this tile was imported from.[br]
 ## - [b]id[/b]: Hash id.[br]
 ## - [b]x_size[/b], [b]y_size[/b]: Tile dimensions in planning grid units.[br]
 
@@ -13,6 +14,7 @@ enum TileStatus {CACHED, CREATED, NOT_FOUND, CACHE_MISS}
 
 var name = ""
 var mesh_path: String = ""
+var source_path: String = ""
 var id: String = ""
 var x_size: int = 0
 var y_size: int = 0
@@ -32,6 +34,7 @@ func load_imported_tile(json: Dictionary) -> TileStatus:
   if (id == ""):
     print("Tile ID is empty")
   mesh_path = res_path
+  source_path = json.get(DragonbiteTileSet.KEY_TILE_SOURCE_PATH, "")
   x_size = json.get(DragonbiteTileSet.KEY_TILE_X_SIZE, 1)
   y_size = json.get(DragonbiteTileSet.KEY_TILE_Y_SIZE, 1)
   return TileStatus.CACHED
@@ -45,6 +48,8 @@ func create_tile(source_path: String, destination_path: String) -> TileStatus:
   if !FileAccess.file_exists(source_path):
     print("Source file does not exist: ", source_path)
     return TileStatus.NOT_FOUND
+  # Save source path after we know it exists
+  self.source_path = source_path
   if FileAccess.file_exists(destination_path):
     print("Destination file already exists: ", destination_path)
     return TileStatus.CACHED
