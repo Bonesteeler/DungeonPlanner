@@ -73,6 +73,7 @@ func import_tile_set_from_directory(path: String, set_name: String):
 
     var tile_res_path = TILE_PATH + set_name + "/" + new_tile.name + ".res"
     tile_definition[DragonbiteTileSet.KEY_TILE_RES_PATH] = tile_res_path
+    tile_definition[DragonbiteTileSet.KEY_TILE_SOURCE_PATH] = new_tile.source_path
     tile_definition[DragonbiteTileSet.KEY_TILE_X_SIZE] = new_tile.x_size
     tile_definition[DragonbiteTileSet.KEY_TILE_Y_SIZE] = new_tile.y_size
     tiles.append(tile_definition)

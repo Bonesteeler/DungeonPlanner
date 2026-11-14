@@ -105,6 +105,16 @@ func delete_scene(file_name: String):
     scenes.remove_at(idx)
     idx = scenes.find_custom((func(s): return s.scene_name == file_name))
 
+## Find a scene by its ID.[br]
+## [b]Parameters:[/b][br]
+## [code]scene_id[/code] : [String] — the scene ID to search for.[br]
+## [b]Returns:[/b] [Scene] or [null].[br]
+func find_scene_by_id(scene_id: String) -> Scene:
+  for scene in scenes:
+    if scene.id == scene_id:
+      return scene
+  return null
+
 func save_recent_scene_ids(ids: Array[String]):
   var file = FileAccess.open(SAVED_SCENES_PATH + RECENT_SCENE_IDS_FILE, FileAccess.WRITE)
   if file == null:

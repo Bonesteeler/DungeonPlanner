@@ -14,6 +14,7 @@ const KEY_TILE_IMAGE_PATH = "imagePath"
 const KEY_TILE_NAME = "name"
 const KEY_TILE_ID = "id"
 const KEY_TILE_RES_PATH = "resPath"
+const KEY_TILE_SOURCE_PATH = "sourcePath"
 const KEY_TILE_X_SIZE = "xSize"
 const KEY_TILE_Y_SIZE = "ySize"
 

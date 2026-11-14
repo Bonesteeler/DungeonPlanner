@@ -16,7 +16,7 @@ var page_size: int = 0
 var start_idx: int = 0
 var total_scenes: int = 0
 
-@onready var scene_list_container: VBoxContainer = $%SceneListContainer
+@onready var scene_list_container: HFlowContainer = $%SceneListContainer
 
 func _ready() -> void:
 	request_scene_list.emit(start_idx)

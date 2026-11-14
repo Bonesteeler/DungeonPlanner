@@ -123,3 +123,52 @@ func test_get_unique_tile_ids():
   assert_true(unique.has("id_a"))
   assert_true(unique.has("id_b"))
   assert_eq(2, unique.size())
+
+func _place_tile(tile_id: String, x: int, z: int) -> void:
+  var tile = Tile.new()
+  tile.id = tile_id
+  tile.x_size = 1
+  tile.y_size = 1
+  var ctx = SceneTileViewModel.new()
+  ctx.tile = tile
+  ctx.rotation = Vector3.ZERO
+  layout.set_tile_at(test_layer_id, x, z, ctx)
+
+func test_get_tile_counts_empty_layout():
+  assert_eq({}, layout.get_tile_counts())
+
+func test_get_tile_counts_distinct_ids():
+  _place_tile("id_a", 0, 0)
+  _place_tile("id_b", 1, 1)
+  assert_eq({"id_a": 1, "id_b": 1}, layout.get_tile_counts())
+
+func test_get_tile_counts_accumulates_duplicates():
+  _place_tile("id_a", 0, 0)
+  _place_tile("id_a", 1, 1)
+  _place_tile("id_b", 2, 2)
+  assert_eq({"id_a": 2, "id_b": 1}, layout.get_tile_counts())
+
+func test_get_tile_counts_accumulates_across_layers():
+  _place_tile("id_a", 0, 0)
+  _place_tile("id_a", 1, 1)
+
+  var second_layer = TileLayer.new()
+  second_layer.id = 1
+  layout.layers.append(second_layer)
+
+  var tile = Tile.new()
+  tile.id = "id_a"
+  tile.x_size = 1
+  tile.y_size = 1
+  var ctx = SceneTileViewModel.new()
+  ctx.tile = tile
+  ctx.rotation = Vector3.ZERO
+  layout.set_tile_at(second_layer.id, 0, 0, ctx)
+
+  assert_eq({"id_a": 3}, layout.get_tile_counts())
+
+func test_get_tile_counts_includes_tiles_without_tile_data():
+  _place_tile("id_a", 0, 0)
+  layout.current_layer.tiles.append(PlacedTile.new())
+  layout.current_layer.tiles.append(PlacedTile.new())
+  assert_eq({"id_a": 1, "": 2}, layout.get_tile_counts())

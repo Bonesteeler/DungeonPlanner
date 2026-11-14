@@ -11,16 +11,22 @@ signal scenes_updated()
 signal recent_scenes_updated()
 
 const MAX_RECENT_SCENES = 10
+const TILES_AVAILABLE_TEXT = "All tiles available"
+const TILES_MISSING_TEXT = "Missing tiles"
 
 var save_manager: SceneSaveService
+var tile_resources: TileResources
 var _recent_scene_ids: Array[String] = []
 
 ## Initialize with a SceneSaveService instance and connect to its signals.[br]
 ## [b]Parameters:[/b][br]
 ## [code]manager[/code] : [SceneSaveService] — the save service to wrap.[br]
-func _init(manager: SceneSaveService):
+## [code]resources[/code] : [TileResources] — tile service.[br]
+func _init(manager: SceneSaveService, resources: TileResources = TileSets):
     save_manager = manager
+    tile_resources = resources
     save_manager.scene_added.connect(_on_scene_added)
+    tile_resources.tile_sets_changed.connect(_on_tile_sets_changed)
     _load_recent_scenes()
 
 ## Get all scenes sorted alphabetically by scene name.[br]
@@ -30,12 +36,28 @@ func get_scenes_alphabetically() -> Array[Scene]:
     sorted_scenes.sort_custom(func(a: Scene, b: Scene): return a.scene_name.naturalnocasecmp_to(b.scene_name) < 0)
     return sorted_scenes
 
+## Gets text reflecting tile import state.[br]
+## [b]Parameters:[/b][br]
+## [code]scene[/code] : [Scene] — the scene to check.[br]
+## [b]Returns:[/b] [String] — display text for the scene item subtext.[br]
+func get_tiles_status_text(scene: Scene) -> String:
+    if get_missing_tile_ids(scene).is_empty():
+        return TILES_AVAILABLE_TEXT
+    return TILES_MISSING_TEXT
+
+## Get the ids of tiles referenced by the scene that are not imported.[br]
+## [b]Parameters:[/b][br]
+## [code]scene[/code] : [Scene] — the scene to check.[br]
+## [b]Returns:[/b] [Array[String]] — missing tile ids, empty when all tiles are available.[br]
+func get_missing_tile_ids(scene: Scene) -> Array[String]:
+    return tile_resources.get_missing_tile_ids(scene.data.get_unique_tile_ids())
+
 ## Get recently edited scenes, ordered by most recent first.[br]
 ## [b]Returns:[/b] [Array[Scene]] — array of recently accessed scenes.[br]
 func get_recent_scenes() -> Array[Scene]:
     var recent_scenes: Array[Scene] = []
     for scene_id in _recent_scene_ids:
-        var scene = find_scene_by_id(scene_id)
+        var scene = save_manager.find_scene_by_id(scene_id)
         if scene != null:
             recent_scenes.append(scene)
     return recent_scenes
@@ -87,24 +109,13 @@ func add_scene(scene: Scene) -> void:
     save_manager.add_scene(scene)
     mark_scene_as_recent(scene)
 
-## Delete a scene by name.[br]
-## [b]Parameters:[/b][br]
-## [code]scene_name[/code] : [String] — name of the scene to delete.[br]
+## Notify listeners that scene data changed outside this view model, so consumers should rebuild.[br]
 ## [b]Emits:[/b][br]
 ## - [code]scenes_updated()[/code][br]
 ## - [code]recent_scenes_updated()[/code][br]
-func delete_scene(scene_name: String) -> void:
-    # Find and remove from recent list
-    var scene = _find_scene_by_name(scene_name)
-    if scene != null and scene.id != "":
-        var idx = _recent_scene_ids.find(scene.id)
-        if idx != -1:
-            _recent_scene_ids.remove_at(idx)
-            _save_recent_scenes()
-            recent_scenes_updated.emit()
-    
-    save_manager.delete_scene(scene_name)
+func refresh_scenes() -> void:
     scenes_updated.emit()
+    recent_scenes_updated.emit()
 
 ## Get the total number of scenes.[br]
 ## [b]Returns:[/b] [int] — count of scenes.[br]
@@ -115,25 +126,10 @@ func get_scene_count() -> int:
 func _on_scene_added() -> void:
     scenes_updated.emit()
 
-## Find a scene by its ID.[br]
-## [b]Parameters:[/b][br]
-## [code]scene_id[/code] : [String] — the scene ID to search for.[br]
-## [b]Returns:[/b] [Scene] or [null].[br]
-func find_scene_by_id(scene_id: String) -> Scene:
-    for scene in save_manager.scenes:
-        if scene.id == scene_id:
-            return scene
-    return null
-
-## Find a scene by its name.[br]
-## [b]Parameters:[/b][br]
-## [code]scene_name[/code] : [String] — the scene name to search for.[br]
-## [b]Returns:[/b] [Scene] or [null].[br]
-func _find_scene_by_name(scene_name: String) -> Scene:
-    for scene in save_manager.scenes:
-        if scene.scene_name == scene_name:
-            return scene
-    return null
+## Internal callback when imported tile sets change, so scene items re-evaluate tile availability.[br]
+func _on_tile_sets_changed() -> void:
+    scenes_updated.emit()
+    recent_scenes_updated.emit()
 
 ## Load recent scene IDs from persistent storage (stub).[br]
 func _load_recent_scenes() -> void:
@@ -143,7 +139,7 @@ func _load_recent_scenes() -> void:
   for id in loaded_ids:
     if sanitized.size() >= MAX_RECENT_SCENES:
       break
-    if not find_scene_by_id(id):
+    if not save_manager.find_scene_by_id(id):
       continue
     if sanitized.has(id):
       continue
@@ -159,6 +155,6 @@ func _save_recent_scenes() -> void:
 ## Upload a scene to the scene api[br]
 ## [b]Parameters:[/b][br]## [code]scene_id[/code] : [String] — ID of the scene to upload.[br]
 func upload_scene(scene_id: String) -> void:
-    var scene := find_scene_by_id(scene_id)
+    var scene := save_manager.find_scene_by_id(scene_id)
     if scene != null:
         await UploadSceneRequest.send(Network, scene)

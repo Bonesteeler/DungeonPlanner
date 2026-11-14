@@ -10,6 +10,7 @@ const KEY_TILE_NAME = "name"
 const KEY_TILE_X_SIZE = "xSize"
 const KEY_TILE_Y_SIZE = "ySize"
 const KEY_TILE_RES_PATH = "resPath"
+const KEY_TILE_SOURCE_PATH = "sourcePath"
 const KEY_TILES = "tiles"
 const MESHES_PATH = "user://Meshes/"
 const TILE_PATH = "user://Meshes/"
@@ -46,6 +47,7 @@ func import_tile(stl_file_path: String):
   data[TileGroup.KEY_TILE_NAME] = new_tile.name
   data[TileGroup.KEY_TILE_ID] = new_tile.id
   data[TileGroup.KEY_TILE_RES_PATH] ="/".join([TILE_PATH, set_name, new_tile.name + ".res"])
+  data[TileGroup.KEY_TILE_SOURCE_PATH] = new_tile.source_path
   data[TileGroup.KEY_TILE_X_SIZE] = new_tile.x_size
   data[TileGroup.KEY_TILE_Y_SIZE] = new_tile.y_size
 

@@ -50,6 +50,19 @@ func test_has_tile_ids_multiple_sets():
 
   assert_true(resources.has_tile_ids(["t1", "t2"]))
 
+func test_get_missing_tile_ids():
+  var set_test = DragonbiteTileSet.new()
+  set_test.name = "set_e"
+  var tile1_test = Tile.new(); tile1_test.id = "t1"
+  var tile2_test = Tile.new(); tile2_test.id = "t2"
+  set_test.tiles = [tile1_test, tile2_test] as Array[Tile]
+  resources.add_set(set_test)
+
+  assert_eq([], resources.get_missing_tile_ids([]))
+  assert_eq([], resources.get_missing_tile_ids(["t1", "t2"]))
+  assert_eq(["missing_id"], resources.get_missing_tile_ids(["missing_id"]))
+  assert_eq(["missing_a", "missing_b"], resources.get_missing_tile_ids(["t1", "missing_a", "missing_b"]))
+
 func test_remove_set_cleans_ids_and_sets():
   var set_test = DragonbiteTileSet.new()
   set_test.name = "set_d"

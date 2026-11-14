@@ -14,6 +14,7 @@ var profile_view_model: ProfileViewModel
 @onready var log_in_profile: Profile = $%Profile
 @onready var sign_up_profile: Profile = $%SignUpProfile
 @onready var auth_toggle_button: Button = $%AuthToggleButton
+@onready var export_dialog: ExportDialog = $%ExportDialog
 
 func _ready() -> void:
 	view_model = CloudManagerViewModel.new()
@@ -34,11 +35,17 @@ func _ready() -> void:
 	online_scenes.scene_import.connect(view_model.import_scene)
 
 	upload_scenes.upload_requested.connect(view_model.upload_scene)
+	upload_scenes.export_requested.connect(_on_export_requested)
 	upload_scenes.set_scenes(view_model.get_local_scenes())
 
 	view_model.scene_list_updated.connect(online_scenes.set_scene_items)
 
 	view_model.request_scene_list(0)
+
+func _on_export_requested(scene_id: String) -> void:
+	var scene := SceneSaveService.find_scene_by_id(scene_id)
+	if scene != null:
+		export_dialog.open(scene)
 
 func _on_log_in_pressed() -> void:
 	if await profile_view_model.login(log_in_profile.get_email(), log_in_profile.get_password()):

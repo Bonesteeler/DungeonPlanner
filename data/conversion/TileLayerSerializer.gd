@@ -43,8 +43,11 @@ static func deserialize(json: Dictionary) -> TileLayer:
         float(tile_data[KEY_X_POS]),
         float(tile_data[KEY_Y_POS])
     )
-    tile.tile_data = TileSets.get_tile_from_id(tile_data[KEY_ID])
-    tile.id = tile_data[KEY_ID]
+    var tile_id = tile_data[KEY_ID]
+    tile.tile_data = TileSets.get_tile_from_id(tile_id)
+    if tile.tile_data == null:
+        tile.tile_data = Tile.new()
+        tile.tile_data.id = tile_id
     deserialized_layer.tiles.append(tile)
   deserialized_layer.height = json.get(KEY_HEIGHT, 0)
   return deserialized_layer
