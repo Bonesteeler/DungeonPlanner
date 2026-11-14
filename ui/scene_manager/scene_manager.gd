@@ -62,7 +62,7 @@ func _on_delete_scene_requested(scene_name: String):
 func delete_scene_confirmed():
   confirmation_dialog.confirmed.disconnect(delete_scene_confirmed)
   SceneSaveService.delete_scene(confirmation_dialog_target)
-  scene_selector.set_scene_list()
+  view_model.refresh_scenes()
 
 ## Send upload request[br]
 ## [b]Parameters:[/b][br]## [code]scene_id[/code] : [String] — ID of the scene to upload

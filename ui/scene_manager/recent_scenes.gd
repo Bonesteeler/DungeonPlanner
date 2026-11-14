@@ -17,6 +17,7 @@ signal show_error(scene_name: String, missing_tile_ids: Array)
 func set_vm(vm: SceneManagerViewModel):
     view_model = vm
     view_model.recent_scenes_updated.connect(set_scene_list)
+    view_model.scenes_updated.connect(set_scene_list)
     set_scene_list()
 
 ## Update the scene list from the view model[br]

@@ -109,24 +109,13 @@ func add_scene(scene: Scene) -> void:
     save_manager.add_scene(scene)
     mark_scene_as_recent(scene)
 
-## Delete a scene by name.[br]
-## [b]Parameters:[/b][br]
-## [code]scene_name[/code] : [String] — name of the scene to delete.[br]
+## Notify listeners that scene data changed outside this view model, so consumers should rebuild.[br]
 ## [b]Emits:[/b][br]
 ## - [code]scenes_updated()[/code][br]
 ## - [code]recent_scenes_updated()[/code][br]
-func delete_scene(scene_name: String) -> void:
-    # Find and remove from recent list
-    var scene = _find_scene_by_name(scene_name)
-    if scene != null and scene.id != "":
-        var idx = _recent_scene_ids.find(scene.id)
-        if idx != -1:
-            _recent_scene_ids.remove_at(idx)
-            _save_recent_scenes()
-            recent_scenes_updated.emit()
-    
-    save_manager.delete_scene(scene_name)
+func refresh_scenes() -> void:
     scenes_updated.emit()
+    recent_scenes_updated.emit()
 
 ## Get the total number of scenes.[br]
 ## [b]Returns:[/b] [int] — count of scenes.[br]
@@ -141,16 +130,6 @@ func _on_scene_added() -> void:
 func _on_tile_sets_changed() -> void:
     scenes_updated.emit()
     recent_scenes_updated.emit()
-
-## Find a scene by its name.[br]
-## [b]Parameters:[/b][br]
-## [code]scene_name[/code] : [String] — the scene name to search for.[br]
-## [b]Returns:[/b] [Scene] or [null].[br]
-func _find_scene_by_name(scene_name: String) -> Scene:
-    for scene in save_manager.scenes:
-        if scene.scene_name == scene_name:
-            return scene
-    return null
 
 ## Load recent scene IDs from persistent storage (stub).[br]
 func _load_recent_scenes() -> void:

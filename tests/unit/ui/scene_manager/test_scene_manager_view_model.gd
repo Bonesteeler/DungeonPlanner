@@ -58,3 +58,9 @@ func test_tile_sets_changed_refreshes_scene_lists():
   resources.add_set(tile_set)
   assert_signal_emitted(view_model, "scenes_updated")
   assert_signal_emitted(view_model, "recent_scenes_updated")
+
+func test_refresh_scenes_emits_both_update_signals():
+  watch_signals(view_model)
+  view_model.refresh_scenes()
+  assert_signal_emitted(view_model, "scenes_updated")
+  assert_signal_emitted(view_model, "recent_scenes_updated")
