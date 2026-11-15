@@ -45,7 +45,7 @@ func _ready() -> void:
 
 
 func _on_export_requested(scene_id: String) -> void:
-	var scene := SceneSaveService.find_scene_by_id(scene_id)
+	var scene := LocalSceneService.find_scene_by_id(scene_id)
 	if scene != null:
 		export_dialog.open(scene)
 

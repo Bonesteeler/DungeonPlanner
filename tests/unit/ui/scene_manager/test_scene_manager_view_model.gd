@@ -14,7 +14,7 @@ func before_each() -> void:
 	tile.id = "id_a"
 	tile_set.tiles = [tile] as Array[Tile]
 	resources.add_set(tile_set)
-	view_model = SceneManagerViewModel.new(SceneSaveService, resources)
+	view_model = SceneManagerViewModel.new(LocalSceneService, resources)
 
 
 func _scene_with_tile_ids(tile_ids: Array) -> Scene:

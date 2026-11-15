@@ -2,7 +2,7 @@ class_name SceneManagerViewModel
 extends RefCounted
 ## SceneManagerViewModel
 ##
-## [i]View model wrapping SceneSaveService to provide sorted scene lists and recent scene tracking.[/i][br]
+## [i]View model wrapping LocalSceneService to provide sorted scene lists and recent scene tracking.[/i][br]
 ## [b]Signals:[/b][br]
 ## - [code]scenes_updated()[/code]: Emitted when the scene list changes.[br]
 ## - [code]recent_scenes_updated()[/code]: Emitted when recent scenes are modified.[br]
@@ -14,16 +14,16 @@ const MAX_RECENT_SCENES = 10
 const TILES_AVAILABLE_TEXT = "All tiles available"
 const TILES_MISSING_TEXT = "Missing tiles"
 
-var save_manager: SceneSaveService
+var save_manager: LocalSceneService
 var tile_resources: TileResources
 var _recent_scene_ids: Array[String] = []
 
 
-## Initialize with a SceneSaveService instance and connect to its signals.[br]
+## Initialize with a LocalSceneService instance and connect to its signals.[br]
 ## [b]Parameters:[/b][br]
-## [code]manager[/code] : [SceneSaveService] — the save service to wrap.[br]
+## [code]manager[/code] : [LocalSceneService] — the save service to wrap.[br]
 ## [code]resources[/code] : [TileResources] — tile service.[br]
-func _init(manager: SceneSaveService, resources: TileResources = TileSets):
+func _init(manager: LocalSceneService, resources: TileResources = TileSets):
 	save_manager = manager
 	tile_resources = resources
 	save_manager.scene_added.connect(_on_scene_added)
@@ -136,7 +136,7 @@ func get_scene_count() -> int:
 	return save_manager.scenes.size()
 
 
-## Internal callback when SceneSaveService adds a scene.[br]
+## Internal callback when LocalSceneService adds a scene.[br]
 func _on_scene_added() -> void:
 	scenes_updated.emit()
 
@@ -149,7 +149,7 @@ func _on_tile_sets_changed() -> void:
 
 ## Load recent scene IDs from persistent storage (stub).[br]
 func _load_recent_scenes() -> void:
-	var loaded_ids: Array[String] = SceneSaveService.load_recent_scene_ids()
+	var loaded_ids: Array[String] = LocalSceneService.load_recent_scene_ids()
 
 	var sanitized: Array[String] = []
 	for id in loaded_ids:
@@ -167,7 +167,7 @@ func _load_recent_scenes() -> void:
 
 ## Save recent scene IDs to persistent storage (stub).[br]
 func _save_recent_scenes() -> void:
-	SceneSaveService.save_recent_scene_ids(_recent_scene_ids)
+	LocalSceneService.save_recent_scene_ids(_recent_scene_ids)
 
 
 ## Upload a scene to the scene api[br]

@@ -2,17 +2,17 @@ extends GutTest
 
 const TEST_NAME := "gut_scene_save_service_test"
 
-var service: SceneSaveServiceImpl
+var service: LocalSceneServiceImpl
 
 
 func before_each() -> void:
-	service = SceneSaveServiceImpl.new()
+	service = LocalSceneServiceImpl.new()
 	autofree(service)
 
 
 func after_each() -> void:
 	var path := ProjectSettings.globalize_path(
-		SceneSaveServiceImpl.LOCAL_SCENES_PATH + TEST_NAME + ".json"
+		LocalSceneServiceImpl.LOCAL_SCENES_PATH + TEST_NAME + ".json"
 	)
 	if FileAccess.file_exists(path):
 		DirAccess.remove_absolute(path)
@@ -20,14 +20,14 @@ func after_each() -> void:
 
 func _write(content: String) -> void:
 	var file := FileAccess.open(
-		SceneSaveServiceImpl.LOCAL_SCENES_PATH + TEST_NAME + ".json", FileAccess.WRITE
+		LocalSceneServiceImpl.LOCAL_SCENES_PATH + TEST_NAME + ".json", FileAccess.WRITE
 	)
 	file.store_string(content)
 	file.close()
 
 
 func _file_exists() -> bool:
-	return FileAccess.file_exists(SceneSaveServiceImpl.LOCAL_SCENES_PATH + TEST_NAME + ".json")
+	return FileAccess.file_exists(LocalSceneServiceImpl.LOCAL_SCENES_PATH + TEST_NAME + ".json")
 
 
 func test_load_scene_from_user_discards_invalid_json() -> void:

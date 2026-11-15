@@ -2,7 +2,7 @@ class_name CloudManagerViewModel
 extends RefCounted
 ## CloudManagerViewModel
 ##
-## [i]Mediates between the Network/SceneSaveService autoloads and the cloud manager UI.[/i][br]
+## [i]Mediates between the Network/LocalSceneService autoloads and the cloud manager UI.[/i][br]
 ## [b]Signals:[/b][br]
 ## - [code]scene_list_updated(response: SceneListResponse)[/code]: Emitted when a scene list is received from the server.[br]
 ## - [code]upload_success(scene_name: String)[/code]: Emitted when an upload succeeds.[br]
@@ -48,7 +48,7 @@ func request_scene_list(start_idx: int = 0) -> void:
 ## [b]Parameters:[/b][br]
 ## [code]scene_id[/code] : [String] — ID of the local scene to upload.[br]
 func upload_scene(scene_id: String) -> void:
-	for scene in SceneSaveService.scenes:
+	for scene in LocalSceneService.scenes:
 		if scene.id == scene_id:
 			if await UploadSceneRequest.send(network, scene):
 				upload_success.emit(scene.scene_name)
@@ -72,10 +72,10 @@ func import_scene(scene: Scene) -> void:
 			)
 		)
 		return
-	SceneSaveService.add_scene(GetSceneRequest.deserialize(response.json))
+	LocalSceneService.add_scene(GetSceneRequest.deserialize(response.json))
 
 
 ## Get all locally saved scenes.[br]
 ## [b]Returns:[/b] [Array[Scene]][br]
 func get_local_scenes() -> Array[Scene]:
-	return SceneSaveService.scenes
+	return LocalSceneService.scenes

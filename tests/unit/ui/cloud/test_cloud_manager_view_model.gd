@@ -93,10 +93,10 @@ func _local_scene() -> Scene:
 
 func test_upload_scene_posts_authenticated_request_body() -> void:
 	var scene := _local_scene()
-	SceneSaveService.scenes.append(scene)
+	LocalSceneService.scenes.append(scene)
 	net.response = _response(200)
 	await vm.upload_scene("scene-1")
-	SceneSaveService.scenes.erase(scene)
+	LocalSceneService.scenes.erase(scene)
 	assert_eq(net.calls[0].path, "v1/scenes/add")
 	assert_eq(net.calls[0].method, HTTPClient.METHOD_POST)
 	assert_true(net.calls[0].authenticated)
@@ -118,20 +118,20 @@ func test_upload_scene_posts_authenticated_request_body() -> void:
 
 func test_upload_scene_emits_success() -> void:
 	var scene := _local_scene()
-	SceneSaveService.scenes.append(scene)
+	LocalSceneService.scenes.append(scene)
 	net.response = _response(200)
 	await vm.upload_scene("scene-1")
-	SceneSaveService.scenes.erase(scene)
+	LocalSceneService.scenes.erase(scene)
 	assert_signal_emitted_with_parameters(vm, "upload_success", ["My Scene"])
 	assert_signal_not_emitted(vm, "upload_failure")
 
 
 func test_upload_scene_emits_failure() -> void:
 	var scene := _local_scene()
-	SceneSaveService.scenes.append(scene)
+	LocalSceneService.scenes.append(scene)
 	net.response = _response(500)
 	await vm.upload_scene("scene-1")
-	SceneSaveService.scenes.erase(scene)
+	LocalSceneService.scenes.erase(scene)
 	assert_signal_emitted_with_parameters(vm, "upload_failure", ["My Scene"])
 	assert_signal_not_emitted(vm, "upload_success")
 
@@ -142,9 +142,9 @@ func test_upload_scene_ignores_unknown_id() -> void:
 
 
 func _remove_imported(scene_name: String) -> void:
-	for scene in SceneSaveService.scenes.filter(func(s): return s.scene_name == scene_name):
-		SceneSaveService.scenes.erase(scene)
-	DirAccess.remove_absolute(SceneSaveService.LOCAL_SCENES_PATH + scene_name + ".json")
+	for scene in LocalSceneService.scenes.filter(func(s): return s.scene_name == scene_name):
+		LocalSceneService.scenes.erase(scene)
+	DirAccess.remove_absolute(LocalSceneService.LOCAL_SCENES_PATH + scene_name + ".json")
 
 
 func test_import_scene_fetches_full_scene_by_id() -> void:
@@ -164,11 +164,13 @@ func test_import_scene_saves_fetched_scene_locally() -> void:
 	partial.scene_name = "Partial"
 	net.response = _response(200, {"id": "scene-42", "name": "Cloud Import Test", "layers": []})
 	await vm.import_scene(partial)
-	var saved := SceneSaveService.scenes.filter(func(s): return s.scene_name == "Cloud Import Test")
-	var file_exists := FileAccess.file_exists(
-		SceneSaveService.LOCAL_SCENES_PATH + "Cloud Import Test.json"
+	var saved := LocalSceneService.scenes.filter(
+		func(s): return s.scene_name == "Cloud Import Test"
 	)
-	var partial_saved := SceneSaveService.scenes.any(func(s): return s.scene_name == "Partial")
+	var file_exists := FileAccess.file_exists(
+		LocalSceneService.LOCAL_SCENES_PATH + "Cloud Import Test.json"
+	)
+	var partial_saved := LocalSceneService.scenes.any(func(s): return s.scene_name == "Partial")
 	_remove_imported("Cloud Import Test")
 	assert_eq(saved.size(), 1)
 	assert_true(file_exists)
@@ -181,7 +183,7 @@ func test_import_scene_does_not_save_on_failure() -> void:
 	partial.scene_name = "Cloud Import Failure Test"
 	net.response = _response(500)
 	await vm.import_scene(partial)
-	var saved := SceneSaveService.scenes.any(
+	var saved := LocalSceneService.scenes.any(
 		func(s): return s.scene_name == "Cloud Import Failure Test"
 	)
 	assert_false(saved)

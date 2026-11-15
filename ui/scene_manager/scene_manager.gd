@@ -20,7 +20,7 @@ var view_model: SceneManagerViewModel
 
 
 func _ready() -> void:
-	view_model = SceneManagerViewModel.new(SceneSaveService)
+	view_model = SceneManagerViewModel.new(LocalSceneService)
 
 	scene_selector.set_vm(view_model)
 	scene_selector.scene_selected.connect(_on_scene_selected)
@@ -38,7 +38,7 @@ func _ready() -> void:
 
 
 func _on_scene_selected(scene_id: String) -> void:
-	var scene_data = SceneSaveService.find_scene_by_id(scene_id)
+	var scene_data = LocalSceneService.find_scene_by_id(scene_id)
 	view_model.mark_scene_as_recent(scene_data)
 	if scene_data != null:
 		var new_scene_vm = SceneBuilderViewModel.new(scene_data)
@@ -67,7 +67,7 @@ func _on_delete_scene_requested(scene_name: String) -> void:
 ## [b]Returns:[/b] [void][br]
 func delete_scene_confirmed() -> void:
 	confirmation_dialog.confirmed.disconnect(delete_scene_confirmed)
-	SceneSaveService.delete_scene(confirmation_dialog_target)
+	LocalSceneService.delete_scene(confirmation_dialog_target)
 	view_model.refresh_scenes()
 
 
@@ -85,7 +85,7 @@ func _on_upload_scene_request(scene_id: String) -> void:
 ## [b]Returns:[/b] [void][br]
 func _on_export_scene_request(scene_id: String) -> void:
 	if scene_id != "":
-		var scene = SceneSaveService.find_scene_by_id(scene_id)
+		var scene = LocalSceneService.find_scene_by_id(scene_id)
 		if scene != null:
 			export_dialog.open(scene)
 

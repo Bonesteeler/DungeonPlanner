@@ -1,6 +1,6 @@
-class_name SceneSaveServiceImpl
+class_name LocalSceneServiceImpl
 extends Node
-## SceneSaveServiceImpl
+## LocalSceneServiceImpl
 ##
 ## [i]Manages saving, loading and tracking of user-created scenes.[/i][br]
 ## [b]Properties:[/b][br]

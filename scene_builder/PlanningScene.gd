@@ -47,10 +47,10 @@ func set_scene_view_model(scene_vm: SceneBuilderViewModel) -> void:
 		add_tile_layer(layer_vm)
 
 
-## Saves the current scene using the SceneSaveService.[br]
+## Saves the current scene using the LocalSceneService.[br]
 ## [b]Returns:[/b] [void][br]
 func save_scene() -> void:
-	SceneSaveService.save_scene_to_user(vm.scene)
+	LocalSceneService.save_scene_to_user(vm.scene)
 
 
 ## Forwards viewport resize notifications to the planner UI.[br]
