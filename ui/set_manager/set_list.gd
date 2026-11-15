@@ -12,7 +12,7 @@ extends VBoxContainer
 ## - [code]select_set(String)[/code]: Emitted when a set is selected.[br]
 
 signal delete_set(String)
-signal import_set()
+signal import_set
 signal select_set(String)
 
 const SET_LIST_ITEM_SCENE = preload("res://ui/set_manager/set_list_item.tscn")
@@ -21,27 +21,30 @@ var view_model: SetListViewModel
 
 @onready var set_list_container: VBoxContainer = $%SetListContainer
 
+
 ## Set the view model and initialize the list display[br]
 ## [b]Parameters:[/b][br]
 ## [code]vm[/code] : [SetListViewModel] — view model to bind.[br]
 func set_vm(vm: SetListViewModel) -> void:
-    view_model = vm
-    update_items()
-    view_model.sets_changed.connect(update_items)
+	view_model = vm
+	update_items()
+	view_model.sets_changed.connect(update_items)
+
 
 ## Rebuild the list items from view model data[br]
 func update_items() -> void:
-    # Clear existing items
-    for child in set_list_container.get_children():
-        child.queue_free()
+	# Clear existing items
+	for child in set_list_container.get_children():
+		child.queue_free()
 
-    var sets = view_model.get_set_list()
-    for s in sets:
-        var item = SET_LIST_ITEM_SCENE.instantiate()
-        item.set_text(s)
-        set_list_container.add_child(item)
-        item.delete_pressed.connect(forward_delete_pressed)
-        item.select_pressed.connect(forward_select_pressed)
+	var sets = view_model.get_set_list()
+	for s in sets:
+		var item = SET_LIST_ITEM_SCENE.instantiate()
+		item.set_text(s)
+		set_list_container.add_child(item)
+		item.delete_pressed.connect(forward_delete_pressed)
+		item.select_pressed.connect(forward_select_pressed)
+
 
 ## Forward delete signal from list item[br]
 ## [b]Parameters:[/b][br]
@@ -49,13 +52,15 @@ func update_items() -> void:
 ## [b]Emits:[/b][br]
 ## - [code]delete_set(tile_set_name)[/code][br]
 func forward_delete_pressed(tile_set_name: String) -> void:
-    delete_set.emit(tile_set_name)
+	delete_set.emit(tile_set_name)
+
 
 ## Forward import button press[br]
 ## [b]Emits:[/b][br]
 ## - [code]import_set()[/code][br]
 func forward_import_pressed() -> void:
-    import_set.emit()
+	import_set.emit()
+
 
 ## Forward select signal from list item[br]
 ## [b]Parameters:[/b][br]
@@ -63,4 +68,4 @@ func forward_import_pressed() -> void:
 ## [b]Emits:[/b][br]
 ## - [code]select_set(tile_set_name)[/code][br]
 func forward_select_pressed(tile_set_name: String) -> void:
-    select_set.emit(tile_set_name)
+	select_set.emit(tile_set_name)

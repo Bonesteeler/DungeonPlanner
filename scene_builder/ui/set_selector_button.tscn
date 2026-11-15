@@ -1,0 +1,23 @@
+[gd_scene load_steps=2 format=3 uid="uid://dtck3enslckr1"]
+
+[ext_resource type="Script" uid="uid://c35lc2jyxse5l" path="res://scene_builder/ui/set_selector_button.gd" id="1_pwjhx"]
+
+[node name="Set" type="MarginContainer"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -42.0
+offset_top = -15.5
+offset_right = 42.0
+offset_bottom = 15.5
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_pwjhx")
+
+[node name="Button" type="Button" parent="."]
+layout_mode = 2
+text = "Set_name"
+
+[connection signal="pressed" from="Button" to="." method="_on_button_pressed"]

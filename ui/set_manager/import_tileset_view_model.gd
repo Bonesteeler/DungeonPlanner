@@ -18,10 +18,10 @@ extends RefCounted
 ## - [code]import_path_updated()[/code]: Emitted when import path changes.[br]
 ## - [code]import_state_updated()[/code]: Emitted when import progress state changes.[br]
 
-signal import_complete()
-signal import_path_updated()
-signal import_state_updated()
-signal validity_updated()
+signal import_complete
+signal import_path_updated
+signal import_state_updated
+signal validity_updated
 
 const IMPORT_STATUS_LABEL_TEMPLATE = "Importing %d tiles, currently %d/%d"
 
@@ -35,13 +35,15 @@ var photographer: Photographer
 var show_import_progress: bool = false
 var tileset_name: String = ""
 
+
 ## Initialize the view model and connect file loader signals[br]
 func _init(di_file_loader: LoadSavedFiles, di_photographer: Photographer) -> void:
-  file_loader = di_file_loader
-  photographer = di_photographer
-  file_loader.import_started.connect(initialize_import_label)
-  file_loader.tile_imported.connect(update_import_label)
-  file_loader.import_complete.connect(on_import_complete)
+	file_loader = di_file_loader
+	photographer = di_photographer
+	file_loader.import_started.connect(initialize_import_label)
+	file_loader.tile_imported.connect(update_import_label)
+	file_loader.import_complete.connect(on_import_complete)
+
 
 ## Reset the view model to its initial state[br]
 ## [b]Emits:[/b][br]
@@ -49,22 +51,23 @@ func _init(di_file_loader: LoadSavedFiles, di_photographer: Photographer) -> voi
 ## - [code]import_state_updated()[/code][br]
 ## - [code]validity_updated()[/code][br]
 func set_initial_state() -> void:
-  import_path = ""
-  import_path_updated.emit()
-  show_import_progress = false
-  tileset_name = ""
-  import_state_updated.emit()
-  is_valid = false
-  validity_updated.emit()
+	import_path = ""
+	import_path_updated.emit()
+	show_import_progress = false
+	tileset_name = ""
+	import_state_updated.emit()
+	is_valid = false
+	validity_updated.emit()
+
 
 ## Generate formatted import progress string[br]
 ## [b]Returns:[/b] [String] — formatted progress message showing current import status[br]
 func get_import_string() -> String:
-  return IMPORT_STATUS_LABEL_TEMPLATE % [
-      import_tile_amount,
-      imported_tiles_count,
-      import_tile_amount
-  ]
+	return (
+		IMPORT_STATUS_LABEL_TEMPLATE
+		% [import_tile_amount, imported_tiles_count, import_tile_amount]
+	)
+
 
 ## Initialize import progress tracking with total tile count[br]
 ## [b]Parameters:[/b][br]
@@ -72,40 +75,45 @@ func get_import_string() -> String:
 ## [b]Emits:[/b][br]
 ## - [code]import_state_updated()[/code][br]
 func initialize_import_label(tile_count: int) -> void:
-  import_tile_amount = tile_count
-  imported_tiles_count = 0
-  show_import_progress = true
-  import_state_updated.emit()
+	import_tile_amount = tile_count
+	imported_tiles_count = 0
+	show_import_progress = true
+	import_state_updated.emit()
+
 
 ## Increment imported tile count and update state[br]
 ## [b]Emits:[/b][br]
 ## - [code]import_state_updated()[/code][br]
 func update_import_label() -> void:
-  imported_tiles_count += 1
-  import_state_updated.emit()
+	imported_tiles_count += 1
+	import_state_updated.emit()
+
 
 ## Forward import_complete signal[br]
 ## [b]Emits:[/b][br]
 ## - [code]import_complete()[/code][br]
 func on_import_complete(new_set: DragonbiteTileSet) -> void:
-  photographer.generate_images_of_tiles(new_set.get_all_tiles())
-  import_complete.emit()
+	photographer.generate_images_of_tiles(new_set.get_all_tiles())
+	import_complete.emit()
+
 
 ## Update the tile set name and check validity[br]
 ## [b]Parameters:[/b][br]
 ## [code]new_name[/code] : [String] — name for the tile set.[br]
 func update_set_name(new_name: String) -> void:
-  tileset_name = new_name
-  check_validity()
+	tileset_name = new_name
+	check_validity()
+
 
 ## Validate import configuration and emit signal if validity changed[br]
 ## [b]Emits:[/b][br]
 ## - [code]validity_updated()[/code] when validity state changes[br]
 func check_validity() -> void:
-  var prev_validity = is_valid
-  is_valid = tileset_name != "" and import_path != ""
-  if is_valid != prev_validity:
-    validity_updated.emit()
+	var prev_validity = is_valid
+	is_valid = tileset_name != "" and import_path != ""
+	if is_valid != prev_validity:
+		validity_updated.emit()
+
 
 ## Set the directory path for import and validate[br]
 ## [b]Parameters:[/b][br]
@@ -113,18 +121,18 @@ func check_validity() -> void:
 ## [b]Emits:[/b][br]
 ## - [code]import_path_updated()[/code][br]
 func set_import_path(path: String) -> void:
-  import_path = path
-  import_path_updated.emit()
-  check_validity()
+	import_path = path
+	import_path_updated.emit()
+	check_validity()
+
 
 ## Start the tile set import process on a background thread[br]
 func start_import() -> void:
-  if not import_thread.is_alive() and import_thread.is_started():
-    import_thread.wait_to_finish()
-  import_thread.start(
-      file_loader.import_tile_set_from_directory.bind(import_path, tileset_name)
-  )
+	if not import_thread.is_alive() and import_thread.is_started():
+		import_thread.wait_to_finish()
+	import_thread.start(file_loader.import_tile_set_from_directory.bind(import_path, tileset_name))
+
 
 ## Cancel the current import operation[br]
 func cancel_import() -> void:
-  file_loader.cancel_import()
+	file_loader.cancel_import()

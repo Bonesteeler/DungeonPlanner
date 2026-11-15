@@ -1,0 +1,18 @@
+[gd_scene load_steps=2 format=3 uid="uid://cwjg548hsv7kc"]
+
+[ext_resource type="Script" uid="uid://csiecwhq06xqo" path="res://scene_builder/ui/save_as_dialog.gd" id="1_viak8"]
+
+[node name="SaveAsDialogControl" type="ConfirmationDialog"]
+title = "Save scene"
+position = Vector2i(50, 50)
+size = Vector2i(200, 92)
+visible = true
+unresizable = true
+ok_button_text = "Save"
+script = ExtResource("1_viak8")
+
+[node name="SaveNameInput" type="TextEdit" parent="."]
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 192.0
+offset_bottom = 43.0

@@ -10,7 +10,7 @@ extends VBoxContainer
 signal request_scene_list(startIdx: int)
 signal scene_import(scene: Scene)
 
-const SCENE_BROWSER_ITEM_SCENE = preload("res://main_menu/SceneBrowserItem.tscn")
+const SCENE_BROWSER_ITEM_SCENE = preload("res://main_menu/scene_browser_item.tscn")
 
 var page_size: int = 0
 var start_idx: int = 0
@@ -18,8 +18,10 @@ var total_scenes: int = 0
 
 @onready var scene_list_container: HFlowContainer = $%SceneListContainer
 
+
 func _ready() -> void:
 	request_scene_list.emit(start_idx)
+
 
 ## Populate the list with scenes from a server response.[br]
 ## [b]Parameters:[/b][br]
@@ -35,8 +37,10 @@ func set_scene_items(response: SceneListResponse) -> void:
 		scene_list_container.add_child(item)
 		item.on_pressed.connect(_on_item_pressed)
 
+
 func _on_item_pressed(scene: Scene) -> void:
 	scene_import.emit(scene)
+
 
 func _on_prev_button_pressed() -> void:
 	start_idx -= page_size
@@ -44,8 +48,12 @@ func _on_prev_button_pressed() -> void:
 		start_idx = 0
 	request_scene_list.emit(start_idx)
 
+
 func _on_next_button_pressed() -> void:
 	start_idx += page_size
 	if total_scenes > 0 and start_idx >= total_scenes:
-		start_idx = total_scenes - (total_scenes % page_size if total_scenes % page_size != 0 else page_size)
+		start_idx = (
+			total_scenes
+			- (total_scenes % page_size if total_scenes % page_size != 0 else page_size)
+		)
 	request_scene_list.emit(start_idx)

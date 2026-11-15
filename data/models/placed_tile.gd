@@ -13,55 +13,61 @@ extends RefCounted
 # currently the occupied spaces are not updated when position or rotation change
 # Or just make a proper constructor
 var id: String:
-  get(): 
-    if tile_data == null:
-      return ""
-    return tile_data.id
+	get():
+		if tile_data == null:
+			return ""
+		return tile_data.id
 var occupied_spaces: Array = []
 var rotation: Vector3 = Vector3.ZERO
 var position: Vector2 = Vector2.ZERO
 var tile_data: Tile:
-  set(value):
-    tile_data = value
-    update_tile_offset()
+	set(value):
+		tile_data = value
+		update_tile_offset()
+
 
 ## Updates [code]occupied_spaces[/code] to match the current [code]position[/code] and [code]rotation[/code].[br]
 ## [b]Returns:[/b] [void] — updates [code]occupied_spaces[/code] in-place.[br]
-func update_tile_offset():
-  occupied_spaces.clear()
-  occupied_spaces.append_array(calculate_occupied_spaces())
+func update_tile_offset() -> void:
+	occupied_spaces.clear()
+	occupied_spaces.append_array(calculate_occupied_spaces())
+
 
 ## Calculates which grid cells are occupied by this tile based on its [code]tile_data[/code], [code]position[/code], and [code]rotation[/code].[br]
 ## [b]Returns:[/b] [Array] — an array of [code]Vector2[/code] positions representing occupied grid cells.[br]
 func calculate_occupied_spaces() -> Array:
-  if tile_data == null:
-    return []
-  # Create base offsets based on tile size
-  var x_size = tile_data.x_size
-  var y_size = tile_data.y_size
-  var x_end = x_size / 2
-  var x_start = x_end - x_size + 1
-  var y_end = y_size / 2
-  var y_start = y_end - y_size + 1
-  var occupied_space_offsets = []
-  for x in range(x_start, x_end + 1):
-    for y in range(y_start, y_end + 1):
-      occupied_space_offsets.append(Vector2(x, y))
-  # Rotate occupied spaces based on tile rotation
-  while rotation.y < 0:
-    rotation.y += 360
-  while rotation.y >= 360:
-    rotation.y -= 360
-  if abs(rotation.y - 90) < 0.01:
-    occupied_space_offsets = occupied_space_offsets.map(func(pos):
-      return Vector2(pos.y, -pos.x))
-  elif abs(rotation.y - 180) < 0.01:
-    occupied_space_offsets = occupied_space_offsets.map(func(pos):
-      return Vector2(-pos.x, -pos.y))
-  elif abs(rotation.y - 270) < 0.01:
-    occupied_space_offsets = occupied_space_offsets.map(func(pos):
-      return Vector2(-pos.y, pos.x))
-  # Combine offsets with position
-  occupied_space_offsets = occupied_space_offsets.map(func(offset):
-    return Vector2(position.x + offset.x, position.y + offset.y))
-  return occupied_space_offsets
+	if tile_data == null:
+		return []
+	# Create base offsets based on tile size
+	var x_size = tile_data.x_size
+	var y_size = tile_data.y_size
+	var x_end = x_size / 2
+	var x_start = x_end - x_size + 1
+	var y_end = y_size / 2
+	var y_start = y_end - y_size + 1
+	var occupied_space_offsets = []
+	for x in range(x_start, x_end + 1):
+		for y in range(y_start, y_end + 1):
+			occupied_space_offsets.append(Vector2(x, y))
+	# Rotate occupied spaces based on tile rotation
+	while rotation.y < 0:
+		rotation.y += 360
+	while rotation.y >= 360:
+		rotation.y -= 360
+	if abs(rotation.y - 90) < 0.01:
+		occupied_space_offsets = occupied_space_offsets.map(
+			func(pos): return Vector2(pos.y, -pos.x)
+		)
+	elif abs(rotation.y - 180) < 0.01:
+		occupied_space_offsets = occupied_space_offsets.map(
+			func(pos): return Vector2(-pos.x, -pos.y)
+		)
+	elif abs(rotation.y - 270) < 0.01:
+		occupied_space_offsets = occupied_space_offsets.map(
+			func(pos): return Vector2(-pos.y, pos.x)
+		)
+	# Combine offsets with position
+	occupied_space_offsets = occupied_space_offsets.map(
+		func(offset): return Vector2(position.x + offset.x, position.y + offset.y)
+	)
+	return occupied_space_offsets

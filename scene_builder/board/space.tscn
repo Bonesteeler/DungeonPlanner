@@ -1,0 +1,24 @@
+[gd_scene load_steps=5 format=3 uid="uid://crbcwxif8qemq"]
+
+[ext_resource type="Script" uid="uid://mosumonorrd7" path="res://scene_builder/board/space.gd" id="1_iny5b"]
+[ext_resource type="Shape3D" uid="uid://df4m3ihsmvpmp" path="res://scene_builder/board/space_collision.tres" id="2_g2170"]
+[ext_resource type="BoxMesh" uid="uid://bya2aydmfix2l" path="res://scene_builder/board/space_mesh.tres" id="3_vjwkm"]
+[ext_resource type="Script" uid="uid://bf8a410n2bh1h" path="res://scene_builder/board/space_mesh.gd" id="4_g2170"]
+
+[node name="Space" type="Node3D"]
+script = ExtResource("1_iny5b")
+
+[node name="Area3D" type="Area3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
+shape = ExtResource("2_g2170")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Area3D"]
+transform = Transform3D(0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.1, 0, 0, 0)
+custom_aabb = AABB(-100, -100, -100, 200, 200, 200)
+mesh = ExtResource("3_vjwkm")
+script = ExtResource("4_g2170")
+
+[connection signal="input_event" from="Area3D" to="." method="_on_area_3d_input_event"]
+[connection signal="mouse_entered" from="Area3D" to="." method="_on_area_3d_mouse_entered"]
+[connection signal="mouse_exited" from="Area3D" to="." method="_on_area_3d_mouse_exited"]
