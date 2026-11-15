@@ -110,7 +110,7 @@ func does_tile_fit(tile: Tile, position: Vector2, rotation: Vector3) -> bool:
 ## [code]tile_vm[/code] : [SceneTileViewModel] — the tile view model to place.[br]
 ## [b]Returns:[/b] [void][br]
 func set_tile_at(x: int, y: int, tile_vm: SceneTileViewModel) -> void:
-	layer.set_tile_at(x, y, tile_vm)
+	layer.set_tile_at(x, y, tile_vm.tile, tile_vm.rotation)
 
 
 ## Removes a tile from the specified grid coordinates.[br]

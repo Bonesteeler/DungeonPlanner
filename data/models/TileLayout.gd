@@ -103,19 +103,20 @@ func get_origin_tile(layer_id: int, position: Vector2) -> PlacedTile:
 	return layer.get_origin_tile(position)
 
 
-## Place or update a tile at the given coordinates using the provided tile context.[br]
+## Place or update a tile at the given coordinates.[br]
 ## Validates that the tile fits before placing and updates existing placement if present.[br]
 ## [b]Parameters:[/b][br]
 ## [code]layer_id[/code] : [int] — ID of the layer to place on.[br]
 ## [code]x[/code] : [int] — X coordinate on the planning grid.[br]
 ## [code]z[/code] : [int] — Z coordinate on the planning grid.[br]
-## [code]tile_context[/code] : [SceneTileViewModel] — vm of tile to set.[br]
+## [code]tile[/code] : [Tile] — the tile to place.[br]
+## [code]rotation[/code] : [Vector3] — the rotation to apply to the placed tile.[br]
 ## [b]Returns:[/b] [void] — returns early if the layer is not found or the tile does not fit.[br]
-func set_tile_at(layer_id: int, x: int, z: int, tile_context: SceneTileViewModel) -> void:
+func set_tile_at(layer_id: int, x: int, z: int, tile: Tile, rotation: Vector3) -> void:
 	var layer = get_layer_by_id(layer_id)
 	if layer == null:
 		return
-	layer.set_tile_at(x, z, tile_context)
+	layer.set_tile_at(x, z, tile, rotation)
 
 
 ## Remove a placed tile with origin at specified coordinates, if present.[br]

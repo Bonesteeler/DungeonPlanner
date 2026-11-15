@@ -66,15 +66,16 @@ func get_origin_tile(position: Vector2) -> PlacedTile:
 	return null
 
 
-## Place or update a tile at the given coordinates using the provided tile context.[br]
+## Place or update a tile at the given coordinates.[br]
 ## Validates that the tile fits before placing and updates existing placement if present.[br]
 ## [b]Parameters:[/b][br]
 ## [code]x[/code] : [int] — X coordinate on the planning grid.[br]
 ## [code]z[/code] : [int] — Z coordinate on the planning grid.[br]
-## [code]tile_context[/code] : [SceneTileViewModel] — vm of tile to set.[br]
+## [code]tile[/code] : [Tile] — the tile to place.[br]
+## [code]rotation[/code] : [Vector3] — the rotation to apply to the placed tile.[br]
 ## [b]Returns:[/b] [void] — returns early if the tile does not fit.[br]
-func set_tile_at(x: int, z: int, tile_context: SceneTileViewModel) -> void:
-	if not does_tile_fit(tile_context.tile, Vector2(x, z), tile_context.rotation):
+func set_tile_at(x: int, z: int, tile: Tile, rotation: Vector3) -> void:
+	if not does_tile_fit(tile, Vector2(x, z), rotation):
 		return
 	var saved_tile: PlacedTile
 	if has_tile_at(x, z):
@@ -83,8 +84,8 @@ func set_tile_at(x: int, z: int, tile_context: SceneTileViewModel) -> void:
 		saved_tile = PlacedTile.new()
 		saved_tile.position = Vector2(x, z)
 		tiles.append(saved_tile)
-	saved_tile.tile_data = tile_context.tile
-	saved_tile.rotation = tile_context.rotation
+	saved_tile.tile_data = tile
+	saved_tile.rotation = rotation
 	saved_tile.update_tile_offset()
 	return
 
