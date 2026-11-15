@@ -3,11 +3,11 @@
 
 # Configs
 .vscode/*
-.gutconfig.json
 
 /addons/*
-/Builds/*
-/HiddenMeshes/*
+/builds/*
+/hidden_meshes/*
 
 # Addons to track
 !/addons/gut
+!/addons/gd_uuid
