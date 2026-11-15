@@ -10,7 +10,7 @@ extends VBoxContainer
 signal request_scene_list(startIdx: int)
 signal scene_import(scene: Scene)
 
-const SCENE_BROWSER_ITEM_SCENE = preload("res://main_menu/SceneBrowserItem.tscn")
+const SCENE_BROWSER_ITEM_SCENE = preload("res://main_menu/scene_browser_item.tscn")
 
 var page_size: int = 0
 var start_idx: int = 0

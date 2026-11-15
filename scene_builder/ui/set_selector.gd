@@ -8,7 +8,7 @@ extends VBoxContainer
 
 signal set_selected(set: DragonbiteTileSet)
 
-const SET_BUTTON_SCENE = preload("res://scene_builder/ui/SetButton.tscn")
+const SET_BUTTON_SCENE = preload("res://scene_builder/ui/set_selector_button.tscn")
 
 @export var margin: int = 120
 

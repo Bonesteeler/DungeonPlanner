@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://cwjg548hsv7kc"]
 
-[ext_resource type="Script" uid="uid://csiecwhq06xqo" path="res://scene_builder/ui/SaveAsDialog.gd" id="1_viak8"]
+[ext_resource type="Script" uid="uid://csiecwhq06xqo" path="res://scene_builder/ui/save_as_dialog.gd" id="1_viak8"]
 
 [node name="SaveAsDialogControl" type="ConfirmationDialog"]
 title = "Save scene"

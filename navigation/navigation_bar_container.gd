@@ -6,8 +6,8 @@ extends VBoxContainer
 ## [b]Properties:[/b][br]
 ## - [b]vm[/b]: The [NavigationBarViewModel] managing navigation state.[br]
 
-var MAIN_MENU = load("res://main_menu/MainMenu.tscn")
-var PLANNING_SCENE = load("res://scene_builder/PlannerScene.tscn")
+var MAIN_MENU = load("res://main_menu/main_menu.tscn")
+var PLANNING_SCENE = load("res://scene_builder/planning_scene.tscn")
 var SCENE_MANAGER_SCENE = load("res://ui/scene_manager/scene_manager.tscn")
 var SETS_SCENE = load("res://ui/set_manager/set_manager.tscn")
 var CLOUD_SCENE = load("res://ui/cloud/cloud_manager.tscn")

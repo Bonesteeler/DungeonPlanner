@@ -9,7 +9,7 @@ signal tile_imported
 
 # Utility class for file operations. The var deliberately has the same name as the class to remind
 # us that we are using the static class methods.
-#var File = preload("res://data/conversion/files/File.gd")
+#var File = preload("res://data/conversion/files/file.gd")
 var dir_lists: DirList
 var set_name: String = ""
 var pathname: String = ""

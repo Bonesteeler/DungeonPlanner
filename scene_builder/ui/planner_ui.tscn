@@ -1,14 +1,14 @@
 [gd_scene load_steps=10 format=3 uid="uid://ccxbpogh4na0x"]
 
-[ext_resource type="PackedScene" uid="uid://bjdch1vt0u3qe" path="res://scene_builder/ui/TileSelector.tscn" id="1_p3h20"]
-[ext_resource type="Script" uid="uid://33h7ke18pfkj" path="res://scene_builder/ui/PlannerUI.gd" id="1_wubfe"]
-[ext_resource type="Theme" uid="uid://b0urpy7o51mus" path="res://scene_builder/ui/MenuBar.tres" id="2_ock22"]
-[ext_resource type="PackedScene" uid="uid://cvkc0yd6fdkx1" path="res://scene_builder/ui/SetSelector.tscn" id="3_51qet"]
-[ext_resource type="Script" uid="uid://bg6kv52sn6wvy" path="res://scene_builder/ui/FileButton.gd" id="3_cr31u"]
-[ext_resource type="PackedScene" uid="uid://cwjg548hsv7kc" path="res://scene_builder/ui/SaveAsDialog.tscn" id="4_v7e5h"]
+[ext_resource type="PackedScene" uid="uid://bjdch1vt0u3qe" path="res://scene_builder/ui/tile_selector.tscn" id="1_p3h20"]
+[ext_resource type="Script" uid="uid://33h7ke18pfkj" path="res://scene_builder/ui/planner_ui.gd" id="1_wubfe"]
+[ext_resource type="Theme" uid="uid://b0urpy7o51mus" path="res://scene_builder/ui/menu_bar.tres" id="2_ock22"]
+[ext_resource type="PackedScene" uid="uid://cvkc0yd6fdkx1" path="res://scene_builder/ui/set_selector.tscn" id="3_51qet"]
+[ext_resource type="Script" uid="uid://bg6kv52sn6wvy" path="res://scene_builder/ui/file_button.gd" id="3_cr31u"]
+[ext_resource type="PackedScene" uid="uid://cwjg548hsv7kc" path="res://scene_builder/ui/save_as_dialog.tscn" id="4_v7e5h"]
 [ext_resource type="PackedScene" uid="uid://diejbhniso38j" path="res://scene_builder/ui/tile_info.tscn" id="7_47kwl"]
-[ext_resource type="Script" uid="uid://dt0lyamdfpa3t" path="res://scene_builder/ui/UnsavedChangesDialog.gd" id="7_fqoex"]
-[ext_resource type="PackedScene" uid="uid://dt3bj5xmgyjlh" path="res://scene_builder/ui/LayerSelector.tscn" id="8_47kwl"]
+[ext_resource type="Script" uid="uid://dt0lyamdfpa3t" path="res://scene_builder/ui/unsaved_changes_dialog.gd" id="7_fqoex"]
+[ext_resource type="PackedScene" uid="uid://dt3bj5xmgyjlh" path="res://scene_builder/ui/layer_selector.tscn" id="8_47kwl"]
 
 [node name="PlannerUI" type="MarginContainer"]
 anchors_preset = 15

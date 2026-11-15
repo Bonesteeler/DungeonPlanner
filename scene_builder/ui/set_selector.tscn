@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://cvkc0yd6fdkx1"]
 
-[ext_resource type="Script" uid="uid://bhemn6kltg346" path="res://scene_builder/ui/SetSelector.gd" id="1_v45t2"]
+[ext_resource type="Script" uid="uid://bhemn6kltg346" path="res://scene_builder/ui/set_selector.gd" id="1_v45t2"]
 
 [node name="SetSelectorControl" type="VBoxContainer"]
 custom_minimum_size = Vector2(128, 0)

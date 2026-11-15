@@ -1,9 +1,9 @@
 [gd_scene load_steps=5 format=3 uid="uid://hx11pvk41ggm"]
 
-[ext_resource type="Script" uid="uid://cpxxyxbhbldbi" path="res://scene_builder/PlanningScene.gd" id="1_rch2c"]
-[ext_resource type="Script" uid="uid://bnushuvk3btte" path="res://scene_builder/InputListener.gd" id="3_nla8a"]
-[ext_resource type="Script" uid="uid://dgu8s1mbeeocu" path="res://scene_builder/CameraMovement.gd" id="4_26lsg"]
-[ext_resource type="PackedScene" uid="uid://ccxbpogh4na0x" path="res://scene_builder/ui/PlannerUI.tscn" id="5_gpwbx"]
+[ext_resource type="Script" uid="uid://cpxxyxbhbldbi" path="res://scene_builder/planning_scene.gd" id="1_rch2c"]
+[ext_resource type="Script" uid="uid://bnushuvk3btte" path="res://scene_builder/input_listener.gd" id="3_nla8a"]
+[ext_resource type="Script" uid="uid://dgu8s1mbeeocu" path="res://scene_builder/camera_movement.gd" id="4_26lsg"]
+[ext_resource type="PackedScene" uid="uid://ccxbpogh4na0x" path="res://scene_builder/ui/planner_ui.tscn" id="5_gpwbx"]
 
 [node name="MainScene" type="Node"]
 script = ExtResource("1_rch2c")

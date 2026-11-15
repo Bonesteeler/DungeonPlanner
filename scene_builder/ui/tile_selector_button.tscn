@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://c053lwru8coli"]
 
-[ext_resource type="Script" uid="uid://deirjbpuafv2b" path="res://scene_builder/ui/TileSelectorButton.gd" id="1_385ds"]
+[ext_resource type="Script" uid="uid://deirjbpuafv2b" path="res://scene_builder/ui/tile_selector_button.gd" id="1_385ds"]
 
 [node name="Tile" type="MarginContainer"]
 anchors_preset = 8

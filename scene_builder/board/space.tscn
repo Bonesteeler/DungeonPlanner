@@ -1,9 +1,9 @@
 [gd_scene load_steps=5 format=3 uid="uid://crbcwxif8qemq"]
 
-[ext_resource type="Script" uid="uid://mosumonorrd7" path="res://scene_builder/board/Space.gd" id="1_iny5b"]
-[ext_resource type="Shape3D" uid="uid://df4m3ihsmvpmp" path="res://scene_builder/board/SpaceCollision.tres" id="2_g2170"]
-[ext_resource type="BoxMesh" uid="uid://bya2aydmfix2l" path="res://scene_builder/board/SpaceMesh.tres" id="3_vjwkm"]
-[ext_resource type="Script" uid="uid://bf8a410n2bh1h" path="res://scene_builder/board/SpaceMesh.gd" id="4_g2170"]
+[ext_resource type="Script" uid="uid://mosumonorrd7" path="res://scene_builder/board/space.gd" id="1_iny5b"]
+[ext_resource type="Shape3D" uid="uid://df4m3ihsmvpmp" path="res://scene_builder/board/space_collision.tres" id="2_g2170"]
+[ext_resource type="BoxMesh" uid="uid://bya2aydmfix2l" path="res://scene_builder/board/space_mesh.tres" id="3_vjwkm"]
+[ext_resource type="Script" uid="uid://bf8a410n2bh1h" path="res://scene_builder/board/space_mesh.gd" id="4_g2170"]
 
 [node name="Space" type="Node3D"]
 script = ExtResource("1_iny5b")

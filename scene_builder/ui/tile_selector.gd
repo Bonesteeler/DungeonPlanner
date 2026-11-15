@@ -8,7 +8,7 @@ extends VBoxContainer
 
 signal tile_selected(tile: Tile)
 
-const TILE_UI_SCENE = preload("res://scene_builder/ui/Tile.tscn")
+const TILE_UI_SCENE = preload("res://scene_builder/ui/tile_selector_button.tscn")
 
 @export var margin: int = 120
 

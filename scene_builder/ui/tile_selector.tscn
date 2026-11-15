@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://bjdch1vt0u3qe"]
 
-[ext_resource type="Script" uid="uid://uljxkrg4x2hn" path="res://scene_builder/ui/TileSelector.gd" id="1_y6b30"]
+[ext_resource type="Script" uid="uid://uljxkrg4x2hn" path="res://scene_builder/ui/tile_selector.gd" id="1_y6b30"]
 
 [node name="TileSelectorControl" type="VBoxContainer"]
 custom_minimum_size = Vector2(256, 0)

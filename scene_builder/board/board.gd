@@ -29,7 +29,7 @@ var current_tool = CustomEnums.ToolType.ADD_TILE
 var hovered_space: Space
 var layer_vm: TileLayerViewModel
 var shift_pressed: bool = false
-var space_scene = preload("res://scene_builder/board/Space.tscn")
+var space_scene = preload("res://scene_builder/board/space.tscn")
 var vm: SceneBuilderViewModel
 
 

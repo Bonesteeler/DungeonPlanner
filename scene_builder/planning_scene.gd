@@ -4,7 +4,7 @@ extends Node
 ##
 ## [i]Controller for the planning scene that initializes the board, wires the UI to scene and save logic, and forwards viewport resize events to the UI.[/i][br]
 
-const BOARD_SCENE: PackedScene = preload("res://scene_builder/board/Board.tscn")
+const BOARD_SCENE: PackedScene = preload("res://scene_builder/board/board.tscn")
 
 var viewport: Viewport
 var vm: SceneBuilderViewModel

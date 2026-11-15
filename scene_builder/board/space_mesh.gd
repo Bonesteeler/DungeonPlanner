@@ -10,11 +10,11 @@ extends MeshInstance3D
 ## [b]Constants:[/b][br]
 ## - [code]DEFAULT_MATERIAL[/code], [code]PREVIEW_MATERIAL[/code], [code]ERROR_MATERIAL[/code], [code]SPACE_MATERIAL[/code], [code]EMPTY_SPACE_MESH[/code]: Preloaded resources used for rendering and placeholders.[br]
 
-const DEFAULT_MATERIAL = preload("res://scene_builder/board/DefaultMaterial.tres")
-const PREVIEW_MATERIAL = preload("res://scene_builder/board/HoveredMaterial.tres")
-const ERROR_MATERIAL = preload("res://scene_builder/board/ErrorMaterial.tres")
-const SPACE_MATERIAL = preload("res://scene_builder/board/SpaceMaterial.tres")
-const EMPTY_SPACE_MESH = preload("res://scene_builder/board/SpaceMesh.tres")
+const DEFAULT_MATERIAL = preload("res://scene_builder/board/default_material.tres")
+const PREVIEW_MATERIAL = preload("res://scene_builder/board/hovered_material.tres")
+const ERROR_MATERIAL = preload("res://scene_builder/board/error_material.tres")
+const SPACE_MATERIAL = preload("res://scene_builder/board/space_material.tres")
+const EMPTY_SPACE_MESH = preload("res://scene_builder/board/space_mesh.tres")
 const NODE_ROTATION_OFFSET = Vector3.LEFT * 90
 
 # Defaults to empty
