@@ -15,12 +15,12 @@ signal tile_selected(tile)
 var item_scene: PackedScene = preload("res://ui/set_manager/set_details_item.tscn")
 var view_model: SetDetailsViewModel
 
-@onready var set_details_container = $%SetDetailsContainer
-@onready var tile_label = $%Title
+@onready var set_details_container: GridContainer = $%SetDetailsContainer
+@onready var tile_label: Label = $%Title
 
 
 ## Initialize and connect resize signal[br]
-func _ready():
+func _ready() -> void:
 	resized.connect(_on_resized)
 
 
@@ -60,5 +60,5 @@ func _on_resized() -> void:
 ## [code]tile[/code] : [Tile] — selected tile.[br]
 ## [b]Emits:[/b][br]
 ## - [code]tile_selected(tile)[/code][br]
-func forward_tile_selected(tile: Tile):
+func forward_tile_selected(tile: Tile) -> void:
 	tile_selected.emit(tile)

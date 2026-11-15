@@ -18,7 +18,7 @@ var text: String = ""
 ## Set the displayed text for the tile set name[br]
 ## [b]Parameters:[/b][br]
 ## [code]new_text[/code] : [String] — tile set name to display.[br]
-func set_text(new_text: String):
+func set_text(new_text: String) -> void:
 	text = new_text
 	$%Name.text = text
 
@@ -26,12 +26,12 @@ func set_text(new_text: String):
 ## Forward delete button press with tile set name[br]
 ## [b]Emits:[/b][br]
 ## - [code]delete_pressed(text)[/code][br]
-func forward_delete_pressed():
+func forward_delete_pressed() -> void:
 	delete_pressed.emit(text)
 
 
 ## Forward select button press with tile set name[br]
 ## [b]Emits:[/b][br]
 ## - [code]select_pressed(text)[/code][br]
-func forward_select_pressed():
+func forward_select_pressed() -> void:
 	select_pressed.emit(text)

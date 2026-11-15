@@ -4,18 +4,18 @@ var view_model: SetListViewModel
 var mock_resources: TileResources
 
 
-func before_each():
+func before_each() -> void:
 	mock_resources = TileResources.new(false)
 	view_model = SetListViewModel.new(mock_resources)
 
 
-func test_init_loads_initial_set_list():
+func test_init_loads_initial_set_list() -> void:
 	# TileResources will have 0 sets by default
 	var sets = view_model.get_set_list()
 	assert_eq(sets.size(), 0, "Should start with empty set list")
 
 
-func test_get_set_list_returns_set_names():
+func test_get_set_list_returns_set_names() -> void:
 	# Create mock tile sets
 	var set1 = DragonbiteTileSet.new()
 	set1.name = "TestSet1"
@@ -33,7 +33,7 @@ func test_get_set_list_returns_set_names():
 	assert_has(sets, "TestSet2", "Should contain TestSet2")
 
 
-func test_update_set_list_refreshes_from_resources():
+func test_update_set_list_refreshes_from_resources() -> void:
 	watch_signals(view_model)
 	var initial_sets = view_model.get_set_list()
 	assert_eq(initial_sets.size(), 0, "Should start empty")
@@ -49,7 +49,7 @@ func test_update_set_list_refreshes_from_resources():
 	assert_has(updated_sets, "NewSet", "Should contain NewSet")
 
 
-func test_update_set_list_emits_sets_changed_signal():
+func test_update_set_list_emits_sets_changed_signal() -> void:
 	watch_signals(view_model)
 
 	view_model.update_set_list()

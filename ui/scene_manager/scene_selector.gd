@@ -16,19 +16,19 @@ signal show_error(scene_name: String, missing_tile_ids: Array)
 
 
 ## Set vm which provides data for this view
-func set_vm(vm: SceneManagerViewModel):
+func set_vm(vm: SceneManagerViewModel) -> void:
 	view_model = vm
 	view_model.scenes_updated.connect(set_scene_list)
 	set_scene_list()
 
 
 ## Forward new_scene_button press to emit new_scene_requested signal[br]
-func _new_scene_button_pressed():
+func _new_scene_button_pressed() -> void:
 	new_scene_requested.emit()
 
 
 ## Update the scene list from the view model[br]
-func set_scene_list():
+func set_scene_list() -> void:
 	# Clear existing items
 	for child in scene_list_container.get_children():
 		child.queue_free()
@@ -52,7 +52,7 @@ func set_scene_list():
 ## Find scene from view model by ID and emit scene_selected signal[br]
 ## [b]Parameters:[/b][br]
 ## - [code]scene_id[/code] : [String] — ID of the selected scene.[br]
-func _on_scene_item_selected(scene_id: String):
+func _on_scene_item_selected(scene_id: String) -> void:
 	if scene_id != "":
 		scene_selected.emit(scene_id)
 
@@ -60,7 +60,7 @@ func _on_scene_item_selected(scene_id: String):
 ## Find scene from view model by ID and emit delete_scene_requested signal[br]
 ## [b]Parameters:[/b][br]
 ## - [code]scene_id[/code] : [String] — ID of the scene to delete.[br]
-func _on_scene_item_delete(scene_id: String):
+func _on_scene_item_delete(scene_id: String) -> void:
 	if scene_id != "":
 		delete_scene_requested.emit(scene_id)
 
@@ -68,7 +68,7 @@ func _on_scene_item_delete(scene_id: String):
 ## Emit export_scene signal[br]
 ## [b]Parameters:[/b][br]
 ## - [code]scene_id[/code] : [String] — ID of the scene to export.[br]
-func _on_scene_item_export(scene_id: String):
+func _on_scene_item_export(scene_id: String) -> void:
 	if scene_id != "":
 		export_scene.emit(scene_id)
 
@@ -77,5 +77,5 @@ func _on_scene_item_export(scene_id: String):
 ## [b]Parameters:[/b][br]
 ## - [code]scene_name[/code] : [String] — name of the scene with missing tiles.[br]
 ## - [code]missing_tile_ids[/code] : [Array] — tile ids referenced by the scene that are not imported.[br]
-func _on_scene_item_error(scene_name: String, missing_tile_ids: Array):
+func _on_scene_item_error(scene_name: String, missing_tile_ids: Array) -> void:
 	show_error.emit(scene_name, missing_tile_ids)

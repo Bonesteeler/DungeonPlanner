@@ -6,8 +6,8 @@ const AUTHOR_STRING_TEMPLATE = "by: %s"
 
 var scene_data: Scene
 
-@onready var name_label = $%Name
-@onready var author_label = $%Author
+@onready var name_label: Label = $%Name
+@onready var author_label: Label = $%Author
 
 
 func _ready() -> void:

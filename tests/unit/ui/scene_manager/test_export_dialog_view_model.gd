@@ -9,7 +9,7 @@ var resources: TileResources
 var view_model: ExportDialogViewModel
 
 
-func before_each():
+func before_each() -> void:
 	resources = TileResources.new(false)
 	var tile_set = DragonbiteTileSet.new()
 	tile_set.name = "set_a"
@@ -42,26 +42,26 @@ func _entries_by_id() -> Dictionary:
 	return entries
 
 
-func test_is_empty_for_empty_scene():
+func test_is_empty_for_empty_scene() -> void:
 	view_model.open(_scene_with_tile_ids([]))
 	assert_true(view_model.is_empty())
 
 
-func test_entry_uses_source_path_for_imported_tile():
+func test_entry_uses_source_path_for_imported_tile() -> void:
 	view_model.open(_scene_with_tile_ids(["id_a"]))
 	var entry: ExportTileEntry = _entries_by_id()["id_a"]
 	assert_eq(SOURCE_PATH_A, entry.source_path)
 	assert_eq(SOURCE_PATH_A, entry.display_text())
 
 
-func test_entry_falls_back_to_tile_id_when_not_imported():
+func test_entry_falls_back_to_tile_id_when_not_imported() -> void:
 	view_model.open(_scene_with_tile_ids(["id_missing"]))
 	var entry: ExportTileEntry = _entries_by_id()["id_missing"]
 	assert_eq("", entry.source_path)
 	assert_eq("id_missing", entry.display_text())
 
 
-func test_entries_with_source_paths_sorted_lexicographically_first():
+func test_entries_with_source_paths_sorted_lexicographically_first() -> void:
 	var tile_set = DragonbiteTileSet.new()
 	tile_set.name = "set_b"
 	var tile = Tile.new()
@@ -76,7 +76,7 @@ func test_entries_with_source_paths_sorted_lexicographically_first():
 	assert_eq(["id_a", "id_b", "id_missing"], ids)
 
 
-func test_entries_without_source_paths_sorted_by_count_descending():
+func test_entries_without_source_paths_sorted_by_count_descending() -> void:
 	view_model.open(
 		_scene_with_tile_ids(["id_low", "id_high", "id_high", "id_mid", "id_mid", "id_mid"])
 	)
@@ -86,7 +86,7 @@ func test_entries_without_source_paths_sorted_by_count_descending():
 	assert_eq(["id_mid", "id_high", "id_low"], ids)
 
 
-func test_build_export_payload_uses_sorted_entries():
+func test_build_export_payload_uses_sorted_entries() -> void:
 	view_model.open(_scene_with_tile_ids(["id_a", "id_missing", "id_a"]))
 	assert_eq(
 		[{"source_path": SOURCE_PATH_A, "count": 2}, {"tile_id": "id_missing", "count": 1}],

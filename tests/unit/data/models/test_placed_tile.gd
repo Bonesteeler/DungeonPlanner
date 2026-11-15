@@ -1,7 +1,7 @@
 extends GutTest
 
 
-func test_tile_offsets_1x1():
+func test_tile_offsets_1x1() -> void:
 	var tile = Tile.new()
 	var placed_tile = PlacedTile.new()
 	tile.x_size = 1
@@ -13,7 +13,7 @@ func test_tile_offsets_1x1():
 	assert_true(placed_tile.occupied_spaces.has(Vector2(0, 0)), "1x1 tile should occupy (0,0)")
 
 
-func test_tile_offsets_2x2():
+func test_tile_offsets_2x2() -> void:
 	var tile = Tile.new()
 	var placed_tile = PlacedTile.new()
 	tile.x_size = 2
@@ -29,7 +29,7 @@ func test_tile_offsets_2x2():
 	)
 
 
-func test_tile_offsets_3x3():
+func test_tile_offsets_3x3() -> void:
 	var tile = Tile.new()
 	var placed_tile = PlacedTile.new()
 	tile.x_size = 3

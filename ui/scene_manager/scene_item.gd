@@ -59,7 +59,7 @@ func set_missing_tile_ids(ids: Array[String]) -> void:
 		%Error.visible = not ids.is_empty()
 
 
-func forward_scene_selected():
+func forward_scene_selected() -> void:
 	scene_selected.emit(scene_id)
 
 

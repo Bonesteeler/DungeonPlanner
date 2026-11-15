@@ -3,11 +3,11 @@ extends GutTest
 var view_model: SetDetailsViewModel
 
 
-func before_each():
+func before_each() -> void:
 	view_model = SetDetailsViewModel.new()
 
 
-func test_initial_state():
+func test_initial_state() -> void:
 	assert_null(view_model.current_set, "Should start with null current_set")
 	assert_eq(
 		view_model.get_current_set_name(), "", "Should return empty string when no set is selected"
@@ -19,7 +19,7 @@ func test_initial_state():
 	)
 
 
-func test_set_current_set_updates_property():
+func test_set_current_set_updates_property() -> void:
 	var tile_set = DragonbiteTileSet.new()
 	tile_set.name = "TestSet"
 
@@ -29,7 +29,7 @@ func test_set_current_set_updates_property():
 	assert_eq(view_model.current_set.name, "TestSet", "Should have correct set")
 
 
-func test_set_current_set_emits_signal():
+func test_set_current_set_emits_signal() -> void:
 	watch_signals(view_model)
 
 	var tile_set = DragonbiteTileSet.new()
@@ -40,7 +40,7 @@ func test_set_current_set_emits_signal():
 	assert_signal_emitted(view_model, "current_set_changed", "Should emit current_set_changed")
 
 
-func test_get_current_set_name_returns_set_name():
+func test_get_current_set_name_returns_set_name() -> void:
 	var tile_set = DragonbiteTileSet.new()
 	tile_set.name = "MyTileSet"
 	view_model.set_current_set(tile_set)
@@ -50,7 +50,7 @@ func test_get_current_set_name_returns_set_name():
 	assert_eq(result, "MyTileSet", "Should return the set name")
 
 
-func test_get_current_set_tiles_returns_tiles():
+func test_get_current_set_tiles_returns_tiles() -> void:
 	var tile_set = DragonbiteTileSet.new()
 	tile_set.name = "TileSet"
 
@@ -71,7 +71,7 @@ func test_get_current_set_tiles_returns_tiles():
 	assert_eq(tiles[1].name, "Tile2", "Second tile should be correct")
 
 
-func test_changing_set_updates_tiles():
+func test_changing_set_updates_tiles() -> void:
 	var set1 = DragonbiteTileSet.new()
 	set1.name = "Set1"
 	var tile1 = Tile.new()

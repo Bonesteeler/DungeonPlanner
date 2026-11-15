@@ -20,16 +20,16 @@ func delete_directory(path: String) -> void:
 	d.list_dir_end()
 
 
-func before_each():
+func before_each() -> void:
 	var dir := DirAccess.open("user://")
 	dir.make_dir_recursive(base_dir)
 
 
-func after_each():
+func after_each() -> void:
 	delete_directory(base_dir)
 
 
-func test_get_files_path_ext():
+func test_get_files_path_ext() -> void:
 	var test_path := base_dir + "/test1.stl"
 	File.write_file_as_text(test_path, "Test content 1")
 	var test_dir_list := DirList.new(base_dir)
@@ -38,7 +38,7 @@ func test_get_files_path_ext():
 	assert_eq(files[0], test_path)
 
 
-func test_get_files_path_no_ext():
+func test_get_files_path_no_ext() -> void:
 	var test_path := base_dir + "/test1.stl"
 	File.write_file_as_text(test_path, "Test content 1")
 	var test_dir_list := DirList.new(base_dir)
@@ -47,7 +47,7 @@ func test_get_files_path_no_ext():
 	assert_eq(files[0], base_dir + "/test1")
 
 
-func test_get_files_name_no_ext():
+func test_get_files_name_no_ext() -> void:
 	var test_path := base_dir + "/test1.stl"
 	File.write_file_as_text(test_path, "Test content 1")
 	var test_dir_list := DirList.new(base_dir)
@@ -56,7 +56,7 @@ func test_get_files_name_no_ext():
 	assert_eq(files[0], "test1")
 
 
-func test_get_files_name_with_ext():
+func test_get_files_name_with_ext() -> void:
 	var test_path := base_dir + "/test1.stl"
 	File.write_file_as_text(test_path, "Test content 1")
 	var test_dir_list := DirList.new(base_dir)
@@ -65,7 +65,7 @@ func test_get_files_name_with_ext():
 	assert_eq(files[0], "test1.stl")
 
 
-func test_get_files_no_matching_extension():
+func test_get_files_no_matching_extension() -> void:
 	var test_path := base_dir + "/test1.txt"
 	File.write_file_as_text(test_path, "Test content 1")
 	var test_dir_list := DirList.new(base_dir)
@@ -73,7 +73,7 @@ func test_get_files_no_matching_extension():
 	assert_eq(files.size(), 0)
 
 
-func test_get_files_filter():
+func test_get_files_filter() -> void:
 	var test_path1 := base_dir + "/test1.txt"
 	var test_path2 := base_dir + "/test2.stl"
 	File.write_file_as_text(test_path1, "Test content 1")
@@ -84,7 +84,7 @@ func test_get_files_filter():
 	assert_true("test2.stl" in files)
 
 
-func test_get_files_no_filter():
+func test_get_files_no_filter() -> void:
 	var test_path1 := base_dir + "/test1.txt"
 	var test_path2 := base_dir + "/test2.stl"
 	File.write_file_as_text(test_path1, "Test content 1")
@@ -96,7 +96,7 @@ func test_get_files_no_filter():
 	assert_true("test2.stl" in files)
 
 
-func test_get_files_empty_directory():
+func test_get_files_empty_directory() -> void:
 	var test_dir_list := DirList.new(base_dir)
 	var files = test_dir_list.get_files("stl")
 	assert_push_error("No files found in directory: " + base_dir)

@@ -185,7 +185,7 @@ func convert_binary(file: FileAccess) -> Array:
 ## [b]Parameters:[/b][br]
 ## - [code]vertex: float[/code] - A single vertex coordinate value (x, y, or z).[br]
 ## [b]Returns:[/b] Nothing.[br]
-func append_vertex_to_hash_input(vertex: float):
+func append_vertex_to_hash_input(vertex: float) -> void:
 	# Truncating to thousandths place to avoid precision issues
 	hash_input.append(int(vertex * 1000))
 

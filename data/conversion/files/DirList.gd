@@ -88,8 +88,14 @@ func _load_directory() -> void:
 
 	var dir = DirAccess.open(_filepath)
 	if dir == null:
-		push_error("DirList failed to open path: " + _filepath)
-		print("Failed to open ", DirAccess.get_open_error())
+		push_error(
+			(
+				"DirList failed to open path: "
+				+ _filepath
+				+ " with error: "
+				+ str(DirAccess.get_open_error())
+			)
+		)
 		return
 
 	dir.list_dir_begin()

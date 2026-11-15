@@ -24,14 +24,14 @@ var vm: SceneTileViewModel
 var x = 0
 var z = 0
 
-@onready var mesh_node = $Area3D/MeshInstance3D
+@onready var mesh_node: MeshInstance3D = $Area3D/MeshInstance3D
 
 
 ## Set the view model for this space and connect to its rotation changes.[br]
 ## [b]Parameters:[/b][br]
 ## [code]view_model[/code] : [SceneTileViewModel] — the view model to manage this space's tile.[br]
 ## [b]Returns:[/b] [void][br]
-func set_view_model(view_model: SceneTileViewModel):
+func set_view_model(view_model: SceneTileViewModel) -> void:
 	vm = view_model
 	if vm != null:
 		vm.rotation_changed.connect(_on_vm_rotation_changed)
@@ -39,13 +39,13 @@ func set_view_model(view_model: SceneTileViewModel):
 		set_node_values()
 
 
-func set_preview_vm(preview_view_model: SceneTileViewModel):
+func set_preview_vm(preview_view_model: SceneTileViewModel) -> void:
 	preview_vm = preview_view_model
 
 
 ## Handle rotation changes from the view model and update the mesh rotation.[br]
 ## [b]Returns:[/b] [void][br]
-func _on_vm_rotation_changed():
+func _on_vm_rotation_changed() -> void:
 	if vm == null or mesh_node == null:
 		return
 	mesh_node.set_node_rotation(vm.rotation)
@@ -53,7 +53,7 @@ func _on_vm_rotation_changed():
 
 ## Handle validity changes from the view model and update the mesh color.[br]
 ## [b]Returns:[/b] [void][br]
-func _on_vm_validity_changed():
+func _on_vm_validity_changed() -> void:
 	if vm == null or mesh_node == null:
 		return
 	mesh_node.set_color(vm.valid)
@@ -64,13 +64,13 @@ func _on_vm_validity_changed():
 ## [code]context[/code] : [PlanningContext.TileContext] — tile data to display.[br]
 ## [code]is_red[/code] : [bool] — whether to render the tile with a red tint (for invalid placement).[br]
 ## [b]Returns:[/b] [void][br]
-func set_node_values():
+func set_node_values() -> void:
 	if vm == null or mesh_node == null:
 		return
 	mesh_node.set_values(vm)
 
 
-func start_preview():
+func start_preview() -> void:
 	preview_vm.mesh_updated.connect(update_preview_mesh)
 	mesh_node.set_preview_mesh(preview_vm.mesh)
 	preview_vm.rotation_changed.connect(update_preview_rotation)
@@ -81,7 +81,7 @@ func start_preview():
 
 ## End any active preview state on the mesh and return it to its previous display.[br]
 ## [b]Returns:[/b] [void][br]
-func end_preview():
+func end_preview() -> void:
 	if preview_vm.mesh_updated.is_connected(update_preview_mesh):
 		preview_vm.mesh_updated.disconnect(update_preview_mesh)
 	if preview_vm.rotation_changed.is_connected(update_preview_rotation):
@@ -92,15 +92,15 @@ func end_preview():
 
 
 ## Oneline functions needed to connect and disconnect signals
-func update_preview_mesh():
+func update_preview_mesh() -> void:
 	mesh_node.set_preview_mesh(preview_vm.mesh)
 
 
-func update_preview_rotation():
+func update_preview_rotation() -> void:
 	mesh_node.set_node_rotation(preview_vm.rotation)
 
 
-func update_preview_color():
+func update_preview_color() -> void:
 	mesh_node.set_preview_color(preview_vm.valid)
 
 
@@ -115,7 +115,9 @@ func update_preview_color():
 ## [b]Emits:[/b][br]
 ## - [code]space_clicked(Node3D, x, z)[/code] when the left mouse button is pressed on this space.[br]
 ## [b]Returns:[/b] [void][br]
-func _on_area_3d_input_event(_camera, event, _pos, _normal, _shape_idx):
+func _on_area_3d_input_event(
+	_camera: Node, event: InputEvent, _pos: Vector3, _normal: Vector3, _shape_idx: int
+) -> void:
 	if not event is InputEventMouseButton:
 		return
 	event = event as InputEventMouseButton
@@ -129,7 +131,7 @@ func _on_area_3d_input_event(_camera, event, _pos, _normal, _shape_idx):
 ## [b]Emits:[/b][br]
 ## - [code]space_hover_enter(Node3D)[/code] when the mouse enters this space.[br]
 ## [b]Returns:[/b] [void][br]
-func _on_area_3d_mouse_entered():
+func _on_area_3d_mouse_entered() -> void:
 	space_hover_enter.emit(self)
 
 
@@ -137,11 +139,11 @@ func _on_area_3d_mouse_entered():
 ## [b]Emits:[/b][br]
 ## - [code]space_hover_exit(Node3D)[/code] when the mouse exits this space.[br]
 ## [b]Returns:[/b] [void][br]
-func _on_area_3d_mouse_exited():
+func _on_area_3d_mouse_exited() -> void:
 	space_hover_exit.emit(self)
 
 
 ## Clear the mesh so the space appears empty (no tile). [br]
 ## [b]Returns:[/b] [void][br]
-func set_empty():
+func set_empty() -> void:
 	mesh_node.set_empty()

@@ -30,7 +30,7 @@ func _init(autoload: bool = true) -> void:
 
 
 ## Load tile set definitions from app data.[br]
-func load_set_definitions():
+func load_set_definitions() -> void:
 	var start_time = Time.get_ticks_msec()
 	var dir_paths = DirList.new(SET_DEFINITIONS_PATH)
 	var set_files = dir_paths.get_files("json", DirList.Mode.PATH_WITH_EXT)
@@ -47,7 +47,7 @@ func load_set_definitions():
 ## [b]Parameters:[/b][br]
 ## [code]json[/code] : [Dictionary] — JSON representation of a Dragonbite tile set to load.[br]
 ## [b]Returns:[/b] [void][br]
-func add_imported_set(json: Dictionary):
+func add_imported_set(json: Dictionary) -> void:
 	var new_set := DragonbiteTileSet.new()
 	new_set.load_from_json(json)
 	add_set(new_set)
@@ -58,7 +58,7 @@ func add_imported_set(json: Dictionary):
 ## [code]name_set[/code] : [String] — name to assign to the imported tile set.[br]
 ## [code]stl_file_paths[/code] : [Array] — array of filesystem paths to .stl files to import.[br]
 ## [b]Returns:[/b] [void][br]
-func import_set(name_set: String, stl_file_paths: Array):
+func import_set(name_set: String, stl_file_paths: Array) -> void:
 	var new_set := DragonbiteTileSet.new()
 	new_set.import_set(name_set, stl_file_paths)
 	add_set(new_set)
@@ -68,11 +68,11 @@ func import_set(name_set: String, stl_file_paths: Array):
 ## [b]Parameters:[/b][br]
 ## [code]new_set[/code] : [DragonbiteTileSet] — tile set to add to [code]tile_sets[/code].[br]
 ## [b]Returns:[/b] [void][br]
-func add_set(new_set: DragonbiteTileSet):
+func add_set(new_set: DragonbiteTileSet) -> void:
 	for tile in new_set.tiles:
 		# Hash collision, should be very rare unless an identical model is imported twice
 		if unique_tile_ids.has(tile.id):
-			print("Hash collision detected for tile ID: %s" % tile.id)
+			push_warning("Hash collision detected for tile ID: %s" % tile.id)
 		unique_tile_ids.set(tile.id, 1)
 	tile_sets.append(new_set)
 	tile_sets_changed.emit()
@@ -102,7 +102,7 @@ func get_set(name_set: String) -> DragonbiteTileSet:
 ## [b]Returns:[/b] [DragonbiteTileSet] — the selected tile set or null if no set is selected.[br]
 func get_selected_set() -> DragonbiteTileSet:
 	if selected_set_idx < 0 or selected_set_idx >= tile_sets.size():
-		print("Selected set index out of bounds: %d" % selected_set_idx)
+		push_error("Selected set index out of bounds: %d" % selected_set_idx)
 		return null
 	return tile_sets[selected_set_idx]
 
@@ -123,7 +123,7 @@ func get_set_and_tile_data(tile_id: String) -> Dictionary:
 ## [b]Parameters:[/b][br]
 ## [code]name_set[/code] : [String] — name of the tile set to remove.[br]
 ## [b]Returns:[/b] [void][br]
-func remove_set(name_set: String):
+func remove_set(name_set: String) -> void:
 	for i in range(tile_sets.size()):
 		if tile_sets[i].name == name_set:
 			for tile in tile_sets[i].tiles:

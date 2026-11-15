@@ -1,3 +1,4 @@
+class_name PlannerUI
 extends MarginContainer
 ## PlannerUI
 ##
@@ -34,21 +35,21 @@ var current_tool: CustomEnums.ToolType = CustomEnums.ToolType.ADD_TILE
 var unsaved_changes: bool = false
 var vm: SceneBuilderViewModel
 
-@onready var file_button = $%FileButton
-@onready var menu_bar = $%MenuBar
-@onready var layer_selector = $%LayerSelector
-@onready var save_as_dialog = $%SaveAsDialogControl
-@onready var set_selector_node = $%SetSelectorControl
-@onready var tile_info = $%TileInfo
-@onready var tile_selector_node = $%TileSelectorControl
-@onready var tool_info = $%ToolInfo
-@onready var unsaved_changes_dialog = $%UnsavedChangesDialog
-@onready var unsaved_changes_save_as_dialog = $%UnsavedChangesSaveAsDialog
+@onready var file_button: FileButton = $%FileButton
+@onready var menu_bar: MenuBar = $%MenuBar
+@onready var layer_selector: LayerSelector = $%LayerSelector
+@onready var save_as_dialog: SaveAsDialog = $%SaveAsDialogControl
+@onready var set_selector_node: SetSelector = $%SetSelectorControl
+@onready var tile_info: TileInfo = $%TileInfo
+@onready var tile_selector_node: TileSelector = $%TileSelectorControl
+@onready var tool_info: HBoxContainer = $%ToolInfo
+@onready var unsaved_changes_dialog: AcceptDialog = $%UnsavedChangesDialog
+@onready var unsaved_changes_save_as_dialog: SaveAsDialog = $%UnsavedChangesSaveAsDialog
 
 
 ## Initialize the UI, connect signals, and set up default state.[br]
 ## [b]Returns:[/b] [void][br]
-func _ready():
+func _ready() -> void:
 	tile_selector_node.tile_selected.connect(set_selected_tile)
 	set_selector_node.set_selected.connect(set_selected_set)
 	file_button.save_scene.connect(_on_file_save)
@@ -65,7 +66,7 @@ func _ready():
 ## [b]Emits:[/b][br]
 ## - [code]tile_layer_added(layer_vm: TileLayerViewModel)[/code] when a layer is added.[br]
 ## [b]Returns:[/b] [void][br]
-func set_vm(scene_vm: SceneBuilderViewModel):
+func set_vm(scene_vm: SceneBuilderViewModel) -> void:
 	vm = scene_vm
 	tile_selected.connect(vm.set_selected_tile)
 	var layer_selector_vm = LayerSelectorViewModel.new()
@@ -85,7 +86,7 @@ func set_vm(scene_vm: SceneBuilderViewModel):
 ## [b]Emits:[/b][br]
 ## - [code]tile_selected(tile: Tile)[/code].[br]
 ## [b]Returns:[/b] [void][br]
-func set_selected_tile(tile: Tile):
+func set_selected_tile(tile: Tile) -> void:
 	tile_selected.emit(tile)
 
 
@@ -96,7 +97,7 @@ func set_selected_tile(tile: Tile):
 ## - [code]tile_selected(tile: Tile)[/code] if tile is not null.[br]
 ## - [code]tool_add_tile_selected[/code] if tile is not null.[br]
 ## [b]Returns:[/b] [void][br]
-func set_selected_tile_from_copy(tile: Tile):
+func set_selected_tile_from_copy(tile: Tile) -> void:
 	if tile == null:
 		return
 	tile_selected.emit(tile)
@@ -107,7 +108,7 @@ func set_selected_tile_from_copy(tile: Tile):
 ## [b]Parameters:[/b][br]
 ## [code]tile_set[/code] : [DragonbiteTileSet] — the tile set to select.[br]
 ## [b]Returns:[/b] [void][br]
-func set_selected_set(tile_set: DragonbiteTileSet):
+func set_selected_set(tile_set: DragonbiteTileSet) -> void:
 	tile_selector_node.set_selected_set(tile_set)
 
 
@@ -115,7 +116,7 @@ func set_selected_set(tile_set: DragonbiteTileSet):
 ## [b]Emits:[/b][br]
 ## - [code]save_current_scene[/code] if the scene has a valid name.[br]
 ## [b]Returns:[/b] [void][br]
-func _on_file_save():
+func _on_file_save() -> void:
 	if vm.scene.scene_name == SceneBuilderViewModel.DEFAULT_SCENE_NAME or vm.scene.scene_name == "":
 		show_save_as_dialog()
 		return
@@ -125,7 +126,7 @@ func _on_file_save():
 
 ## Display the save-as dialog.[br]
 ## [b]Returns:[/b] [void][br]
-func show_save_as_dialog():
+func show_save_as_dialog() -> void:
 	save_as_dialog.visible = true
 
 
@@ -135,7 +136,7 @@ func show_save_as_dialog():
 ## [b]Emits:[/b][br]
 ## - [code]save_current_scene[/code].[br]
 ## [b]Returns:[/b] [void][br]
-func _on_save_as(scene_name: String):
+func _on_save_as(scene_name: String) -> void:
 	vm.update_scene_name(scene_name)
 	vm.update_id(UUID.v7())
 	unsaved_changes = false
@@ -146,7 +147,7 @@ func _on_save_as(scene_name: String):
 ## [b]Parameters:[/b][br]
 ## [code]new_size[/code] : [Vector2] — the new viewport size.[br]
 ## [b]Returns:[/b] [void][br]
-func on_viewport_resized(new_size: Vector2):
+func on_viewport_resized(new_size: Vector2) -> void:
 	set_selector_node.on_viewport_resized(new_size)
 	tile_selector_node.on_viewport_resized(new_size)
 
@@ -159,7 +160,7 @@ func on_board_updated() -> void:
 
 ## Initiate save process for unsaved changes, showing save-as dialog if needed.[br]
 ## [b]Returns:[/b] [void][br]
-func unsaved_changes_save():
+func unsaved_changes_save() -> void:
 	if vm.scene.scene_name == SceneBuilderViewModel.DEFAULT_SCENE_NAME or vm.scene.scene_name == "":
 		unsaved_changes_save_as_dialog.visible = true
 
@@ -170,11 +171,11 @@ func unsaved_changes_save():
 ## [b]Emits:[/b][br]
 ## - [code]quit_scene[/code] if action is "dont_save".[br]
 ## [b]Returns:[/b] [void][br]
-func unsaved_changes_custom(action: StringName):
+func unsaved_changes_custom(action: StringName) -> void:
 	if UNSAVED_CHANGES_DONT_SAVE_ACTION == action:
 		quit_scene.emit()
 	else:
-		print("Unknown unsaved changes action: ", action)
+		push_error("Unknown unsaved changes action: ", action)
 
 
 ## Handle save-as dialog completion from unsaved changes workflow.[br]
@@ -192,7 +193,7 @@ func on_unsaved_changes_save_as_dialog_saved(scene_name: String) -> void:
 ## [b]Emits:[/b][br]
 ## - [code]tool_add_tile_selected[/code].[br]
 ## [b]Returns:[/b] [void][br]
-func on_select_add_tool():
+func on_select_add_tool() -> void:
 	current_tool = CustomEnums.ToolType.ADD_TILE
 	show_only_tool_info_of_group(TOOL_ADD_TILE_GROUP)
 	tool_add_tile_selected.emit()
@@ -202,7 +203,7 @@ func on_select_add_tool():
 ## [b]Emits:[/b][br]
 ## - [code]tool_select_tile_selected[/code].[br]
 ## [b]Returns:[/b] [void][br]
-func on_select_select_tool():
+func on_select_select_tool() -> void:
 	current_tool = CustomEnums.ToolType.SELECT_TILE
 	show_only_tool_info_of_group(TOOL_SELECT_TILE_GROUP)
 	tool_select_tile_selected.emit()
@@ -212,7 +213,7 @@ func on_select_select_tool():
 ## [b]Emits:[/b][br]
 ## - [code]tool_remove_tile_selected[/code].[br]
 ## [b]Returns:[/b] [void][br]
-func on_select_remove_tool():
+func on_select_remove_tool() -> void:
 	current_tool = CustomEnums.ToolType.REMOVE_TILE
 	show_only_tool_info_of_group(TOOL_REMOVE_TILE_GROUP)
 	tool_remove_tile_selected.emit()
@@ -222,7 +223,7 @@ func on_select_remove_tool():
 ## [b]Parameters:[/b][br]
 ## [code]group[/code] : [StringName] — the group name to show.[br]
 ## [b]Returns:[/b] [void][br]
-func show_only_tool_info_of_group(group: StringName):
+func show_only_tool_info_of_group(group: StringName) -> void:
 	for child in tool_info.get_children():
 		if child.get_groups().has(group):
 			child.visible = true
@@ -237,9 +238,9 @@ func show_only_tool_info_of_group(group: StringName):
 func on_tile_selected(tile_id: String) -> void:
 	var tile_data = TileSets.get_set_and_tile_data(tile_id)
 	if tile_data[TileResources.KEY_TILE] == null:
-		print("Tile with ID ", tile_id, " not found in resources.")
+		push_warning("Tile with ID ", tile_id, " not found in resources.")
 		return
 	if tile_data[TileResources.KEY_SET] == null:
-		print("Tile set for tile ID ", tile_id, " not found in resources.")
+		push_warning("Tile set for tile ID ", tile_id, " not found in resources.")
 		return
 	tile_info.set_state(tile_data[TileResources.KEY_SET].name, tile_data[TileResources.KEY_TILE])

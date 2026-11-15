@@ -5,12 +5,12 @@ const SET_LIST_ITEM_SCENE = preload("res://ui/set_manager/set_list_item.tscn")
 var list_item: SetListItem
 
 
-func before_each():
+func before_each() -> void:
 	list_item = SET_LIST_ITEM_SCENE.instantiate()
 	add_child_autofree(list_item)
 
 
-func test_set_text_updates_display():
+func test_set_text_updates_display() -> void:
 	list_item.set_text("MyTileSet")
 
 	assert_eq(list_item.text, "MyTileSet", "text property should be set")
@@ -18,7 +18,7 @@ func test_set_text_updates_display():
 	assert_eq(name_label.text, "MyTileSet", "Name label should display the text")
 
 
-func test_forward_delete_pressed_emits_signal():
+func test_forward_delete_pressed_emits_signal() -> void:
 	watch_signals(list_item)
 	list_item.set_text("SetToDelete")
 
@@ -27,7 +27,7 @@ func test_forward_delete_pressed_emits_signal():
 	assert_signal_emitted_with_parameters(list_item, "delete_pressed", ["SetToDelete"])
 
 
-func test_forward_select_pressed_emits_signal():
+func test_forward_select_pressed_emits_signal() -> void:
 	watch_signals(list_item)
 	list_item.set_text("SetToSelect")
 
@@ -36,7 +36,7 @@ func test_forward_select_pressed_emits_signal():
 	assert_signal_emitted_with_parameters(list_item, "select_pressed", ["SetToSelect"])
 
 
-func test_multiple_operations():
+func test_multiple_operations() -> void:
 	watch_signals(list_item)
 
 	list_item.set_text("FirstSet")

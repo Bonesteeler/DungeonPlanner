@@ -1,3 +1,4 @@
+class_name LayerSelector
 extends VBoxContainer
 
 const TILE_LAYER_BUTTON_SCENE = preload("res://scene_builder/ui/TileLayerButton.tscn")

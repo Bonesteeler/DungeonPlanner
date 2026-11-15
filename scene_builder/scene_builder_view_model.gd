@@ -46,13 +46,13 @@ func _init(data: Scene = null):
 
 
 ## Rotates the selected tile 90 degrees counter-clockwise.[br]
-func rotate_left():
+func rotate_left() -> void:
 	selected_tile.rotate(90)
 	selected_tile.set_validity(does_selected_tile_fit())
 
 
 ## Rotates the selected tile 90 degrees clockwise.[br]
-func rotate_right():
+func rotate_right() -> void:
 	selected_tile.rotate(-90)
 	selected_tile.set_validity(does_selected_tile_fit())
 
@@ -72,7 +72,7 @@ func get_selected_tile_mesh() -> Mesh:
 ## Sets the mesh for the selected tile.[br]
 ## [b]Parameters:[/b][br]
 ## [code]mesh[/code] : [Mesh] — the mesh to assign to the selected tile.[br]
-func set_selected_tile_mesh(mesh: Mesh):
+func set_selected_tile_mesh(mesh: Mesh) -> void:
 	selected_tile.set_mesh(mesh)
 
 
@@ -85,14 +85,14 @@ func get_selected_tile_rotation() -> Vector3:
 ## Sets the selected tile from a tile definition.[br]
 ## [b]Parameters:[/b][br]
 ## [code]tile[/code] : [Tile] — the tile to select.[br]
-func set_selected_tile(tile: Tile):
+func set_selected_tile(tile: Tile) -> void:
 	selected_tile.set_tile(tile)
 
 
 ## Sets the space being previewed.[br]
 ## [b]Parameters:[/b][br]
 ## [code]space[/code] : [Space] — the space to preview for tile placement.[br]
-func set_hovered_space(space: Space):
+func set_hovered_space(space: Space) -> void:
 	preview_space = space
 	selected_tile.set_validity(does_selected_tile_fit())
 

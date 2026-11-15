@@ -73,7 +73,7 @@ func _run_request(path: String) -> void:
 	_results.append(response)
 
 
-func before_each():
+func before_each() -> void:
 	storage_path = "user://test_network_auth_%d.cfg" % Time.get_ticks_usec()
 	auth = autofree(AuthService.new())
 	auth._storage_path = storage_path
@@ -83,29 +83,29 @@ func before_each():
 	_results = []
 
 
-func after_each():
+func after_each() -> void:
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(storage_path))
 
 
 # --- URL building and unauthenticated calls ---
 
 
-func test_relative_path_is_prefixed_with_domain():
+func test_relative_path_is_prefixed_with_domain() -> void:
 	await net.request("v1/scenes", HTTPClient.METHOD_GET, null, false)
 	assert_eq(net.calls[0].url, NetworkService.DOMAIN + "v1/scenes")
 
 
-func test_leading_slash_is_trimmed():
+func test_leading_slash_is_trimmed() -> void:
 	await net.request("/v1/scenes", HTTPClient.METHOD_GET, null, false)
 	assert_eq(net.calls[0].url, NetworkService.DOMAIN + "v1/scenes")
 
 
-func test_absolute_url_is_not_prefixed():
+func test_absolute_url_is_not_prefixed() -> void:
 	await net.request("https://example.com/x", HTTPClient.METHOD_GET, null, false)
 	assert_eq(net.calls[0].url, "https://example.com/x")
 
 
-func test_unauthenticated_call_sends_no_token_and_passes_arguments():
+func test_unauthenticated_call_sends_no_token_and_passes_arguments() -> void:
 	_sign_in_valid()
 	await net.request("v1/x", HTTPClient.METHOD_POST, {"a": 1}, false)
 	assert_eq(net.calls.size(), 1)
@@ -114,7 +114,7 @@ func test_unauthenticated_call_sends_no_token_and_passes_arguments():
 	assert_eq(net.calls[0].payload, {"a": 1})
 
 
-func test_unauthenticated_call_returns_queued_response():
+func test_unauthenticated_call_returns_queued_response() -> void:
 	net.queue.append(_resp(200))
 	var response := await net.request("v1/x", HTTPClient.METHOD_GET, null, false)
 	assert_true(response.ok)
@@ -124,7 +124,7 @@ func test_unauthenticated_call_returns_queued_response():
 # --- Authenticated calls ---
 
 
-func test_authenticated_call_sends_valid_token():
+func test_authenticated_call_sends_valid_token() -> void:
 	_sign_in_valid()
 	net.queue.append(_resp(200))
 	var response := await net.request("v1/x", HTTPClient.METHOD_GET)
@@ -133,14 +133,14 @@ func test_authenticated_call_sends_valid_token():
 	assert_eq(net.calls[0].token, _valid_token)
 
 
-func test_authenticated_call_without_session_returns_empty_response():
+func test_authenticated_call_without_session_returns_empty_response() -> void:
 	var response := await net.request("v1/x", HTTPClient.METHOD_GET)
 	assert_false(response.ok)
 	assert_eq(response.status_code, 0)
 	assert_eq(net.calls.size(), 0)
 
 
-func test_expired_token_refreshes_before_sending():
+func test_expired_token_refreshes_before_sending() -> void:
 	_sign_in_expired()
 	net.queue.append(_refresh_ok())
 	net.queue.append(_resp(200))
@@ -156,7 +156,7 @@ func test_expired_token_refreshes_before_sending():
 	assert_eq(auth.get_refresh_token(), "new_refresh")
 
 
-func test_expired_token_with_failed_refresh_returns_empty_and_signs_out():
+func test_expired_token_with_failed_refresh_returns_empty_and_signs_out() -> void:
 	_sign_in_expired()
 	net.queue.append(_resp(500))
 	watch_signals(net)
@@ -170,7 +170,7 @@ func test_expired_token_with_failed_refresh_returns_empty_and_signs_out():
 	assert_false(auth.has_session())
 
 
-func test_401_refreshes_and_retries_once_with_new_token():
+func test_401_refreshes_and_retries_once_with_new_token() -> void:
 	_sign_in_valid()
 	net.queue.append(_resp(401))
 	net.queue.append(_refresh_ok())
@@ -184,7 +184,7 @@ func test_401_refreshes_and_retries_once_with_new_token():
 	assert_eq(net.calls[2].token, _new_token)
 
 
-func test_401_after_retry_is_returned_without_further_refresh():
+func test_401_after_retry_is_returned_without_further_refresh() -> void:
 	_sign_in_valid()
 	net.queue.append(_resp(401))
 	net.queue.append(_refresh_ok())
@@ -194,7 +194,7 @@ func test_401_after_retry_is_returned_without_further_refresh():
 	assert_eq(net.calls.size(), 3)
 
 
-func test_401_with_failed_refresh_returns_empty_and_signs_out():
+func test_401_with_failed_refresh_returns_empty_and_signs_out() -> void:
 	_sign_in_valid()
 	net.queue.append(_resp(401))
 	net.queue.append(_resp(500))
@@ -212,43 +212,43 @@ func test_401_with_failed_refresh_returns_empty_and_signs_out():
 # --- Refresh response validation ---
 
 
-func test_refresh_fails_on_non_ok_status():
+func test_refresh_fails_on_non_ok_status() -> void:
 	_sign_in_expired()
 	net.queue.append(_resp(500, {"access_token": "a", "refresh_token": "r"}))
 	assert_false(await net._do_refresh())
 
 
-func test_refresh_fails_when_json_is_not_a_dictionary():
+func test_refresh_fails_when_json_is_not_a_dictionary() -> void:
 	_sign_in_expired()
 	net.queue.append(_resp(200, ["a"]))
 	assert_false(await net._do_refresh())
 
 
-func test_refresh_fails_without_access_token():
+func test_refresh_fails_without_access_token() -> void:
 	_sign_in_expired()
 	net.queue.append(_resp(200, {"refresh_token": "r"}))
 	assert_false(await net._do_refresh())
 
 
-func test_refresh_fails_without_refresh_token():
+func test_refresh_fails_without_refresh_token() -> void:
 	_sign_in_expired()
 	net.queue.append(_resp(200, {"access_token": Jwt.make(_now() + 3600)}))
 	assert_false(await net._do_refresh())
 
 
-func test_refresh_fails_without_stored_refresh_token():
+func test_refresh_fails_without_stored_refresh_token() -> void:
 	assert_false(await net._do_refresh())
 	assert_eq(net.calls.size(), 0)
 
 
-func test_refresh_stores_expiry_from_access_token():
+func test_refresh_stores_expiry_from_access_token() -> void:
 	_sign_in_expired()
 	net.queue.append(_refresh_ok(AuthService.EXPIRY_BUFFER_SECONDS + 60))
 	assert_true(await net._do_refresh())
 	assert_eq(auth.get_access_token(), _new_token)
 
 
-func test_refresh_with_short_lived_token_yields_no_valid_token():
+func test_refresh_with_short_lived_token_yields_no_valid_token() -> void:
 	_sign_in_expired()
 	net.queue.append(_refresh_ok(AuthService.EXPIRY_BUFFER_SECONDS - 10))
 	assert_true(await net._do_refresh())
@@ -258,7 +258,7 @@ func test_refresh_with_short_lived_token_yields_no_valid_token():
 # --- Concurrency ---
 
 
-func test_concurrent_requests_share_a_single_refresh():
+func test_concurrent_requests_share_a_single_refresh() -> void:
 	_sign_in_expired()
 	net.hold_refresh = true
 	net.queue.append(_refresh_ok())
@@ -277,7 +277,7 @@ func test_concurrent_requests_share_a_single_refresh():
 		assert_true(response.ok)
 
 
-func test_concurrent_requests_all_fail_when_shared_refresh_fails():
+func test_concurrent_requests_all_fail_when_shared_refresh_fails() -> void:
 	_sign_in_expired()
 	net.hold_refresh = true
 	net.queue.append(_resp(500))

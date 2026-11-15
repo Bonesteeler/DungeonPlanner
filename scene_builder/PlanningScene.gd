@@ -4,19 +4,19 @@ extends Node
 ##
 ## [i]Controller for the planning scene that initializes the board, wires the UI to scene and save logic, and forwards viewport resize events to the UI.[/i][br]
 
-const board_scene = preload("res://scene_builder/board/Board.tscn")
+const BOARD_SCENE: PackedScene = preload("res://scene_builder/board/Board.tscn")
 
 var viewport: Viewport
 var vm: SceneBuilderViewModel
 
-@onready var board_container = $BoardContainer
-@onready var planner_ui = $%PlannerUI
-@onready var input_listener = $InputListener
+@onready var board_container: Node3D = $BoardContainer
+@onready var planner_ui: PlannerUI = $%PlannerUI
+@onready var input_listener: InputListener = $InputListener
 
 
 ## Initializes the planning scene by connecting UI signals and tracking viewport size changes.[br]
 ## [b]Returns:[/b] [void][br]
-func _ready():
+func _ready() -> void:
 	planner_ui.save_current_scene.connect(save_scene)
 	viewport = get_viewport()
 	viewport.size_changed.connect(on_viewport_resized)
@@ -26,7 +26,7 @@ func _ready():
 ## [b]Parameters:[/b][br]
 ## [code]scene_vm[/code] : [SceneBuilderViewModel] — the view model for the scene builder.[br]
 ## [b]Returns:[/b] [void][br]
-func set_scene_view_model(scene_vm: SceneBuilderViewModel):
+func set_scene_view_model(scene_vm: SceneBuilderViewModel) -> void:
 	vm = scene_vm
 	input_listener.rotate_left.connect(func(): vm.rotate_left())
 	input_listener.rotate_right.connect(func(): vm.rotate_right())
@@ -49,13 +49,13 @@ func set_scene_view_model(scene_vm: SceneBuilderViewModel):
 
 ## Saves the current scene using the SceneSaveService.[br]
 ## [b]Returns:[/b] [void][br]
-func save_scene():
+func save_scene() -> void:
 	SceneSaveService.save_scene_to_user(vm.scene)
 
 
 ## Forwards viewport resize notifications to the planner UI.[br]
 ## [b]Returns:[/b] [void][br]
-func on_viewport_resized():
+func on_viewport_resized() -> void:
 	planner_ui.on_viewport_resized(viewport.size)
 
 
@@ -63,8 +63,8 @@ func on_viewport_resized():
 ## [b]Parameters:[/b][br]
 ## [code]layer_vm[/code] : [TileLayerViewModel] — the layer view model to add.[br]
 ## [b]Returns:[/b] [void][br]
-func add_tile_layer(layer_vm: TileLayerViewModel):
-	var new_board = board_scene.instantiate() as Board
+func add_tile_layer(layer_vm: TileLayerViewModel) -> void:
+	var new_board = BOARD_SCENE.instantiate() as Board
 	board_container.add_child(new_board)
 	new_board.tile_selected.connect(planner_ui.on_tile_selected)
 	new_board.updated.connect(planner_ui.on_board_updated)

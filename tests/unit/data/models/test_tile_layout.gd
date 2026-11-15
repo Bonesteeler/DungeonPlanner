@@ -4,7 +4,7 @@ var layout: TileLayout
 var test_layer_id: int = 0
 
 
-func before_each():
+func before_each() -> void:
 	# Fresh TileLayout for each test
 	layout = TileLayout.new()
 	# Create a default layer for testing
@@ -14,7 +14,7 @@ func before_each():
 	layout.current_layer = layer
 
 
-func test_set_tile_and_get_tile_at():
+func test_set_tile_and_get_tile_at() -> void:
 	var tile = Tile.new()
 	tile.id = "tile_a"
 	tile.x_size = 1
@@ -32,7 +32,7 @@ func test_set_tile_and_get_tile_at():
 	assert_eq("tile_a", found.tile_data.id)
 
 
-func test_remove_tile_at():
+func test_remove_tile_at() -> void:
 	var tile = Tile.new()
 	tile.id = "tile_b"
 	tile.x_size = 1
@@ -49,7 +49,7 @@ func test_remove_tile_at():
 	assert_false(layout.has_tile_at(test_layer_id, 0, 0))
 
 
-func test_get_origin_tile_for_occupied_space():
+func test_get_origin_tile_for_occupied_space() -> void:
 	# 2x2 tile placed at origin should report origin when queried from occupied cell
 	var tile = Tile.new()
 	tile.id = "tile_c"
@@ -72,7 +72,7 @@ func test_get_origin_tile_for_occupied_space():
 	assert_eq("tile_c", origin_at_origin.tile_data.id)
 
 
-func test_does_tile_fit_detects_overlap_and_bounds():
+func test_does_tile_fit_detects_overlap_and_bounds() -> void:
 	# Place a 2x2 tile at (0,0)
 	var big_tile = Tile.new()
 	big_tile.id = "big"
@@ -110,7 +110,7 @@ func test_does_tile_fit_detects_overlap_and_bounds():
 	)
 
 
-func test_get_unique_tile_ids():
+func test_get_unique_tile_ids() -> void:
 	# Place tiles using set_tile_at so PlacedTile objects are created correctly
 	var tile_a = Tile.new()
 	tile_a.id = "id_a"
@@ -157,24 +157,24 @@ func _place_tile(tile_id: String, x: int, z: int) -> void:
 	layout.set_tile_at(test_layer_id, x, z, ctx)
 
 
-func test_get_tile_counts_empty_layout():
+func test_get_tile_counts_empty_layout() -> void:
 	assert_eq({}, layout.get_tile_counts())
 
 
-func test_get_tile_counts_distinct_ids():
+func test_get_tile_counts_distinct_ids() -> void:
 	_place_tile("id_a", 0, 0)
 	_place_tile("id_b", 1, 1)
 	assert_eq({"id_a": 1, "id_b": 1}, layout.get_tile_counts())
 
 
-func test_get_tile_counts_accumulates_duplicates():
+func test_get_tile_counts_accumulates_duplicates() -> void:
 	_place_tile("id_a", 0, 0)
 	_place_tile("id_a", 1, 1)
 	_place_tile("id_b", 2, 2)
 	assert_eq({"id_a": 2, "id_b": 1}, layout.get_tile_counts())
 
 
-func test_get_tile_counts_accumulates_across_layers():
+func test_get_tile_counts_accumulates_across_layers() -> void:
 	_place_tile("id_a", 0, 0)
 	_place_tile("id_a", 1, 1)
 
@@ -194,7 +194,7 @@ func test_get_tile_counts_accumulates_across_layers():
 	assert_eq({"id_a": 3}, layout.get_tile_counts())
 
 
-func test_get_tile_counts_includes_tiles_without_tile_data():
+func test_get_tile_counts_includes_tiles_without_tile_data() -> void:
 	_place_tile("id_a", 0, 0)
 	layout.current_layer.tiles.append(PlacedTile.new())
 	layout.current_layer.tiles.append(PlacedTile.new())

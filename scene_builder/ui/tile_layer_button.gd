@@ -4,8 +4,8 @@ extends PanelContainer
 ##
 ## [i]A UI button representing a tile layer with controls for height, visibility, selection, and deletion.[/i][br]
 
-const selected_color = Color(0.051, 0.076, 0.171, 1.0)
-const unselected_color = Color(0.005, 0.027, 0.1, 1.0)
+const SELECTED_COLOR = Color(0.051, 0.076, 0.171, 1.0)
+const UNSELECTED_COLOR = Color(0.005, 0.027, 0.1, 1.0)
 
 var is_ready: bool = false
 var view_model: TileLayerViewModel
@@ -57,9 +57,9 @@ func update_height() -> void:
 ## Update the button's background color based on selection state.[br]
 func update_selected() -> void:
 	if view_model.selected:
-		set_background_color(selected_color)
+		set_background_color(SELECTED_COLOR)
 	else:
-		set_background_color(unselected_color)
+		set_background_color(UNSELECTED_COLOR)
 
 
 ## Set the background color of the panel container.[br]

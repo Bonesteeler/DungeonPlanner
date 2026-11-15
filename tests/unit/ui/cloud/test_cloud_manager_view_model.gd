@@ -31,14 +31,14 @@ func _response(status: int, json: Variant = null) -> NetworkService.Response:
 	return result
 
 
-func before_each():
+func before_each() -> void:
 	net = FakeNetwork.new()
 	add_child_autofree(net)
 	vm = CloudManagerViewModel.new(net)
 	watch_signals(vm)
 
 
-func test_request_scene_list_gets_page_authenticated():
+func test_request_scene_list_gets_page_authenticated() -> void:
 	net.response = _response(200, {"scenes": []})
 	await vm.request_scene_list(10)
 	assert_eq(net.calls[0].path, "v1/scenes/list/10")
@@ -46,7 +46,7 @@ func test_request_scene_list_gets_page_authenticated():
 	assert_true(net.calls[0].authenticated)
 
 
-func test_request_scene_list_emits_parsed_response():
+func test_request_scene_list_emits_parsed_response() -> void:
 	net.response = _response(200, {"total_count": 12, "page_size": 3, "scenes": []})
 	await vm.request_scene_list()
 	assert_signal_emitted(vm, "scene_list_updated")
@@ -56,7 +56,7 @@ func test_request_scene_list_emits_parsed_response():
 	assert_eq(result.scenes.size(), 0)
 
 
-func test_request_scene_list_uses_defaults_when_fields_missing():
+func test_request_scene_list_uses_defaults_when_fields_missing() -> void:
 	net.response = _response(200, {})
 	await vm.request_scene_list()
 	var result: SceneListResponse = get_signal_parameters(vm, "scene_list_updated")[0]
@@ -64,7 +64,7 @@ func test_request_scene_list_uses_defaults_when_fields_missing():
 	assert_eq(result.page_size, CloudManagerViewModel.DEFAULT_PAGE_SIZE)
 
 
-func test_request_scene_list_emits_empty_result_on_failure():
+func test_request_scene_list_emits_empty_result_on_failure() -> void:
 	net.response = _response(500)
 	await vm.request_scene_list()
 	assert_signal_emitted(vm, "scene_list_updated")
@@ -91,7 +91,7 @@ func _local_scene() -> Scene:
 	return scene
 
 
-func test_upload_scene_posts_authenticated_request_body():
+func test_upload_scene_posts_authenticated_request_body() -> void:
 	var scene := _local_scene()
 	SceneSaveService.scenes.append(scene)
 	net.response = _response(200)
@@ -116,7 +116,7 @@ func test_upload_scene_posts_authenticated_request_body():
 	)
 
 
-func test_upload_scene_emits_success():
+func test_upload_scene_emits_success() -> void:
 	var scene := _local_scene()
 	SceneSaveService.scenes.append(scene)
 	net.response = _response(200)
@@ -126,7 +126,7 @@ func test_upload_scene_emits_success():
 	assert_signal_not_emitted(vm, "upload_failure")
 
 
-func test_upload_scene_emits_failure():
+func test_upload_scene_emits_failure() -> void:
 	var scene := _local_scene()
 	SceneSaveService.scenes.append(scene)
 	net.response = _response(500)
@@ -136,7 +136,7 @@ func test_upload_scene_emits_failure():
 	assert_signal_not_emitted(vm, "upload_success")
 
 
-func test_upload_scene_ignores_unknown_id():
+func test_upload_scene_ignores_unknown_id() -> void:
 	await vm.upload_scene("missing")
 	assert_eq(net.calls.size(), 0)
 
@@ -147,7 +147,7 @@ func _remove_imported(scene_name: String) -> void:
 	DirAccess.remove_absolute(SceneSaveService.LOCAL_SCENES_PATH + scene_name + ".json")
 
 
-func test_import_scene_fetches_full_scene_by_id():
+func test_import_scene_fetches_full_scene_by_id() -> void:
 	var partial := Scene.new()
 	partial.id = "scene-42"
 	net.response = _response(200, {"id": "scene-42", "name": "Cloud Import Test", "layers": []})
@@ -158,7 +158,7 @@ func test_import_scene_fetches_full_scene_by_id():
 	assert_true(net.calls[0].authenticated)
 
 
-func test_import_scene_saves_fetched_scene_locally():
+func test_import_scene_saves_fetched_scene_locally() -> void:
 	var partial := Scene.new()
 	partial.id = "scene-42"
 	partial.scene_name = "Partial"
@@ -175,7 +175,7 @@ func test_import_scene_saves_fetched_scene_locally():
 	assert_false(partial_saved)
 
 
-func test_import_scene_does_not_save_on_failure():
+func test_import_scene_does_not_save_on_failure() -> void:
 	var partial := Scene.new()
 	partial.id = "scene-42"
 	partial.scene_name = "Cloud Import Failure Test"

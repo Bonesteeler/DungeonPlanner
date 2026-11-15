@@ -22,7 +22,7 @@ var valid: bool = true
 ## Sets the rotation to the specified value and emits [code]rotation_changed[/code]. Ignores rotation enabled[br]
 ## [b]Parameters:[/b][br]
 ## [code]new_rotation[/code] : [Vector3] — the new rotation value.
-func set_rotation(new_rotation: Vector3):
+func set_rotation(new_rotation: Vector3) -> void:
 	rotation = new_rotation
 	rotation_changed.emit()
 
@@ -30,7 +30,7 @@ func set_rotation(new_rotation: Vector3):
 ## Rotates the tile around the Y axis by the given delta. Only occurs if rotation is enabled[br]
 ## [b]Parameters:[/b][br]
 ## [code]delta[/code] : [float] — the rotation delta in degrees.
-func rotate(delta: float):
+func rotate(delta: float) -> void:
 	if not rotation_enabled:
 		return
 	rotation.y += delta
@@ -42,19 +42,19 @@ func rotate(delta: float):
 
 
 ## Enables rotation input.
-func enable_rotation():
+func enable_rotation() -> void:
 	rotation_enabled = true
 
 
 ## Disables rotation input.
-func disable_rotation():
+func disable_rotation() -> void:
 	rotation_enabled = false
 
 
 ## Sets the validity state and emits [code]validity_changed[/code] if the value changes.[br]
 ## [b]Parameters:[/b][br]
 ## [code]new_validity[/code] : [bool] — the new validity state.
-func set_validity(new_validity: bool):
+func set_validity(new_validity: bool) -> void:
 	if valid != new_validity:
 		valid = new_validity
 		validity_changed.emit()
@@ -63,7 +63,7 @@ func set_validity(new_validity: bool):
 ## Sets the tile and loads its resource.[br]
 ## [b]Parameters:[/b][br]
 ## [code]new_tile[/code] : [Tile] — the new tile resource to assign.
-func set_tile(new_tile: Tile):
+func set_tile(new_tile: Tile) -> void:
 	if new_tile == null or new_tile.mesh_path == "":
 		mesh = null
 		return
@@ -74,7 +74,7 @@ func set_tile(new_tile: Tile):
 ## Sets the mesh and emits [code]mesh_updated[/code].[br]
 ## [b]Parameters:[/b][br]
 ## [code]new_mesh[/code] : [Mesh] — the new mesh resource.
-func set_mesh(new_mesh: Mesh):
+func set_mesh(new_mesh: Mesh) -> void:
 	mesh = new_mesh
 	mesh_updated.emit()
 

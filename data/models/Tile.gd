@@ -30,10 +30,10 @@ func load_imported_tile(json: Dictionary) -> TileStatus:
 		return TileStatus.CACHE_MISS
 	name = json.get(DragonbiteTileSet.KEY_TILE_NAME, "")
 	if name == "":
-		print("Tile name is empty")
+		push_warning("Tile name is empty")
 	id = json.get(DragonbiteTileSet.KEY_TILE_ID, "")
 	if id == "":
-		print("Tile ID is empty")
+		push_warning("Tile ID is empty")
 	mesh_path = res_path
 	source_path = json.get(DragonbiteTileSet.KEY_TILE_SOURCE_PATH, "")
 	x_size = json.get(DragonbiteTileSet.KEY_TILE_X_SIZE, 1)
@@ -48,7 +48,7 @@ func load_imported_tile(json: Dictionary) -> TileStatus:
 ## [b]Returns:[/b] [TileStatus] — [b]CREATED[/b] on successful import and save, [b]CACHED[/b] if destination already exists, [b]NOT_FOUND[/b] if the source file is missing or a required directory failed to be created.[br]
 func create_tile(source_path: String, destination_path: String) -> TileStatus:
 	if !FileAccess.file_exists(source_path):
-		print("Source file does not exist: ", source_path)
+		push_error("Source file does not exist: ", source_path)
 		return TileStatus.NOT_FOUND
 	# Save source path after we know it exists
 	self.source_path = source_path
@@ -69,12 +69,12 @@ func create_tile(source_path: String, destination_path: String) -> TileStatus:
 	if !dir.dir_exists(destination_dir):
 		var res = dir.make_dir_recursive(destination_dir)
 		if res != OK:
-			print("Failed to create directory: ", destination_dir, " with error: ", res)
+			push_error("Failed to create directory: ", destination_dir, " with error: ", res)
 			return TileStatus.NOT_FOUND
 	var save_status = ResourceSaver.save(
 		array_mesh, destination_path, ResourceSaver.FLAG_CHANGE_PATH
 	)
 	mesh_path = destination_path
 	if save_status != OK:
-		print("Failed to save mesh to ", destination_path, " with status ", save_status)
+		push_error("Failed to save mesh to ", destination_path, " with status ", save_status)
 	return TileStatus.CREATED

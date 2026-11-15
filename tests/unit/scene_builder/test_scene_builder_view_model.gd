@@ -1,15 +1,15 @@
 extends GutTest
 
-const test_mesh_path = "res://tests/test_data/test_mesh.tres"
+const TEST_MESH_PATH = "res://tests/test_data/test_mesh.tres"
 
 var view_model: SceneBuilderViewModel
 
 
-func before_each():
+func before_each() -> void:
 	view_model = SceneBuilderViewModel.new()
 
 
-func test_init():
+func test_init() -> void:
 	assert_eq(
 		view_model.scene.scene_name,
 		SceneBuilderViewModel.DEFAULT_SCENE_NAME,
@@ -20,7 +20,7 @@ func test_init():
 	assert_not_null(view_model.selected_tile, "Should initialize with a SceneTileViewModel")
 
 
-func test_rotate_left_rotates_by_90_degrees():
+func test_rotate_left_rotates_by_90_degrees() -> void:
 	view_model.selected_tile.rotation = Vector3.ZERO
 
 	view_model.rotate_left()
@@ -28,7 +28,7 @@ func test_rotate_left_rotates_by_90_degrees():
 	assert_eq(view_model.get_selected_tile_rotation().y, 90, "Should rotate left by 90 degrees")
 
 
-func test_rotate_left_multiple_times():
+func test_rotate_left_multiple_times() -> void:
 	view_model.selected_tile.rotation = Vector3.ZERO
 
 	view_model.rotate_left()
@@ -42,7 +42,7 @@ func test_rotate_left_multiple_times():
 	)
 
 
-func test_rotate_right_rotates_by_negative_90_degrees():
+func test_rotate_right_rotates_by_negative_90_degrees() -> void:
 	view_model.selected_tile.rotation = Vector3(0, 90, 0)
 
 	view_model.rotate_right()
@@ -50,7 +50,7 @@ func test_rotate_right_rotates_by_negative_90_degrees():
 	assert_eq(view_model.get_selected_tile_rotation().y, 0, "Should rotate right by -90 degrees")
 
 
-func test_rotate_right_wraps_around():
+func test_rotate_right_wraps_around() -> void:
 	view_model.selected_tile.rotation = Vector3.ZERO
 
 	view_model.rotate_right()
@@ -62,11 +62,11 @@ func test_rotate_right_wraps_around():
 	)
 
 
-func test_get_selected_tile_returns_selected_tile():
+func test_get_selected_tile_returns_selected_tile() -> void:
 	var mock_tile = Tile.new()
 	mock_tile.id = "test_tile"
 	mock_tile.name = "Test Tile"
-	mock_tile.mesh_path = test_mesh_path
+	mock_tile.mesh_path = TEST_MESH_PATH
 	view_model.set_selected_tile(mock_tile)
 	var expected = SceneTileViewModel.new()
 	expected.set_tile(mock_tile)
@@ -79,7 +79,7 @@ func test_get_selected_tile_returns_selected_tile():
 	)
 
 
-func test_get_selected_tile_mesh_returns_mesh():
+func test_get_selected_tile_mesh_returns_mesh() -> void:
 	var mock_mesh = BoxMesh.new()
 	view_model.selected_tile.mesh = mock_mesh
 
@@ -88,7 +88,7 @@ func test_get_selected_tile_mesh_returns_mesh():
 	assert_eq(result, mock_mesh, "Should return the selected tile's mesh")
 
 
-func test_get_selected_tile_mesh_returns_null_when_no_mesh():
+func test_get_selected_tile_mesh_returns_null_when_no_mesh() -> void:
 	view_model.selected_tile.mesh = null
 
 	var result = view_model.get_selected_tile_mesh()
@@ -96,7 +96,7 @@ func test_get_selected_tile_mesh_returns_null_when_no_mesh():
 	assert_null(result, "Should return null when no mesh is set")
 
 
-func test_set_selected_tile_mesh_updates_mesh():
+func test_set_selected_tile_mesh_updates_mesh() -> void:
 	var mock_mesh = BoxMesh.new()
 
 	view_model.set_selected_tile_mesh(mock_mesh)
@@ -106,25 +106,25 @@ func test_set_selected_tile_mesh_updates_mesh():
 	)
 
 
-func test_set_selected_tile_updates_tile():
+func test_set_selected_tile_updates_tile() -> void:
 	var tile = Tile.new()
 	tile.name = "TestTile"
 	tile.id = "test_id"
-	tile.mesh_path = test_mesh_path
+	tile.mesh_path = TEST_MESH_PATH
 
 	view_model.set_selected_tile(tile)
 
 	assert_eq(view_model.selected_tile.tile, tile, "Should update the selected tile's tile data")
 
 
-func test_set_hovered_space():
+func test_set_hovered_space() -> void:
 	var space = Space.new()
 	space.x = 2
 	space.z = 3
 	var tile = Tile.new()
 	tile.name = "TestTile"
 	tile.id = "test_id"
-	tile.mesh_path = test_mesh_path
+	tile.mesh_path = TEST_MESH_PATH
 	view_model.selected_tile.set_tile(tile)
 
 	view_model.set_hovered_space(space)
@@ -133,11 +133,11 @@ func test_set_hovered_space():
 
 
 ## Scene wrappers
-func test_does_selected_tile_fit_success():
+func test_does_selected_tile_fit_success() -> void:
 	var tile = Tile.new()
 	tile.name = "TestTile"
 	tile.id = "test_id"
-	tile.mesh_path = test_mesh_path
+	tile.mesh_path = TEST_MESH_PATH
 	tile.x_size = 1
 	tile.y_size = 1
 	view_model.set_selected_tile(tile)
@@ -152,11 +152,11 @@ func test_does_selected_tile_fit_success():
 	assert_true(result, "Should return true when the selected tile fits at the preview space")
 
 
-func test_does_selected_tile_fit_failure_no_space():
+func test_does_selected_tile_fit_failure_no_space() -> void:
 	var tile = Tile.new()
 	tile.name = "TestTile"
 	tile.id = "test_id"
-	tile.mesh_path = test_mesh_path
+	tile.mesh_path = TEST_MESH_PATH
 	tile.x_size = 1
 	tile.y_size = 1
 	view_model.set_selected_tile(tile)
@@ -167,7 +167,7 @@ func test_does_selected_tile_fit_failure_no_space():
 	assert_false(result, "Should return false when there is no preview space set")
 
 
-func test_does_selected_tile_fit_failure_no_tile():
+func test_does_selected_tile_fit_failure_no_tile() -> void:
 	view_model.set_selected_tile(null)
 	var space = Space.new()
 	space.x = 0
@@ -179,7 +179,7 @@ func test_does_selected_tile_fit_failure_no_tile():
 	assert_false(result, "Should return false when there is no selected tile set")
 
 
-func test_update_id():
+func test_update_id() -> void:
 	var original_id = view_model.scene.id
 	var new_id = "new_scene_id"
 
@@ -190,7 +190,7 @@ func test_update_id():
 	assert_signal_emitted(view_model, "id_updated", "Should emit id_updated signal")
 
 
-func test_update_scene_name():
+func test_update_scene_name() -> void:
 	var original_name = view_model.scene.scene_name
 	var new_name = "New Scene Name"
 
@@ -201,11 +201,11 @@ func test_update_scene_name():
 	assert_signal_emitted(view_model, "scene_name_updated", "Should emit scene_name_updated signal")
 
 
-func test_can_set_tile_at_returns_true_when_tile_fits():
+func test_can_set_tile_at_returns_true_when_tile_fits() -> void:
 	var tile = Tile.new()
 	tile.name = "TestTile"
 	tile.id = "test_id"
-	tile.mesh_path = test_mesh_path
+	tile.mesh_path = TEST_MESH_PATH
 	tile.x_size = 1
 	tile.y_size = 1
 	var tile_vm = SceneTileViewModel.new()
@@ -216,7 +216,7 @@ func test_can_set_tile_at_returns_true_when_tile_fits():
 	assert_true(result, "Should return true when tile fits at position")
 
 
-func test_can_set_tile_at_returns_false_when_tile_is_null():
+func test_can_set_tile_at_returns_false_when_tile_is_null() -> void:
 	var tile_vm = SceneTileViewModel.new()
 	tile_vm.tile = null
 
@@ -225,11 +225,11 @@ func test_can_set_tile_at_returns_false_when_tile_is_null():
 	assert_false(result, "Should return false when tile is null")
 
 
-func test_can_set_tile_at_returns_false_when_tile_does_not_fit():
+func test_can_set_tile_at_returns_false_when_tile_does_not_fit() -> void:
 	var small_tile = Tile.new()
 	small_tile.name = "TestTile"
 	small_tile.id = "test_id"
-	small_tile.mesh_path = test_mesh_path
+	small_tile.mesh_path = TEST_MESH_PATH
 	small_tile.x_size = 1
 	small_tile.y_size = 1
 	var small_tile_vm = SceneTileViewModel.new()
@@ -238,7 +238,7 @@ func test_can_set_tile_at_returns_false_when_tile_does_not_fit():
 	var large_tile = Tile.new()
 	large_tile.name = "LargeTile"
 	large_tile.id = "large_id"
-	large_tile.mesh_path = test_mesh_path
+	large_tile.mesh_path = TEST_MESH_PATH
 	large_tile.x_size = 2
 	large_tile.y_size = 2
 	var large_tile_vm = SceneTileViewModel.new()
@@ -253,11 +253,11 @@ func test_can_set_tile_at_returns_false_when_tile_does_not_fit():
 	assert_false(result, "Should return false when tile does not fit at occupied position")
 
 
-func test_can_set_tile_at_with_rotation():
+func test_can_set_tile_at_with_rotation() -> void:
 	var tile = Tile.new()
 	tile.name = "TestTile"
 	tile.id = "test_id"
-	tile.mesh_path = test_mesh_path
+	tile.mesh_path = TEST_MESH_PATH
 	tile.x_size = 1
 	tile.y_size = 1
 	var tile_vm = SceneTileViewModel.new()
@@ -269,11 +269,11 @@ func test_can_set_tile_at_with_rotation():
 	assert_true(result, "Should check tile fit with rotation applied")
 
 
-func test_can_set_selected_tile_at_returns_true_when_tile_fits():
+func test_can_set_selected_tile_at_returns_true_when_tile_fits() -> void:
 	var tile = Tile.new()
 	tile.name = "TestTile"
 	tile.id = "test_id"
-	tile.mesh_path = test_mesh_path
+	tile.mesh_path = TEST_MESH_PATH
 	tile.x_size = 1
 	tile.y_size = 1
 	view_model.set_selected_tile(tile)
@@ -283,7 +283,7 @@ func test_can_set_selected_tile_at_returns_true_when_tile_fits():
 	assert_true(result, "Should return true when selected tile fits at position")
 
 
-func test_can_set_selected_tile_at_returns_false_when_tile_is_null():
+func test_can_set_selected_tile_at_returns_false_when_tile_is_null() -> void:
 	view_model.selected_tile.tile = null
 
 	var result = view_model.can_set_selected_tile_at(0, 0)
@@ -291,11 +291,11 @@ func test_can_set_selected_tile_at_returns_false_when_tile_is_null():
 	assert_false(result, "Should return false when selected tile is null")
 
 
-func test_can_set_selected_tile_at_returns_false_when_tile_does_not_fit():
+func test_can_set_selected_tile_at_returns_false_when_tile_does_not_fit() -> void:
 	var small_tile = Tile.new()
 	small_tile.name = "TestTile"
 	small_tile.id = "test_id"
-	small_tile.mesh_path = test_mesh_path
+	small_tile.mesh_path = TEST_MESH_PATH
 	small_tile.x_size = 1
 	small_tile.y_size = 1
 	var small_tile_vm = SceneTileViewModel.new()
@@ -304,7 +304,7 @@ func test_can_set_selected_tile_at_returns_false_when_tile_does_not_fit():
 	var large_tile = Tile.new()
 	large_tile.name = "LargeTile"
 	large_tile.id = "large_id"
-	large_tile.mesh_path = test_mesh_path
+	large_tile.mesh_path = TEST_MESH_PATH
 	large_tile.x_size = 2
 	large_tile.y_size = 2
 	var large_tile_vm = SceneTileViewModel.new()
@@ -320,11 +320,11 @@ func test_can_set_selected_tile_at_returns_false_when_tile_does_not_fit():
 	assert_false(result, "Should return false when selected tile does not fit at occupied position")
 
 
-func test_can_set_selected_tile_at_with_rotation():
+func test_can_set_selected_tile_at_with_rotation() -> void:
 	var tile = Tile.new()
 	tile.name = "TestTile"
 	tile.id = "test_id"
-	tile.mesh_path = test_mesh_path
+	tile.mesh_path = TEST_MESH_PATH
 	tile.x_size = 1
 	tile.y_size = 1
 	view_model.set_selected_tile(tile)
@@ -335,11 +335,11 @@ func test_can_set_selected_tile_at_with_rotation():
 	assert_true(result, "Should check selected tile fit with rotation applied")
 
 
-func test_set_tile_in_layout_at_places_tile_when_it_fits():
+func test_set_tile_in_layout_at_places_tile_when_it_fits() -> void:
 	var tile = Tile.new()
 	tile.name = "TestTile"
 	tile.id = "test_id"
-	tile.mesh_path = test_mesh_path
+	tile.mesh_path = TEST_MESH_PATH
 	tile.x_size = 1
 	tile.y_size = 1
 	var tile_vm = SceneTileViewModel.new()
@@ -351,7 +351,7 @@ func test_set_tile_in_layout_at_places_tile_when_it_fits():
 	assert_eq(placed_tile.tile_data, tile, "Should place tile at position when it fits")
 
 
-func test_set_tile_in_layout_at_does_not_place_when_tile_is_null():
+func test_set_tile_in_layout_at_does_not_place_when_tile_is_null() -> void:
 	var tile_vm = SceneTileViewModel.new()
 	tile_vm.tile = null
 
@@ -361,11 +361,11 @@ func test_set_tile_in_layout_at_does_not_place_when_tile_is_null():
 	assert_null(placed_tile, "Should not place tile when tile is null")
 
 
-func test_set_tile_in_layout_at_does_not_place_when_tile_does_not_fit():
+func test_set_tile_in_layout_at_does_not_place_when_tile_does_not_fit() -> void:
 	var small_tile = Tile.new()
 	small_tile.name = "TestTile"
 	small_tile.id = "test_id"
-	small_tile.mesh_path = test_mesh_path
+	small_tile.mesh_path = TEST_MESH_PATH
 	small_tile.x_size = 1
 	small_tile.y_size = 1
 	var small_tile_vm = SceneTileViewModel.new()
@@ -374,7 +374,7 @@ func test_set_tile_in_layout_at_does_not_place_when_tile_does_not_fit():
 	var large_tile = Tile.new()
 	large_tile.name = "LargeTile"
 	large_tile.id = "large_id"
-	large_tile.mesh_path = test_mesh_path
+	large_tile.mesh_path = TEST_MESH_PATH
 	large_tile.x_size = 2
 	large_tile.y_size = 2
 	var large_tile_vm = SceneTileViewModel.new()
@@ -387,11 +387,11 @@ func test_set_tile_in_layout_at_does_not_place_when_tile_does_not_fit():
 	assert_eq(placed_tile.tile_data, large_tile, "Large tile should occupy the space")
 
 
-func test_set_tile_in_layout_at_with_rotation():
+func test_set_tile_in_layout_at_with_rotation() -> void:
 	var tile = Tile.new()
 	tile.name = "TestTile"
 	tile.id = "test_id"
-	tile.mesh_path = test_mesh_path
+	tile.mesh_path = TEST_MESH_PATH
 	tile.x_size = 1
 	tile.y_size = 1
 	var tile_vm = SceneTileViewModel.new()
@@ -404,11 +404,11 @@ func test_set_tile_in_layout_at_with_rotation():
 	assert_not_null(placed_tile, "Should place tile with rotation applied")
 
 
-func test_set_selected_tile_in_layout_at_places_tile_when_it_fits():
+func test_set_selected_tile_in_layout_at_places_tile_when_it_fits() -> void:
 	var tile = Tile.new()
 	tile.name = "TestTile"
 	tile.id = "test_id"
-	tile.mesh_path = test_mesh_path
+	tile.mesh_path = TEST_MESH_PATH
 	tile.x_size = 1
 	tile.y_size = 1
 	view_model.set_selected_tile(tile)
@@ -419,7 +419,7 @@ func test_set_selected_tile_in_layout_at_places_tile_when_it_fits():
 	assert_not_null(placed_tile, "Should place selected tile at position when it fits")
 
 
-func test_set_selected_tile_in_layout_at_does_not_place_when_tile_is_null():
+func test_set_selected_tile_in_layout_at_does_not_place_when_tile_is_null() -> void:
 	view_model.selected_tile.tile = null
 
 	view_model.set_selected_tile_in_layout_at(0, 0)
@@ -428,18 +428,18 @@ func test_set_selected_tile_in_layout_at_does_not_place_when_tile_is_null():
 	assert_null(placed_tile, "Should not place selected tile when tile is null")
 
 
-func test_set_selected_tile_in_layout_at_does_not_place_when_tile_does_not_fit():
+func test_set_selected_tile_in_layout_at_does_not_place_when_tile_does_not_fit() -> void:
 	var small_tile = Tile.new()
 	small_tile.name = "TestTile"
 	small_tile.id = "test_id"
-	small_tile.mesh_path = test_mesh_path
+	small_tile.mesh_path = TEST_MESH_PATH
 	small_tile.x_size = 1
 	small_tile.y_size = 1
 
 	var large_tile = Tile.new()
 	large_tile.name = "LargeTile"
 	large_tile.id = "large_id"
-	large_tile.mesh_path = test_mesh_path
+	large_tile.mesh_path = TEST_MESH_PATH
 	large_tile.x_size = 2
 	large_tile.y_size = 2
 	var large_tile_vm = SceneTileViewModel.new()
@@ -453,11 +453,11 @@ func test_set_selected_tile_in_layout_at_does_not_place_when_tile_does_not_fit()
 	assert_eq(placed_tile.tile_data, large_tile, "Large tile should occupy the space")
 
 
-func test_set_selected_tile_in_layout_at_with_rotation():
+func test_set_selected_tile_in_layout_at_with_rotation() -> void:
 	var tile = Tile.new()
 	tile.name = "TestTile"
 	tile.id = "test_id"
-	tile.mesh_path = test_mesh_path
+	tile.mesh_path = TEST_MESH_PATH
 	tile.x_size = 1
 	tile.y_size = 1
 	view_model.set_selected_tile(tile)
@@ -469,11 +469,11 @@ func test_set_selected_tile_in_layout_at_with_rotation():
 	assert_not_null(placed_tile, "Should place selected tile with rotation applied")
 
 
-func test_remove_tile_in_layout_at_removes_tile():
+func test_remove_tile_in_layout_at_removes_tile() -> void:
 	var tile = Tile.new()
 	tile.name = "TestTile"
 	tile.id = "test_id"
-	tile.mesh_path = test_mesh_path
+	tile.mesh_path = TEST_MESH_PATH
 	tile.x_size = 1
 	tile.y_size = 1
 	var tile_vm = SceneTileViewModel.new()
@@ -489,18 +489,19 @@ func test_remove_tile_in_layout_at_removes_tile():
 	assert_null(placed_tile, "Should remove tile from layout")
 
 
-func test_remove_tile_in_layout_with_no_tile():
+func test_remove_tile_in_layout_with_no_tile() -> void:
 	view_model.remove_tile_in_layout_at(0, 0)
 
 	var placed_tile = view_model.get_origin_tile(Vector2(0, 0))
 	assert_null(placed_tile, "Should handle removing tile when none exists without error")
+	assert_engine_error("No tile found at position", "Removing with no tile should warn")
 
 
-func test_get_origin_tile_returns_placed_tile():
+func test_get_origin_tile_returns_placed_tile() -> void:
 	var tile = Tile.new()
 	tile.name = "TestTile"
 	tile.id = "test_id"
-	tile.mesh_path = test_mesh_path
+	tile.mesh_path = TEST_MESH_PATH
 	tile.x_size = 1
 	tile.y_size = 1
 	var tile_vm = SceneTileViewModel.new()
@@ -512,17 +513,17 @@ func test_get_origin_tile_returns_placed_tile():
 	assert_eq(result.tile_data, tile, "Should return correct tile data")
 
 
-func test_get_origin_tile_returns_null_when_no_tile():
+func test_get_origin_tile_returns_null_when_no_tile() -> void:
 	var result = view_model.get_origin_tile(Vector2(0, 0))
 
 	assert_null(result, "Should return null when no tile at position")
 
 
-func test_get_origin_tile_with_large_tile():
+func test_get_origin_tile_with_large_tile() -> void:
 	var large_tile = Tile.new()
 	large_tile.name = "LargeTile"
 	large_tile.id = "large_id"
-	large_tile.mesh_path = test_mesh_path
+	large_tile.mesh_path = TEST_MESH_PATH
 	large_tile.x_size = 2
 	large_tile.y_size = 2
 	var large_tile_vm = SceneTileViewModel.new()
@@ -538,11 +539,11 @@ func test_get_origin_tile_with_large_tile():
 	)
 
 
-func test_get_origin_tile_after_removal():
+func test_get_origin_tile_after_removal() -> void:
 	var tile = Tile.new()
 	tile.name = "TestTile"
 	tile.id = "test_id"
-	tile.mesh_path = test_mesh_path
+	tile.mesh_path = TEST_MESH_PATH
 	tile.x_size = 1
 	tile.y_size = 1
 	var tile_vm = SceneTileViewModel.new()

@@ -45,7 +45,7 @@ func _token_response(status: int = 200, json: Variant = null) -> NetworkService.
 	return result
 
 
-func before_each():
+func before_each() -> void:
 	storage_path = "user://test_profile_vm_%d.cfg" % Time.get_ticks_usec()
 	auth = autofree(AuthService.new())
 	auth._storage_path = storage_path
@@ -54,11 +54,11 @@ func before_each():
 	vm = ProfileViewModel.new(net, auth)
 
 
-func after_each():
+func after_each() -> void:
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(storage_path))
 
 
-func test_login_posts_credentials_unauthenticated_and_sensitive():
+func test_login_posts_credentials_unauthenticated_and_sensitive() -> void:
 	await vm.login("a@b.c", "pw")
 	assert_eq(net.calls[0].path, ProfileViewModel.LOGIN_URL)
 	assert_eq(net.calls[0].method, HTTPClient.METHOD_POST)
@@ -67,7 +67,7 @@ func test_login_posts_credentials_unauthenticated_and_sensitive():
 	assert_true(net.calls[0].sensitive)
 
 
-func test_signup_posts_username_with_credentials():
+func test_signup_posts_username_with_credentials() -> void:
 	await vm.signup("user", "a@b.c", "pw")
 	assert_eq(net.calls[0].path, ProfileViewModel.SIGNUP_URL)
 	assert_eq(net.calls[0].method, HTTPClient.METHOD_POST)
@@ -76,7 +76,7 @@ func test_signup_posts_username_with_credentials():
 	assert_true(net.calls[0].sensitive)
 
 
-func test_login_stores_session_and_email():
+func test_login_stores_session_and_email() -> void:
 	var access := _token()
 	net.response = _token_response(200, {"access_token": access, "refresh_token": "refresh"})
 	var ok: bool = await vm.login("a@b.c", "pw")
@@ -87,7 +87,7 @@ func test_login_stores_session_and_email():
 	assert_eq(vm.get_email(), "a@b.c")
 
 
-func test_signup_stores_session_and_email():
+func test_signup_stores_session_and_email() -> void:
 	net.response = _token_response(200, {"access_token": _token(), "refresh_token": "refresh"})
 	var ok: bool = await vm.signup("user", "a@b.c", "pw")
 	assert_true(ok)
@@ -95,34 +95,34 @@ func test_signup_stores_session_and_email():
 	assert_eq(vm.get_email(), "a@b.c")
 
 
-func test_login_fails_on_error_status():
+func test_login_fails_on_error_status() -> void:
 	net.response = _token_response(401, {"access_token": "access", "refresh_token": "refresh"})
 	var ok: bool = await vm.login("a@b.c", "pw")
 	assert_false(ok)
 	assert_false(vm.is_logged_in())
 
 
-func test_login_fails_on_missing_tokens():
+func test_login_fails_on_missing_tokens() -> void:
 	net.response = _token_response(200, {"access_token": "access"})
 	var ok: bool = await vm.login("a@b.c", "pw")
 	assert_false(ok)
 	assert_false(vm.is_logged_in())
 
 
-func test_login_fails_on_unreadable_access_token():
+func test_login_fails_on_unreadable_access_token() -> void:
 	net.response = _token_response(200, {"access_token": "access", "refresh_token": "refresh"})
 	var ok: bool = await vm.login("a@b.c", "pw")
 	assert_false(ok)
 	assert_false(vm.is_logged_in())
 
 
-func test_login_fails_on_non_dictionary_body():
+func test_login_fails_on_non_dictionary_body() -> void:
 	net.response = _token_response(200, "oops")
 	var ok: bool = await vm.login("a@b.c", "pw")
 	assert_false(ok)
 
 
-func test_log_out_clears_session_and_emits_signed_out():
+func test_log_out_clears_session_and_emits_signed_out() -> void:
 	auth.set_session(_token(), "refresh", "a@b.c")
 	watch_signals(vm)
 	vm.log_out()

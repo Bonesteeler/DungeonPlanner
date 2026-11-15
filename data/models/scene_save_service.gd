@@ -60,7 +60,7 @@ func load_scene_from_json(file_path: String) -> TileLayout:
 func load_scene_from_user(file_name: String) -> Scene:
 	var file = FileAccess.open(LOCAL_SCENES_PATH + file_name + ".json", FileAccess.READ)
 	if file == null:
-		print(
+		push_error(
 			(
 				"Failed to open saved scene:%s with error %s"
 				% [file_name, str(FileAccess.get_open_error())]
@@ -77,7 +77,7 @@ func load_scene_from_user(file_name: String) -> Scene:
 		parsed_scene == null
 		or (parsed_scene.author == "Unknown" and parsed_scene.scene_name == "Untitled Scene")
 	):
-		print("Discarding corrupt saved scene: %s" % file_name)
+		push_warning("Discarding corrupt saved scene: %s" % file_name)
 		delete_scene(file_name)
 		return null
 	return parsed_scene
@@ -86,7 +86,7 @@ func load_scene_from_user(file_name: String) -> Scene:
 ## Serialize and write a Scene to the user save directory as JSON.[br]
 ## [b]Parameters:[/b][br]
 ## [code]scene[/code] : [Scene] — the Scene instance to serialize and persist. The Scene's [code]scene_name[/code] is used for the filename.[br]
-func save_scene_to_user(scene: Scene):
+func save_scene_to_user(scene: Scene) -> void:
 	var json_string = SceneSerializer.serialize(scene)
 	var file = FileAccess.open(LOCAL_SCENES_PATH + scene.scene_name + ".json", FileAccess.WRITE)
 	file.store_string(json_string)
@@ -98,7 +98,7 @@ func save_scene_to_user(scene: Scene):
 ## [code]scene[/code] : [Scene] — the scene to add or update.[br]
 ## [b]Emits:[/b][br]
 ## - [code]scene_added()[/code] after the scene is added or updated and saved.[br]
-func add_scene(scene: Scene):
+func add_scene(scene: Scene) -> void:
 	var idx = scenes.find_custom(func(s): return s.scene_name == scene.scene_name)
 	if idx == -1:
 		scenes.append(scene)
@@ -110,7 +110,7 @@ func add_scene(scene: Scene):
 
 ## Remove a Scene in memory and from disk.[br]
 ## [code]file_name[/code] : [String] — base filename (without .json) of the scene to delete from user://SavedScenes/.[br]
-func delete_scene(file_name: String):
+func delete_scene(file_name: String) -> void:
 	var local_path = LOCAL_SCENES_PATH + file_name + ".json"
 	OS.move_to_trash(ProjectSettings.globalize_path(local_path))
 	var idx = scenes.find_custom(func(s): return s.scene_name == file_name)
@@ -130,10 +130,12 @@ func find_scene_by_id(scene_id: String) -> Scene:
 	return null
 
 
-func save_recent_scene_ids(ids: Array[String]):
+func save_recent_scene_ids(ids: Array[String]) -> void:
 	var file = FileAccess.open(SAVED_SCENES_PATH + RECENT_SCENE_IDS_FILE, FileAccess.WRITE)
 	if file == null:
-		print("Failed to save recent scene ids with error %s" % str(FileAccess.get_open_error()))
+		push_error(
+			"Failed to save recent scene ids with error %s" % str(FileAccess.get_open_error())
+		)
 		return
 
 	file.store_string(JSON.stringify(ids))

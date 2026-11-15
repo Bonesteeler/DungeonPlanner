@@ -41,7 +41,7 @@ var set_directory_selected: bool = false
 
 ## Initialize the import UI and reset all state variables to default values.[br]
 ## Connects signals on first setup and updates UI elements.[br]
-func initialize():
+func initialize() -> void:
 	visible = true
 	if first_setup:
 		file_loader.import_started.connect(setup_import_status_label)
@@ -72,14 +72,14 @@ func _process(_delta: float) -> void:
 
 
 ## Open the file dialog for directory selection.[br]
-func browse_pressed():
+func browse_pressed() -> void:
 	file_dialog.popup_centered()
 
 
 ## Handle directory selection from the file dialog.[br]
 ## [b]Parameters:[/b][br]
 ## [code]path[/code] : [String] — selected directory path.[br]
-func on_import_directory_selected(path: String):
+func on_import_directory_selected(path: String) -> void:
 	if path == "":
 		return
 	selected_dir_label.text = path
@@ -89,12 +89,12 @@ func on_import_directory_selected(path: String):
 
 
 ## Update the confirm button's disabled state based on selection and naming status.[br]
-func update_confirm_button():
+func update_confirm_button() -> void:
 	confirm_button.disabled = not (set_directory_selected and set_named)
 
 
 ## Start the import process on a background thread.[br]
-func confirm_pressed():
+func confirm_pressed() -> void:
 	if import_path != "":
 		action_buttons.visible = false
 		import_thread.start(
@@ -103,7 +103,7 @@ func confirm_pressed():
 
 
 ## Close the import dialog without performing any import.[br]
-func cancel_pressed():
+func cancel_pressed() -> void:
 	visible = false
 
 
@@ -119,7 +119,7 @@ func _on_set_name_text_changed(new_text: String) -> void:
 ## Initialize the import status label with total tile count.[br]
 ## [b]Parameters:[/b][br]
 ## [code]total_tiles[/code] : [int] — total number of tiles to be imported.[br]
-func setup_import_status_label(total_tiles: int):
+func setup_import_status_label(total_tiles: int) -> void:
 	import_tile_amount = total_tiles
 	imported_tiles_count = 0
 	import_status_label.text = (
@@ -130,7 +130,7 @@ func setup_import_status_label(total_tiles: int):
 
 
 ## Update the import status label to reflect progress.[br]
-func update_import_status_label():
+func update_import_status_label() -> void:
 	imported_tiles_count += 1
 	import_status_label.text = (
 		IMPORT_STATUS_LABEL_TEMPLATE

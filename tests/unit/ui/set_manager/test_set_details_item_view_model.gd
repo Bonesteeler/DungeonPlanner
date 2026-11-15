@@ -3,15 +3,15 @@ extends GutTest
 var view_model: SetDetailsItemViewModel
 
 
-func before_each():
+func before_each() -> void:
 	view_model = SetDetailsItemViewModel.new()
 
 
-func test_initial_state():
+func test_initial_state() -> void:
 	assert_null(view_model.tile, "tile should start as null")
 
 
-func test_set_tile_updates_property():
+func test_set_tile_updates_property() -> void:
 	var tile = Tile.new()
 	tile.name = "TestTile"
 
@@ -21,7 +21,7 @@ func test_set_tile_updates_property():
 	assert_eq(view_model.tile.name, "TestTile", "Should have correct tile")
 
 
-func test_set_tile_emits_signal():
+func test_set_tile_emits_signal() -> void:
 	watch_signals(view_model)
 
 	var tile = Tile.new()
@@ -32,7 +32,7 @@ func test_set_tile_emits_signal():
 	assert_signal_emitted(view_model, "tile_changed", "Should emit tile_changed signal")
 
 
-func test_set_tile_does_not_emit_if_same_tile():
+func test_set_tile_does_not_emit_if_same_tile() -> void:
 	var tile = Tile.new()
 	tile.name = "SameTile"
 
@@ -44,7 +44,7 @@ func test_set_tile_does_not_emit_if_same_tile():
 	assert_signal_not_emitted(view_model, "tile_changed", "Should not emit if tile is the same")
 
 
-func test_set_tile_emits_when_changing_tiles():
+func test_set_tile_emits_when_changing_tiles() -> void:
 	var tile1 = Tile.new()
 	tile1.name = "Tile1"
 	var tile2 = Tile.new()
@@ -61,7 +61,7 @@ func test_set_tile_emits_when_changing_tiles():
 	assert_eq(view_model.tile.name, "Tile2", "Should have updated to new tile")
 
 
-func test_set_tile_to_null():
+func test_set_tile_to_null() -> void:
 	var tile = Tile.new()
 	tile.name = "TempTile"
 	view_model.set_tile(tile)

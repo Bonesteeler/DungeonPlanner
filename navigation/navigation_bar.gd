@@ -41,21 +41,21 @@ func update_scene_buttons() -> void:
 		button_container.add_child(button)
 
 
-func forward_home_selected():
+func forward_home_selected() -> void:
 	home_selected.emit()
 
 
-func forward_planner_selected(scene_id: String):
+func forward_planner_selected(scene_id: String) -> void:
 	planner_selected.emit(scene_id)
 
 
-func forward_sets_selected():
+func forward_sets_selected() -> void:
 	sets_selected.emit()
 
 
-func forward_scene_manager_selected():
+func forward_scene_manager_selected() -> void:
 	scene_manager_selected.emit()
 
 
-func forward_cloud_selected():
+func forward_cloud_selected() -> void:
 	cloud_selected.emit()

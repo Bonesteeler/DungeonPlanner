@@ -13,7 +13,7 @@ var index = 0
 ## Update the button's visual state and properties based on the provided SetViewModel.[br]
 ## [b]Parameters:[/b][br]
 ## [code]set_vm[/code] : [SetViewModel] — view model containing the tile set data and display state.[br]
-func update_state(set_vm: SetViewModel):
+func update_state(set_vm: SetViewModel) -> void:
 	if set_vm.hidden:
 		$Button.visible = false
 	else:
@@ -27,5 +27,5 @@ func update_state(set_vm: SetViewModel):
 ## Handle button press events and emit the set_button_pressed signal with the current index.[br]
 ## [b]Emits:[/b][br]
 ## - [code]set_button_pressed(index: [int])[/code] with the current tile set index[br]
-func _on_button_pressed():
+func _on_button_pressed() -> void:
 	set_button_pressed.emit(index)

@@ -1,3 +1,4 @@
+class_name InputListener
 extends Node3D
 ## InputListener
 ##
@@ -22,7 +23,7 @@ signal rotate_right
 ## - [code]rotate_left()[/code] when the left rotation key is pressed.[br]
 ## - [code]rotate_right()[/code] when the right rotation key is pressed.[br]
 ## [b]Returns:[/b] [void][br]
-func _input(event: InputEvent):
+func _input(event: InputEvent) -> void:
 	if event is InputEventKey:
 		var pressed = event.is_pressed()
 		if event.keycode == KEY_SHIFT:

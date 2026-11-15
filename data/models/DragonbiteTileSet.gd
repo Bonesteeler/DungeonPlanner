@@ -26,7 +26,7 @@ var name: String = ""
 ## [b]Parameters:[/b][br]
 ## [code]json[/code] : [Dictionary] — JSON dictionary containing tiles under the [code]KEY_TILES[/code] key and the tileset name under [code]KEY_NAME[/code].[br]
 ## [b]Returns:[/b] [void] — populates the [code]tiles[/code] array and sets [code]name[/code].[br]
-func load_from_json(json: Dictionary):
+func load_from_json(json: Dictionary) -> void:
 	var status_count: Array = [0, 0, 0, 0]
 	var start_time = Time.get_ticks_msec()
 	for tile_json in json[KEY_TILES]:
@@ -47,7 +47,7 @@ func load_from_json(json: Dictionary):
 ## [code]set_name[/code] : [String] — Name to assign to the tileset; used as a directory under [code]user://Meshes/[/code].[br]
 ## [code]stl_file_paths[/code] : [PackedStringArray] — Array of filesystem paths to [.stl] files to import.[br]
 ## [b]Returns:[/b] [void] — creates [code].res[/code] mesh resources for each STL file and appends tiles to [code]tiles[/code].[br]
-func import_set(set_name: String, stl_file_paths: PackedStringArray):
+func import_set(set_name: String, stl_file_paths: PackedStringArray) -> void:
 	name = set_name
 	var start_time = Time.get_ticks_msec()
 	for path in stl_file_paths:
@@ -68,16 +68,16 @@ func import_tile(stl_file_path: String) -> Tile:
 	if status == Tile.TileStatus.CREATED or status == Tile.TileStatus.CACHED:
 		tiles.append(new_tile)
 		return new_tile
-	print("Failed to import tile from ", stl_file_path)
+	push_error("Failed to import tile from ", stl_file_path)
 	return null
 
 
 ## Delete all mesh resource files for this tileset from [code]user://Meshes/[/code] and remove the set directory.[br]
-## [b]Returns:[/b] [void] — prints an error and returns early if the mesh directory cannot be opened.[br]
-func delete_tiles():
+## [b]Returns:[/b] [void] — pushes an error and returns early if the mesh directory cannot be opened.[br]
+func delete_tiles() -> void:
 	var mesh_dir = DirAccess.open(MESHES_PATH + name)
 	if mesh_dir == null:
-		print("Failed to open mesh directory for tileset: ", name)
+		push_error("Failed to open mesh directory for tileset: ", name)
 		return
 	mesh_dir.list_dir_begin()
 	var file_name = mesh_dir.get_next()
@@ -95,7 +95,7 @@ func delete_tiles():
 ## [b]Returns:[/b] [Tile] — the requested [code]Tile[/code] or [code]null[/code] if the index is out of bounds.[br]
 func get_tile(index: int) -> Tile:
 	if index < 0 or index >= tiles.size():
-		print("Index out of bounds: ", index, " for tileset ", name)
+		push_error("Index out of bounds: ", index, " for tileset ", name)
 		return null
 	return tiles[index]
 

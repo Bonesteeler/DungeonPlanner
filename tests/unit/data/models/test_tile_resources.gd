@@ -3,12 +3,12 @@ extends GutTest
 var resources: TileResources
 
 
-func before_each():
+func before_each() -> void:
 	# Fresh TileResources for each test
 	resources = TileResources.new(false)
 
 
-func test_add_single_set():
+func test_add_single_set() -> void:
 	var set_test = DragonbiteTileSet.new()
 	set_test.name = "set_a"
 	var tile_test = Tile.new()
@@ -26,7 +26,7 @@ func test_add_single_set():
 	assert_eq(null, missing[TileResources.KEY_TILE])
 
 
-func test_has_tile_ids():
+func test_has_tile_ids() -> void:
 	var set_test = DragonbiteTileSet.new()
 	set_test.name = "set_c"
 	var tile1_test = Tile.new()
@@ -41,7 +41,7 @@ func test_has_tile_ids():
 	assert_false(resources.has_tile_ids(["missing_id"]))
 
 
-func test_has_tile_ids_multiple_sets():
+func test_has_tile_ids_multiple_sets() -> void:
 	var set1 = DragonbiteTileSet.new()
 	set1.name = "set_1"
 	var tile1 = Tile.new()
@@ -59,7 +59,7 @@ func test_has_tile_ids_multiple_sets():
 	assert_true(resources.has_tile_ids(["t1", "t2"]))
 
 
-func test_get_missing_tile_ids():
+func test_get_missing_tile_ids() -> void:
 	var set_test = DragonbiteTileSet.new()
 	set_test.name = "set_e"
 	var tile1_test = Tile.new()
@@ -77,7 +77,7 @@ func test_get_missing_tile_ids():
 	)
 
 
-func test_remove_set_cleans_ids_and_sets():
+func test_remove_set_cleans_ids_and_sets() -> void:
 	var set_test = DragonbiteTileSet.new()
 	set_test.name = "set_d"
 	var tile_test = Tile.new()
@@ -91,14 +91,16 @@ func test_remove_set_cleans_ids_and_sets():
 
 	# Remove and verify cleanup
 	resources.remove_set("set_d")
-	# Expect file not found error
-	assert_push_error(1, "File not found should have errored")
+	# Expect mesh directory and definition file not found errors
+	assert_push_error("Failed to open mesh directory", "Missing mesh directory should have errored")
+	assert_push_error("File does not exist", "File not found should have errored")
 	assert_false(resources.unique_tile_ids.has("id_d"))
 	assert_eq(0, resources.tile_sets.size())
 
 
-func test_get_selected_set_out_of_bounds_returns_null():
+func test_get_selected_set_out_of_bounds_returns_null() -> void:
 	# No sets added, selected_set_idx out of range -> should return null
 	resources.selected_set_idx = 5
 	var result = resources.get_selected_set()
 	assert_eq(null, result)
+	assert_push_error("Selected set index out of bounds", "Out of bounds index should have errored")

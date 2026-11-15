@@ -22,7 +22,7 @@ var selected_layer_index: int = 0
 ## [b]Emits:[/b][br]
 ## - [code]layers_updated()[/code] after all layers are added and connected.[br]
 ## [b]Returns:[/b] [void][br]
-func set_layer_vms(new_layer_vms: Array):
+func set_layer_vms(new_layer_vms: Array) -> void:
 	for layer_vm in new_layer_vms:
 		layer_vm.layer.id = layers.size()
 		layer_vm.layer_updated.connect(_forward_layer_updated)
@@ -38,7 +38,7 @@ func set_layer_vms(new_layer_vms: Array):
 ## - [code]layer_added(new_layer)[/code] after the layer is created and connected.[br]
 ## - [code]layers_updated()[/code] after the layer is added to the collection.[br]
 ## [b]Returns:[/b] [void][br]
-func add_tile_layer():
+func add_tile_layer() -> void:
 	var new_layer = TileLayerViewModel.new()
 	new_layer.layer.id = layers.size()
 	new_layer.layer_updated.connect(_forward_layer_updated)
@@ -55,7 +55,7 @@ func add_tile_layer():
 ## [b]Emits:[/b][br]
 ## - [code]layers_updated()[/code] after the layer is removed.[br]
 ## [b]Returns:[/b] [void][br]
-func delete_layer(layer_id: int):
+func delete_layer(layer_id: int) -> void:
 	for i in range(layers.size()):
 		if layers[i].layer.id == layer_id:
 			layers.remove_at(i)
@@ -86,7 +86,7 @@ func _compare_layer_height(a: TileLayerViewModel, b: TileLayerViewModel) -> bool
 ## [b]Emits:[/b][br]
 ## - [code]layer_selected(selected_layer)[/code] after the layer is selected.[br]
 ## [b]Returns:[/b] [void][br]
-func select_layer_with_id(id: int):
+func select_layer_with_id(id: int) -> void:
 	var selected_layer: TileLayerViewModel
 	for layer in layers:
 		if layer.layer.id == id:
@@ -106,7 +106,7 @@ func select_layer_with_id(id: int):
 ## [b]Emits:[/b][br]
 ## - [code]layers_updated()[/code] after the height is changed.[br]
 ## [b]Returns:[/b] [void][br]
-func update_layer_height(layer_id: int, new_height: float):
+func update_layer_height(layer_id: int, new_height: float) -> void:
 	var layer = _get_layer_at_index(layer_id)
 	if layer != null:
 		layer.set_height(new_height)
@@ -120,7 +120,7 @@ func update_layer_height(layer_id: int, new_height: float):
 ## [b]Emits:[/b][br]
 ## - [code]layers_updated()[/code] after the visibility is changed.[br]
 ## [b]Returns:[/b] [void][br]
-func update_layer_visibility(layer_id: int, is_visible: bool):
+func update_layer_visibility(layer_id: int, is_visible: bool) -> void:
 	var layer = _get_layer_at_index(layer_id)
 	if layer != null:
 		layer.set_visible(is_visible)
@@ -142,5 +142,5 @@ func _get_layer_at_index(index: int) -> TileLayerViewModel:
 ## [b]Emits:[/b][br]
 ## - [code]layers_updated()[/code] when a child layer emits layer_updated.[br]
 ## [b]Returns:[/b] [void][br]
-func _forward_layer_updated():
+func _forward_layer_updated() -> void:
 	layers_updated.emit()

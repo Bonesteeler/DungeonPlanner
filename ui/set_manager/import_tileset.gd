@@ -27,7 +27,7 @@ var view_model: ImportTilesetViewModel
 
 
 ## Display the import dialog and reset to initial state[br]
-func show_dialog():
+func show_dialog() -> void:
 	view_model.set_initial_state()
 	selected_dir_label.text = "Not selected"
 	set_name_input.text = ""
@@ -37,7 +37,7 @@ func show_dialog():
 ## Set the view model and connect its signals[br]
 ## [b]Parameters:[/b][br]
 ## [code]viewModel[/code] : [ImportTilesetViewModel] — view model to bind to this view.[br]
-func set_vm(vm: ImportTilesetViewModel):
+func set_vm(vm: ImportTilesetViewModel) -> void:
 	view_model = vm
 	view_model.import_complete.connect(on_import_complete)
 	view_model.import_path_updated.connect(update_selected_dir_label)
@@ -62,24 +62,24 @@ func update_selected_dir_label() -> void:
 
 
 ## Handle browse button press by showing file dialog[br]
-func browse_pressed():
+func browse_pressed() -> void:
 	file_dialog.popup_centered()
 
 
 ## Handle directory selection from file dialog[br]
 ## [b]Parameters:[/b][br]
 ## [code]path[/code] : [String] — selected directory path.[br]
-func on_import_directory_selected(path: String):
+func on_import_directory_selected(path: String) -> void:
 	view_model.set_import_path(path)
 
 
 ## Handle confirm button press by starting the import[br]
-func confirm_pressed():
+func confirm_pressed() -> void:
 	view_model.start_import()
 
 
 ## Handle cancel button press by canceling import and closing dialog[br]
-func cancel_pressed():
+func cancel_pressed() -> void:
 	view_model.cancel_import()
 	visible = false
 
@@ -94,6 +94,6 @@ func _on_set_name_text_changed(new_text: String) -> void:
 ## Handle import completion by emitting signal and closing dialog[br]
 ## [b]Emits:[/b][br]
 ## - [code]set_imported()[/code][br]
-func on_import_complete():
+func on_import_complete() -> void:
 	set_imported.emit()
 	visible = false

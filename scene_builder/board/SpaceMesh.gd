@@ -29,7 +29,7 @@ func _ready() -> void:
 
 ## Set the node to represent an empty space.[br]
 ## [b]Returns:[/b] [void][br]
-func set_empty():
+func set_empty() -> void:
 	visible = true
 	selected_mesh = EMPTY_SPACE_MESH
 	tile_rotation = Vector3.ZERO
@@ -41,7 +41,7 @@ func set_empty():
 ## [code]context[/code] : [PlanningContext.TileContext] — tile mesh and rotation to preview.[br]
 ## [code]is_error[/code] : [bool] — when true, use the error material to indicate an invalid placement.[br]
 ## [b]Returns:[/b] [void][br]
-func set_values(vm: SceneTileViewModel):
+func set_values(vm: SceneTileViewModel) -> void:
 	visible = true
 	selected_mesh = vm.mesh
 	tile_rotation = vm.rotation
@@ -55,7 +55,7 @@ func set_values(vm: SceneTileViewModel):
 ## [b]Parameters:[/b][br]
 ## [code]is_valid[/code] : [bool] — when true, apply the error material; otherwise apply the preview material.[br]
 ## [b]Returns:[/b] [void][br]
-func set_color(is_valid: bool):
+func set_color(is_valid: bool) -> void:
 	visible = true
 	if get_active_material(0) == null:
 		return
@@ -67,7 +67,7 @@ func set_color(is_valid: bool):
 
 ## Restore the mesh and material after a preview state.[br]
 ## [b]Returns:[/b] [void][br]
-func exit_preview():
+func exit_preview() -> void:
 	mesh = selected_mesh
 	set_node_rotation(tile_rotation)
 	if selected_mesh != EMPTY_SPACE_MESH:
@@ -80,7 +80,7 @@ func exit_preview():
 ## [b]Parameters:[/b][br]
 ## [code]mesh_to_set[/code] : [Mesh] — mesh to preview on
 ## [b]Returns:[/b] [void][br]
-func set_preview_mesh(mesh_to_set: Mesh):
+func set_preview_mesh(mesh_to_set: Mesh) -> void:
 	if mesh_to_set == null:
 		mesh = EMPTY_SPACE_MESH
 	else:
@@ -91,7 +91,7 @@ func set_preview_mesh(mesh_to_set: Mesh):
 ## [b]Parameters:[/b][br]
 ## [code]rotation_to_set[/code] : [Vector3] — rotation to preview
 ## [b]Returns:[/b] [void][br]
-func set_node_rotation(rotation_to_set: Vector3):
+func set_node_rotation(rotation_to_set: Vector3) -> void:
 	set_rotation_degrees(rotation_to_set + NODE_ROTATION_OFFSET)
 
 
@@ -99,7 +99,7 @@ func set_node_rotation(rotation_to_set: Vector3):
 ## [b]Parameters:[/b][br]
 ## [code]material_to_set[/code] : [Material] — material to apply to
 ## [b]Returns:[/b] [void][br]
-func set_node_color(material_to_set: Material):
+func set_node_color(material_to_set: Material) -> void:
 	set_surface_override_material(0, material_to_set)
 
 
@@ -107,7 +107,7 @@ func set_node_color(material_to_set: Material):
 ## [b]Parameters:[/b][br]
 ## [code]is_valid[/code] : [bool] — whether the preview is valid
 ## [b]Returns:[/b] [void][br]
-func set_preview_color(is_valid: bool):
+func set_preview_color(is_valid: bool) -> void:
 	if is_valid:
 		set_node_color(PREVIEW_MATERIAL)
 	else:

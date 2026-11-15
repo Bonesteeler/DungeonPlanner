@@ -40,5 +40,5 @@ func update_item() -> void:
 ## Emit selected signal with the current tile[br]
 ## [b]Emits:[/b][br]
 ## - [code]selected(tile)[/code][br]
-func emit_selected():
+func emit_selected() -> void:
 	selected.emit(vm.tile)

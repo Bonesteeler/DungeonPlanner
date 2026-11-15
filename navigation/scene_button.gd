@@ -23,5 +23,5 @@ func set_scene(new_scene: Scene) -> void:
 ## Handle button press event and emit scene selection signal[br]
 ## [b]Emits:[/b][br]
 ## - [code]scene_selected(scene_id: [String])[/code] with the current scene_id.[br]
-func _on_button_pressed():
+func _on_button_pressed() -> void:
 	scene_selected.emit(scene_id)

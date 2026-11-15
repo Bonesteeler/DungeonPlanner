@@ -73,7 +73,7 @@ func get_origin_tile(position: Vector2) -> PlacedTile:
 ## [code]z[/code] : [int] — Z coordinate on the planning grid.[br]
 ## [code]tile_context[/code] : [SceneTileViewModel] — vm of tile to set.[br]
 ## [b]Returns:[/b] [void] — returns early if the tile does not fit.[br]
-func set_tile_at(x: int, z: int, tile_context: SceneTileViewModel):
+func set_tile_at(x: int, z: int, tile_context: SceneTileViewModel) -> void:
 	if not does_tile_fit(tile_context.tile, Vector2(x, z), tile_context.rotation):
 		return
 	var saved_tile: PlacedTile
@@ -93,13 +93,13 @@ func set_tile_at(x: int, z: int, tile_context: SceneTileViewModel):
 ## [b]Parameters:[/b][br]
 ## [code]x[/code] : [int] — X coordinate on the planning grid.[br]
 ## [code]z[/code] : [int] — Z coordinate on the planning grid.[br]
-## [b]Returns:[/b] [void] — prints a message when no tile exists at the coordinates.[br]
-func remove_tile_at(x: int, z: int):
+## [b]Returns:[/b] [void] — logs a warning when no tile exists at the coordinates.[br]
+func remove_tile_at(x: int, z: int) -> void:
 	for i in range(tiles.size()):
 		if tiles[i].position.x == x and tiles[i].position.y == z:
 			tiles.remove_at(i)
 			return
-	print("No tile found at position (", x, ", ", z, ") to remove.")
+	push_warning("No tile found at position (", x, ", ", z, ") to remove.")
 
 
 ## Validate whether the given tile can be placed at the target position and rotation without overlapping or going out of bounds.[br]

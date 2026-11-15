@@ -28,7 +28,7 @@ var tile_data: Tile:
 
 ## Updates [code]occupied_spaces[/code] to match the current [code]position[/code] and [code]rotation[/code].[br]
 ## [b]Returns:[/b] [void] — updates [code]occupied_spaces[/code] in-place.[br]
-func update_tile_offset():
+func update_tile_offset() -> void:
 	occupied_spaces.clear()
 	occupied_spaces.append_array(calculate_occupied_spaces())
 

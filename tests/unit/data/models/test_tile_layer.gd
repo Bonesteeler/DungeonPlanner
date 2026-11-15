@@ -3,12 +3,12 @@ extends GutTest
 var layer: TileLayer
 
 
-func before_each():
+func before_each() -> void:
 	# Fresh TileLayer for each test
 	layer = TileLayer.new()
 
 
-func test_set_tile_and_get_tile_at():
+func test_set_tile_and_get_tile_at() -> void:
 	var tile = Tile.new()
 	tile.id = "tile_a"
 	tile.x_size = 1
@@ -26,7 +26,7 @@ func test_set_tile_and_get_tile_at():
 	assert_eq("tile_a", found.id)
 
 
-func test_remove_tile_at():
+func test_remove_tile_at() -> void:
 	var tile = Tile.new()
 	tile.id = "tile_b"
 	tile.x_size = 1
@@ -43,7 +43,7 @@ func test_remove_tile_at():
 	assert_false(layer.has_tile_at(0, 0))
 
 
-func test_get_origin_tile_for_occupied_space():
+func test_get_origin_tile_for_occupied_space() -> void:
 	# 2x2 tile placed at origin should report origin when queried from occupied cell
 	var tile = Tile.new()
 	tile.id = "tile_c"
@@ -66,7 +66,7 @@ func test_get_origin_tile_for_occupied_space():
 	assert_eq("tile_c", origin_at_origin.id)
 
 
-func test_does_tile_fit_detects_overlap_and_bounds():
+func test_does_tile_fit_detects_overlap_and_bounds() -> void:
 	# Place a 2x2 tile at (0,0)
 	var big_tile = Tile.new()
 	big_tile.id = "big"

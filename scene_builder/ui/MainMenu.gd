@@ -18,7 +18,7 @@ var export_scene_name: String = ""
 ## [b]Parameters:[/b][br]
 ## [code]scene_name[/code] : [String] — name of the successfully uploaded scene.[br]
 ## [b]Returns:[/b] [void][br]
-func on_upload_success(scene_name: String):
+func on_upload_success(scene_name: String) -> void:
 	confirmation_dialog_target = scene_name
 	confirmation_dialog.dialog_text = UPLOAD_SUCCESS_STRING_TEMPLATE % confirmation_dialog_target
 	confirmation_dialog.popup_centered()
@@ -28,7 +28,7 @@ func on_upload_success(scene_name: String):
 ## [b]Parameters:[/b][br]
 ## [code]scene_name[/code] : [String] — name of the scene that failed to upload.[br]
 ## [b]Returns:[/b] [void][br]
-func on_upload_failure(scene_name: String):
+func on_upload_failure(scene_name: String) -> void:
 	confirmation_dialog_target = scene_name
 	confirmation_dialog.dialog_text = UPLOAD_FAILURE_STRING_TEMPLATE % confirmation_dialog_target
 	confirmation_dialog.popup_centered()

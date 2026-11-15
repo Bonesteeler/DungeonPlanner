@@ -24,24 +24,24 @@ func _payload() -> Dictionary:
 	}
 
 
-func test_path_inserts_scene_id():
+func test_path_inserts_scene_id() -> void:
 	assert_eq(GetSceneRequest.path("abc"), "v1/scenes/abc")
 
 
-func test_deserialize_reads_scene_fields():
+func test_deserialize_reads_scene_fields() -> void:
 	var scene := GetSceneRequest.deserialize(_payload())
 	assert_eq(scene.id, "7cb666f7-e132-496c-b2a5-4c39756a9996")
 	assert_eq(scene.scene_name, "ServerTest")
 	assert_eq(scene.author, "Changed on server")
 
 
-func test_deserialize_divides_layer_height_by_100():
+func test_deserialize_divides_layer_height_by_100() -> void:
 	var scene := GetSceneRequest.deserialize(_payload())
 	assert_eq(scene.data.layers.size(), 1)
 	assert_eq(scene.data.layers[0].height, 0.5)
 
 
-func test_deserialize_maps_tile_position_and_rotation():
+func test_deserialize_maps_tile_position_and_rotation() -> void:
 	var scene := GetSceneRequest.deserialize(_payload())
 	var tiles: Array = scene.data.layers[0].tiles
 	assert_eq(tiles.size(), 2)
@@ -50,21 +50,21 @@ func test_deserialize_maps_tile_position_and_rotation():
 	assert_eq(tiles[1].position, Vector2(12, 4))
 
 
-func test_deserialize_keeps_id_of_uninstalled_tile():
+func test_deserialize_keeps_id_of_uninstalled_tile() -> void:
 	var scene := GetSceneRequest.deserialize(_payload())
 	var tiles: Array = scene.data.layers[0].tiles
 	assert_eq(tiles[0].id, TILE_A)
 	assert_eq(tiles[1].id, TILE_B)
 
 
-func test_deserialize_skips_tile_without_position():
+func test_deserialize_skips_tile_without_position() -> void:
 	var json := _payload()
 	json.layers[0].tiles.append({"tile_id": TILE_A, "rotation": 0})
 	var scene := GetSceneRequest.deserialize(json)
 	assert_eq(scene.data.layers[0].tiles.size(), 2)
 
 
-func test_deserialize_without_layers_adds_default_layer():
+func test_deserialize_without_layers_adds_default_layer() -> void:
 	var scene := GetSceneRequest.deserialize({"id": "x", "name": "Empty"})
 	assert_eq(scene.data.layers.size(), 1)
 	assert_eq(scene.data.current_layer, scene.data.layers[0])

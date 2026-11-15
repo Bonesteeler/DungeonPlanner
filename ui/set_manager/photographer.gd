@@ -7,7 +7,7 @@ const IMAGE_PATH = "user://TileImages/"
 @onready var tile_preview: TilePreview = $%TilePreview
 
 
-func generate_images_of_tiles(subjects: Array[Tile]):
+func generate_images_of_tiles(subjects: Array[Tile]) -> void:
 	for subject in subjects:
 		var img_path = IMAGE_PATH + subject.id + ".png"
 		if File.file_exists(img_path):

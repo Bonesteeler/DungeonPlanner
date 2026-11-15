@@ -35,7 +35,7 @@ var vm: SceneBuilderViewModel
 
 ## Create the initial grid of space nodes and wire up their signals.[br]
 ## [b]Returns:[/b] [void][br]
-func create_board():
+func create_board() -> void:
 	const X_OFFSET = float(START_ROWS) / 2 * SPACE_SIZE * -1.0
 	const Z_OFFSET = float(START_COLS) / 2 * SPACE_SIZE * -1.0
 	for i in START_ROWS:
@@ -55,7 +55,7 @@ func create_board():
 			new_space.set_preview_vm(vm.selected_tile)
 
 
-func set_vm(view_model: SceneBuilderViewModel, layer_view_model: TileLayerViewModel):
+func set_vm(view_model: SceneBuilderViewModel, layer_view_model: TileLayerViewModel) -> void:
 	vm = view_model
 	layer_vm = layer_view_model
 	layer_vm.layer_updated.connect(on_board_updated)
@@ -74,7 +74,7 @@ func set_vm(view_model: SceneBuilderViewModel, layer_view_model: TileLayerViewMo
 ## [b]Parameters:[/b][br]
 ## [code]space[/code] : [Node3D] — the space node that the pointer entered.[br]
 ## [b]Returns:[/b] [void][br]
-func on_space_hover_enter(space: Node3D):
+func on_space_hover_enter(space: Node3D) -> void:
 	hovered_space = space
 	if is_camera_mode_active():
 		return
@@ -83,7 +83,7 @@ func on_space_hover_enter(space: Node3D):
 
 ## Configures the preview for the currently hovered space based on the active tool.[br]
 ## [b]Returns:[/b] [void][br]
-func start_preview():
+func start_preview() -> void:
 	if hovered_space == null:
 		return
 	var space_position = Vector2(hovered_space.x, hovered_space.z)
@@ -117,7 +117,7 @@ func start_preview():
 ## [b]Parameters:[/b][br]
 ## [code]space[/code] : [Node3D] — the space node that the pointer left.[br]
 ## [b]Returns:[/b] [void][br]
-func on_space_hover_exit(space: Node3D):
+func on_space_hover_exit(space: Node3D) -> void:
 	if hovered_space == space:
 		hovered_space.end_preview()
 		hovered_space = null
@@ -137,7 +137,7 @@ func on_space_hover_exit(space: Node3D):
 ## - [code]updated()[/code][br]
 ## - [code]tile_selected(tile_id: String)[/code][br]
 ## [b]Returns:[/b] [void][br]
-func on_space_clicked(space: Node3D, x: int, y: int):
+func on_space_clicked(space: Node3D, x: int, y: int) -> void:
 	if is_camera_mode_active():
 		return
 	match current_tool:
@@ -167,7 +167,7 @@ func on_space_clicked(space: Node3D, x: int, y: int):
 ## [b]Parameters:[/b][br]
 ## [code]pressed[/code] : [bool] — whether the shift key is currently pressed.[br]
 ## [b]Returns:[/b] [void][br]
-func set_shift_pressed(pressed: bool):
+func set_shift_pressed(pressed: bool) -> void:
 	shift_pressed = pressed
 	if not is_camera_mode_active():
 		start_preview()
@@ -179,7 +179,7 @@ func set_shift_pressed(pressed: bool):
 ## [b]Parameters:[/b][br]
 ## [code]pressed[/code] : [bool] — whether the alt key is currently pressed.[br]
 ## [b]Returns:[/b] [void][br]
-func set_alt_pressed(pressed: bool):
+func set_alt_pressed(pressed: bool) -> void:
 	alt_pressed = pressed
 	if not is_camera_mode_active():
 		start_preview()
@@ -191,7 +191,7 @@ func set_alt_pressed(pressed: bool):
 ## [b]Parameters:[/b][br]
 ## [code]layer[/code] : [TileLayer] — saved scene data containing tiles to place on the board.[br]
 ## [b]Returns:[/b] [void][br]
-func load_layer(layer: TileLayer):
+func load_layer(layer: TileLayer) -> void:
 	if layer == null:
 		return
 	var is_updated = []
@@ -223,7 +223,7 @@ func load_layer(layer: TileLayer):
 ## [b]Parameters:[/b][br]
 ## [code]tool_type[/code] : [CustomEnums.ToolType] — new tool to use for user interactions.[br]
 ## [b]Returns:[/b] [void][br]
-func update_current_tool():
+func update_current_tool() -> void:
 	current_tool = vm.current_tool
 
 
@@ -235,7 +235,7 @@ func is_camera_mode_active() -> bool:
 
 ## Handle board updates from the layer view model.[br]
 ## [b]Returns:[/b] [void][br]
-func on_board_updated():
+func on_board_updated() -> void:
 	var new_position = Vector3.ZERO
 	new_position.y = layer_vm.layer.height
 	position = new_position
@@ -245,7 +245,7 @@ func on_board_updated():
 ## [b]Parameters:[/b][br]
 ## [code]layer_id[/code] : [int] — the layer ID (unused, signal compatibility).[br]
 ## [b]Returns:[/b] [void][br]
-func update_board_visibility(_layer_id: int):
+func update_board_visibility(_layer_id: int) -> void:
 	visible = layer_vm.visible
 	set_process_input(layer_vm.visible)
 	# Disable Area3D input monitoring when invisible
@@ -257,7 +257,7 @@ func update_board_visibility(_layer_id: int):
 
 ## Handle selection state changes from the layer view model.[br]
 ## [b]Returns:[/b] [void][br]
-func update_board_selected():
+func update_board_selected() -> void:
 	set_process_input(layer_vm.selected)
 	for i in START_ROWS:
 		for j in START_COLS:

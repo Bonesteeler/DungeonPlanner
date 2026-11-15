@@ -21,7 +21,7 @@ var path: String = ""
 var tiles: Array[Tile] = []
 
 
-func _init(collection_name, pathspec: String) -> void:
+func _init(collection_name: String, pathspec: String) -> void:
 	self.name = collection_name
 	self.path = pathspec
 
@@ -32,7 +32,7 @@ func _init(collection_name, pathspec: String) -> void:
 ## @param stl_file_path The path to the STL file to import.
 ##      Note it has no extension so it can be used for naming the .res file.
 ##
-func import_tile(stl_file_path: String):
+func import_tile(stl_file_path: String) -> void:
 	var new_tile := Tile.new()
 	var dest_file = stl_file_path.get_file()
 	var dest_path = MESHES_PATH + name + "/" + dest_file + ".res"
@@ -41,7 +41,7 @@ func import_tile(stl_file_path: String):
 
 	if !(status == Tile.TileStatus.CREATED or status == Tile.TileStatus.CACHED):
 		push_error("Failed to import tile from ", stl_file_path + ".stl")
-		return null
+		return
 
 	new_tile.name = stl_file_path.get_file()
 	data[TileGroup.KEY_TILE_NAME] = new_tile.name

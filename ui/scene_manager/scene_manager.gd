@@ -19,7 +19,7 @@ var view_model: SceneManagerViewModel
 @onready var recent_scenes: RecentScenes = $%RecentScenes
 
 
-func _ready():
+func _ready() -> void:
 	view_model = SceneManagerViewModel.new(SceneSaveService)
 
 	scene_selector.set_vm(view_model)
@@ -54,7 +54,7 @@ func _on_new_scene_requested() -> void:
 ## [b]Parameters:[/b][br]
 ## [code]scene_name[/code] : [String] — name of the scene to delete.[br]
 ## [b]Returns:[/b] [void][br]
-func _on_delete_scene_requested(scene_name: String):
+func _on_delete_scene_requested(scene_name: String) -> void:
 	confirmation_dialog_target = scene_name
 	confirmation_dialog.confirmed.connect(delete_scene_confirmed)
 	confirmation_dialog.dialog_text = (
@@ -65,7 +65,7 @@ func _on_delete_scene_requested(scene_name: String):
 
 ## Callback for confirmed scene deletion[br]
 ## [b]Returns:[/b] [void][br]
-func delete_scene_confirmed():
+func delete_scene_confirmed() -> void:
 	confirmation_dialog.confirmed.disconnect(delete_scene_confirmed)
 	SceneSaveService.delete_scene(confirmation_dialog_target)
 	view_model.refresh_scenes()
@@ -74,7 +74,7 @@ func delete_scene_confirmed():
 ## Send upload request[br]
 ## [b]Parameters:[/b][br]## [code]scene_id[/code] : [String] — ID of the scene to upload
 ## [b]Returns:[/b] [void][br]
-func _on_upload_scene_request(scene_id: String):
+func _on_upload_scene_request(scene_id: String) -> void:
 	if scene_id != "":
 		view_model.upload_scene(scene_id)
 
@@ -83,7 +83,7 @@ func _on_upload_scene_request(scene_id: String):
 ## [b]Parameters:[/b][br]
 ## [code]scene_id[/code] : [String] — ID of the scene to export.[br]
 ## [b]Returns:[/b] [void][br]
-func _on_export_scene_request(scene_id: String):
+func _on_export_scene_request(scene_id: String) -> void:
 	if scene_id != "":
 		var scene = SceneSaveService.find_scene_by_id(scene_id)
 		if scene != null:
@@ -95,6 +95,6 @@ func _on_export_scene_request(scene_id: String):
 ## [code]scene_name[/code] : [String] — name of the scene with missing tiles.[br]
 ## [code]missing_tile_ids[/code] : [Array] — tile ids referenced by the scene that are not imported.[br]
 ## [b]Returns:[/b] [void][br]
-func _on_show_error(scene_name: String, missing_tile_ids: Array):
+func _on_show_error(scene_name: String, missing_tile_ids: Array) -> void:
 	error_dialog.dialog_text = ERROR_STRING_TEMPLATE % [scene_name, "\n".join(missing_tile_ids)]
 	error_dialog.popup_centered()

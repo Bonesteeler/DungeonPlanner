@@ -111,7 +111,7 @@ func get_origin_tile(layer_id: int, position: Vector2) -> PlacedTile:
 ## [code]z[/code] : [int] — Z coordinate on the planning grid.[br]
 ## [code]tile_context[/code] : [SceneTileViewModel] — vm of tile to set.[br]
 ## [b]Returns:[/b] [void] — returns early if the layer is not found or the tile does not fit.[br]
-func set_tile_at(layer_id: int, x: int, z: int, tile_context: SceneTileViewModel):
+func set_tile_at(layer_id: int, x: int, z: int, tile_context: SceneTileViewModel) -> void:
 	var layer = get_layer_by_id(layer_id)
 	if layer == null:
 		return
@@ -124,7 +124,7 @@ func set_tile_at(layer_id: int, x: int, z: int, tile_context: SceneTileViewModel
 ## [code]x[/code] : [int] — X coordinate on the planning grid.[br]
 ## [code]z[/code] : [int] — Z coordinate on the planning grid.[br]
 ## [b]Returns:[/b] [void] — prints a message when no tile exists at the coordinates.[br]
-func remove_tile_at(layer_id: int, x: int, z: int):
+func remove_tile_at(layer_id: int, x: int, z: int) -> void:
 	var layer = get_layer_by_id(layer_id)
 	if layer == null:
 		return

@@ -1,3 +1,4 @@
+class_name FileButton
 extends MenuButton
 ## FileButton
 ##
@@ -17,7 +18,7 @@ const ID_SAVE_AS = 1
 ## [b]Emits:[/b][br]
 ## - [code]save_scene[/code] when the Save menu item is selected[br]
 ## - [code]save_scene_as[/code] when the Save As menu item is selected[br]
-func _ready():
+func _ready() -> void:
 	var menu = get_popup()
 	menu.id_pressed.connect(on_menu_button_id_pressed)
 	menu.add_item("Save", ID_SAVE)
@@ -30,7 +31,7 @@ func _ready():
 ## [b]Emits:[/b][br]
 ## - [code]save_scene[/code] when ID_SAVE is pressed[br]
 ## - [code]save_scene_as[/code] when ID_SAVE_AS is pressed[br]
-func on_menu_button_id_pressed(id: int):
+func on_menu_button_id_pressed(id: int) -> void:
 	match id:
 		ID_SAVE:
 			save_scene.emit()

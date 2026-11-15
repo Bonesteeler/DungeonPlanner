@@ -6,7 +6,7 @@ var resources: TileResources
 var view_model: SceneManagerViewModel
 
 
-func before_each():
+func before_each() -> void:
 	resources = TileResources.new(false)
 	var tile_set = DragonbiteTileSet.new()
 	tile_set.name = "set_a"
@@ -31,32 +31,32 @@ func _scene_with_tile_ids(tile_ids: Array) -> Scene:
 	return scene
 
 
-func test_status_available_when_all_tiles_present():
+func test_status_available_when_all_tiles_present() -> void:
 	var scene = _scene_with_tile_ids(["id_a"])
 	assert_eq(SceneManagerViewModel.TILES_AVAILABLE_TEXT, view_model.get_tiles_status_text(scene))
 
 
-func test_status_missing_when_a_tile_absent():
+func test_status_missing_when_a_tile_absent() -> void:
 	var scene = _scene_with_tile_ids(["id_a", "id_missing"])
 	assert_eq(SceneManagerViewModel.TILES_MISSING_TEXT, view_model.get_tiles_status_text(scene))
 
 
-func test_status_available_for_empty_scene():
+func test_status_available_for_empty_scene() -> void:
 	var scene = _scene_with_tile_ids([])
 	assert_eq(SceneManagerViewModel.TILES_AVAILABLE_TEXT, view_model.get_tiles_status_text(scene))
 
 
-func test_get_missing_tile_ids_returns_absent_ids():
+func test_get_missing_tile_ids_returns_absent_ids() -> void:
 	var scene = _scene_with_tile_ids(["id_a", "id_missing_1", "id_missing_2"])
 	assert_eq(["id_missing_1", "id_missing_2"], view_model.get_missing_tile_ids(scene))
 
 
-func test_get_missing_tile_ids_empty_when_all_present():
+func test_get_missing_tile_ids_empty_when_all_present() -> void:
 	var scene = _scene_with_tile_ids(["id_a"])
 	assert_eq([], view_model.get_missing_tile_ids(scene))
 
 
-func test_tile_sets_changed_refreshes_scene_lists():
+func test_tile_sets_changed_refreshes_scene_lists() -> void:
 	watch_signals(view_model)
 	var tile_set = DragonbiteTileSet.new()
 	tile_set.name = "set_b"
@@ -68,7 +68,7 @@ func test_tile_sets_changed_refreshes_scene_lists():
 	assert_signal_emitted(view_model, "recent_scenes_updated")
 
 
-func test_refresh_scenes_emits_both_update_signals():
+func test_refresh_scenes_emits_both_update_signals() -> void:
 	watch_signals(view_model)
 	view_model.refresh_scenes()
 	assert_signal_emitted(view_model, "scenes_updated")

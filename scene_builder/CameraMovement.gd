@@ -27,14 +27,14 @@ var alt_pressed = false
 var left_clicked = false
 var shift_pressed = false
 
-@onready var camera = $Camera3D
+@onready var camera: Camera3D = $Camera3D
 
 
 ## Update mouse button state and process zoom wheel[br]
 ## [b]Parameters:[/b][br]
 ## [code]event[/code] : [InputEventMouseButton] — mouse button event to process.[br]
 ## [b]Returns:[/b] [void][br]
-func handle_mouse_button(event: InputEventMouseButton):
+func handle_mouse_button(event: InputEventMouseButton) -> void:
 	var event_button = event.get_button_index()
 	if event_button == MOUSE_BUTTON_LEFT:
 		left_clicked = event.is_pressed()
@@ -54,7 +54,7 @@ func handle_mouse_button(event: InputEventMouseButton):
 ## [b]Parameters:[/b][br]
 ## [code]event[/code] : [InputEventMouseMotion] — relative motion used for translation or rotation.[br]
 ## [b]Returns:[/b] [void][br]
-func handle_mouse_motion(event: InputEventMouseMotion):
+func handle_mouse_motion(event: InputEventMouseMotion) -> void:
 	# Pan
 	if left_clicked and shift_pressed:
 		var x_translation = -event.relative.x * TRANSFORM_SPEED * (ZOOM_COEFFICIENT * camera.size)
@@ -77,7 +77,7 @@ func handle_mouse_motion(event: InputEventMouseMotion):
 ## [b]Parameters:[/b][br]
 ## [code]pressed[/code] : [bool] — true if the Shift key is pressed, false if released.[br]
 ## [b]Returns:[/b] [void][br]
-func set_shift_pressed(pressed: bool):
+func set_shift_pressed(pressed: bool) -> void:
 	shift_pressed = pressed
 
 
@@ -85,7 +85,7 @@ func set_shift_pressed(pressed: bool):
 ## [b]Parameters:[/b][br]
 ## [code]pressed[/code] : [bool] — true if the Alt key is pressed, false if released.[br]
 ## [b]Returns:[/b] [void][br]
-func set_alt_pressed(pressed: bool):
+func set_alt_pressed(pressed: bool) -> void:
 	alt_pressed = pressed
 
 
@@ -93,7 +93,7 @@ func set_alt_pressed(pressed: bool):
 ## [b]Parameters:[/b][br]
 ## [code]event[/code] : [InputEvent] — raw input event from Godot's input system; routed to specific handlers.[br]
 ## [b]Returns:[/b] [void][br]
-func _input(event):
+func _input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
 		handle_mouse_button(event as InputEventMouseButton)
 	if event is InputEventMouseMotion:

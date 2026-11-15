@@ -23,33 +23,38 @@ var cancel_requested: bool = false
 ## [b]Emits:[/b][br]
 ## - [code]import_started(total_tiles: [int])[/code] once at the start of an import[br]
 ## - [code]tile_imported()[/code] after each tile is imported[br]
-## [b]Returns:[/b] [void] — prints an error and returns early on failure.[br]
-func import_tile_set_from_directory(path: String, set_name: String):
+## [b]Returns:[/b] [void] — logs a warning or error and returns early on failure.[br]
+func import_tile_set_from_directory(path: String, set_name: String) -> void:
 # TODO: Have this return the set instead of saving it
 	# Check path was provided
 	cancel_requested = false
 	var dirs = path.split("/")
 	var count = dirs.size()
 	if count == 0:
-		print("Attempted to load tile set at empty path")
+		push_warning("Attempted to load tile set at empty path")
 		return
 
 	for index in range(1, count):
 		var segment = dirs.get(index)
 		if !segment.is_valid_filename():
-			print('File path has invalid characters (: / \\ ? * " | % < >) in directory:')
-			print("/".join(dirs.slice(1, index + 1)))  # Show the actual directory that broke us.
+			# Show the actual directory that broke us.
+			push_error(
+				(
+					'File path has invalid characters (: / \\ ? * " | % < >) in directory: '
+					+ "/".join(dirs.slice(1, index + 1))
+				)
+			)
 			return
 
 	# Check set_name is not already in use.
 	if TileSets.get_set_names().has(set_name):
-		print("Tile set with name ", set_name, " already exists")
+		push_warning("Tile set with name ", set_name, " already exists")
 		return
 
 	var import_dir = DirList.new(path)
 	var stl_paths = import_dir.get_files("stl", DirList.Mode.PATH_WITH_EXT)
 	if stl_paths.size() == 0:
-		print("No .stl files found in directory: ", path)
+		push_warning("No .stl files found in directory: ", path)
 		return
 
 	var set_definition := {}
@@ -92,21 +97,21 @@ func import_tile_set_from_directory(path: String, set_name: String):
 	call_deferred("import_completed", new_set)
 
 
-func cancel_import():
+func cancel_import() -> void:
 	cancel_requested = true
 
 
 ## [b]Emits:[/b] [code]import_started(total_tiles: [int])[/code][br]
 ## [b]Parameters:[/b] [code]total_tiles[/code] : [int] — number of tiles that will be imported.[br]
-func emit_import_started(total_tiles: int):
+func emit_import_started(total_tiles: int) -> void:
 	import_started.emit(total_tiles)
 
 
 ## [b]Emits:[/b] [code]tile_imported()[/code]
-func emit_tile_imported():
+func emit_tile_imported() -> void:
 	tile_imported.emit()
 
 
-func import_completed(new_set: DragonbiteTileSet):
+func import_completed(new_set: DragonbiteTileSet) -> void:
 	TileSets.add_set(new_set)
 	import_complete.emit(new_set)

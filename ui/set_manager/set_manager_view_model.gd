@@ -16,16 +16,16 @@ var file_loader: LoadSavedFiles = LoadSavedFiles.new()
 var set_details_vm: SetDetailsViewModel
 var tile_details_vm: TileDetailsViewModel
 
-@onready var import_tileset = $%ImportTileSet
-@onready var photographer = $%Photographer
-@onready var set_details = $%SetDetails
-@onready var set_list = $%Sets
-@onready var tile_details = $%TileDetails
+@onready var import_tileset: ImportTileset = $%ImportTileSet
+@onready var photographer: Photographer = $%Photographer
+@onready var set_details: SetDetails = $%SetDetails
+@onready var set_list: SetList = $%Sets
+@onready var tile_details: TileDetails = $%TileDetails
 @onready var tile_res: TileResources = TileSets
 
 
 ## Initialize all view models and bind them to views[br]
-func _ready():
+func _ready() -> void:
 	var set_list_vm = SetListViewModel.new(tile_res)
 	set_list.set_vm(set_list_vm)
 	set_details_vm = SetDetailsViewModel.new()

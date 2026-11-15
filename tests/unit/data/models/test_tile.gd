@@ -31,16 +31,16 @@ func delete_directory(path: String) -> void:
 	d.list_dir_end()
 
 
-func before_each():
+func before_each() -> void:
 	var dir := DirAccess.open("user://")
 	dir.make_dir_recursive(base_dir)
 
 
-func after_each():
+func after_each() -> void:
 	delete_directory(base_dir)
 
 
-func test_create_tile_imports_source_path():
+func test_create_tile_imports_source_path() -> void:
 	var source_path := base_dir + "/source.stl"
 	File.write_file_as_text(source_path, ascii_stl)
 	var tile := Tile.new()
@@ -51,15 +51,16 @@ func test_create_tile_imports_source_path():
 	)
 
 
-func test_create_tile_missing_source_doesnt_set_source_path():
+func test_create_tile_missing_source_doesnt_set_source_path() -> void:
 	var source_path := base_dir + "/missing.stl"
 	var tile := Tile.new()
 	var status = tile.create_tile(source_path, base_dir + "/tile.res")
 	assert_eq(status, Tile.TileStatus.NOT_FOUND, "Missing source file should return NOT_FOUND")
+	assert_push_error("Source file does not exist", "Missing source file should have errored")
 	assert_eq(tile.source_path, "", "source_path should not be set when the source file is missing")
 
 
-func test_create_tile_existing_destination_still_sets_source_path():
+func test_create_tile_existing_destination_still_sets_source_path() -> void:
 	var source_path := base_dir + "/source.stl"
 	File.write_file_as_text(source_path, ascii_stl)
 	var destination_path := base_dir + "/tile.res"
@@ -74,7 +75,7 @@ func test_create_tile_existing_destination_still_sets_source_path():
 	)
 
 
-func test_load_imported_tile_restores_source_path():
+func test_load_imported_tile_restores_source_path() -> void:
 	var res_path := base_dir + "/tile.res"
 	File.write_file_as_text(res_path, "mesh resource placeholder")
 	var tile := Tile.new()
@@ -97,7 +98,7 @@ func test_load_imported_tile_restores_source_path():
 	)
 
 
-func test_load_imported_tile_without_source_path_defaults_to_empty():
+func test_load_imported_tile_without_source_path_defaults_to_empty() -> void:
 	var res_path := base_dir + "/tile.res"
 	File.write_file_as_text(res_path, "mesh resource placeholder")
 	var tile := Tile.new()
