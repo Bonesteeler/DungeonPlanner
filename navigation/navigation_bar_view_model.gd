@@ -27,6 +27,21 @@ func add_scene_builder(vm: SceneBuilderViewModel) -> void:
 	scene_builders_updated.emit()
 
 
+## Removes scene builders whose scene matches the specified ID.[br]
+## [b]Parameters:[/b][br]
+## [code]scene_id[/code] : [String] — the scene ID to remove.[br]
+## [b]Emits:[/b][br]
+## - [code]scene_builders_updated[/code] if at least one scene builder was removed[br]
+func remove_scene_builder(scene_id: String) -> void:
+	var removed := false
+	for i in range(scene_builders.size() - 1, -1, -1):
+		if scene_builders[i].scene.id == scene_id:
+			scene_builders.remove_at(i)
+			removed = true
+	if removed:
+		scene_builders_updated.emit()
+
+
 ## Checks if a scene builder with the specified ID exists in the collection.[br]
 ## [b]Parameters:[/b][br]
 ## [code]id[/code] : [String] — the scene ID to search for.[br]
