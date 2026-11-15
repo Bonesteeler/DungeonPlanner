@@ -16,6 +16,7 @@ var profile_view_model: ProfileViewModel
 @onready var auth_toggle_button: Button = $%AuthToggleButton
 @onready var export_dialog: ExportDialog = $%ExportDialog
 
+
 func _ready() -> void:
 	view_model = CloudManagerViewModel.new()
 	profile_view_model = ProfileViewModel.new()
@@ -42,10 +43,12 @@ func _ready() -> void:
 
 	view_model.request_scene_list(0)
 
+
 func _on_export_requested(scene_id: String) -> void:
 	var scene := SceneSaveService.find_scene_by_id(scene_id)
 	if scene != null:
 		export_dialog.open(scene)
+
 
 func _on_log_in_pressed() -> void:
 	if await profile_view_model.login(log_in_profile.get_email(), log_in_profile.get_password()):
@@ -54,13 +57,17 @@ func _on_log_in_pressed() -> void:
 	else:
 		log_in_profile.set_login_state(true)
 
+
 func _on_sign_up_pressed() -> void:
-	if await profile_view_model.signup(sign_up_profile.get_username(), sign_up_profile.get_email(), sign_up_profile.get_password()):
+	if await profile_view_model.signup(
+		sign_up_profile.get_username(), sign_up_profile.get_email(), sign_up_profile.get_password()
+	):
 		sign_up_profile.clear_password()
 		_show_logged_in()
 		_refresh_scene_list()
 	else:
 		sign_up_profile.set_signup_state(true)
+
 
 func _on_signed_out() -> void:
 	log_in_profile.set_login_state()
@@ -68,10 +75,12 @@ func _on_signed_out() -> void:
 	_show_login_form()
 	_refresh_scene_list()
 
+
 # Page 1 because the total count can differ per user.
 func _refresh_scene_list() -> void:
 	online_scenes.start_idx = 0
 	view_model.request_scene_list(0)
+
 
 func _show_logged_in() -> void:
 	log_in_profile.clear_password()
@@ -80,17 +89,20 @@ func _show_logged_in() -> void:
 	sign_up_profile.visible = false
 	auth_toggle_button.visible = false
 
+
 func _show_login_form() -> void:
 	log_in_profile.visible = true
 	sign_up_profile.visible = false
 	auth_toggle_button.visible = true
 	auth_toggle_button.text = "Need an account? Sign Up"
 
+
 func _show_sign_up_form() -> void:
 	log_in_profile.visible = false
 	sign_up_profile.visible = true
 	auth_toggle_button.visible = true
 	auth_toggle_button.text = "Have an account? Log In"
+
 
 func _on_auth_toggle_pressed() -> void:
 	if log_in_profile.visible:

@@ -19,7 +19,7 @@ const LOG_OUT_TEXT := "Log Out"
 const LOG_IN_ERROR_TEXT := "Failed to log in"
 const SIGN_UP_ERROR_TEXT := "Failed to sign up"
 
-enum State {LOGIN, SIGNUP, LOGGED_IN}
+enum State { LOGIN, SIGNUP, LOGGED_IN }
 
 var _state: State = State.LOGIN
 
@@ -30,81 +30,91 @@ var _state: State = State.LOGIN
 @onready var error_label: Label = $%ErrorLabel
 @onready var primary_button: Button = $%PrimaryButton
 
+
 func _ready() -> void:
-  set_login_state()
+	set_login_state()
+
 
 ## Returns the text typed in the username field.[br]
 func get_username() -> String:
-  return username_entry.text
+	return username_entry.text
+
 
 ## Returns the text typed in the email field.[br]
 func get_email() -> String:
-  return email_entry.text
+	return email_entry.text
+
 
 ## Returns the text typed in the password field.[br]
 func get_password() -> String:
-  return password_entry.text
+	return password_entry.text
+
 
 ## Empties the password field.[br]
 func clear_password() -> void:
-  password_entry.clear()
+	password_entry.clear()
+
 
 ## Show the login form: email, password, and login button.[br]
 ## [b]Parameters:[/b][br]
 ## [code]has_error[/code] : [bool] — whether to display the login error message (default: false).[br]
 func set_login_state(has_error: bool = false) -> void:
-  _state = State.LOGIN
-  username_entry.visible = false
-  username_label.visible = false
-  email_entry.visible = true
-  password_entry.visible = true
-  primary_button.text = LOG_IN_TEXT
-  set_error(has_error)
+	_state = State.LOGIN
+	username_entry.visible = false
+	username_label.visible = false
+	email_entry.visible = true
+	password_entry.visible = true
+	primary_button.text = LOG_IN_TEXT
+	set_error(has_error)
+
 
 ## Show the sign up form: username, email, password, and sign up button.[br]
 ## [b]Parameters:[/b][br]
 ## [code]has_error[/code] : [bool] — whether to display the sign up error message (default: false).[br]
 func set_signup_state(has_error: bool = false) -> void:
-  _state = State.SIGNUP
-  username_entry.visible = true
-  username_label.visible = false
-  email_entry.visible = true
-  password_entry.visible = true
-  primary_button.text = SIGN_UP_TEXT
-  set_error(has_error)
+	_state = State.SIGNUP
+	username_entry.visible = true
+	username_label.visible = false
+	email_entry.visible = true
+	password_entry.visible = true
+	primary_button.text = SIGN_UP_TEXT
+	set_error(has_error)
+
 
 ## Show the logged in view: user label and log out button.[br]
 ## [b]Parameters:[/b][br]
 ## [code]username[/code] : [String] — the text shown for the logged in user.[br]
 func set_logged_in_state(username: String) -> void:
-  _state = State.LOGGED_IN
-  username_entry.visible = false
-  email_entry.visible = false
-  password_entry.visible = false
-  username_label.visible = true
-  username_label.text = username
-  primary_button.text = LOG_OUT_TEXT
-  set_error(false)
+	_state = State.LOGGED_IN
+	username_entry.visible = false
+	email_entry.visible = false
+	password_entry.visible = false
+	username_label.visible = true
+	username_label.text = username
+	primary_button.text = LOG_OUT_TEXT
+	set_error(false)
+
 
 ## Show or hide the error label for the current state.[br]
 ## [b]Parameters:[/b][br]
 ## [code]has_error[/code] : [bool] — whether to display the error message.[br]
 func set_error(has_error: bool) -> void:
-  var message := ""
-  if has_error:
-    match _state:
-      State.LOGIN:
-        message = LOG_IN_ERROR_TEXT
-      State.SIGNUP:
-        message = SIGN_UP_ERROR_TEXT
-  error_label.visible = not message.is_empty()
-  error_label.text = message
+	var message := ""
+	if has_error:
+		match _state:
+			State.LOGIN:
+				message = LOG_IN_ERROR_TEXT
+			State.SIGNUP:
+				message = SIGN_UP_ERROR_TEXT
+	error_label.visible = not message.is_empty()
+	error_label.text = message
+
 
 func _on_primary_button_pressed() -> void:
-  match _state:
-    State.LOGIN:
-      log_in_pressed.emit()
-    State.SIGNUP:
-      sign_up_pressed.emit()
-    State.LOGGED_IN:
-      log_out_pressed.emit()
+	match _state:
+		State.LOGIN:
+			log_in_pressed.emit()
+		State.SIGNUP:
+			sign_up_pressed.emit()
+		State.LOGGED_IN:
+			log_out_pressed.emit()

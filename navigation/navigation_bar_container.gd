@@ -17,49 +17,56 @@ var vm: NavigationBarViewModel
 @onready var navigation_bar: NavigationBar = $%NavigationBar
 @onready var content_container: Viewport = $%SubViewport
 
+
 ## Initializes the navigation bar and loads the home scene.
 func _ready() -> void:
-  vm = NavigationBarViewModel.new()
-  navigation_bar.set_vm(vm)
-  home_selected()
+	vm = NavigationBarViewModel.new()
+	navigation_bar.set_vm(vm)
+	home_selected()
+
 
 ## Loads the main menu scene and connects signal.[br]
 ## [b]Returns:[/b] [void][br]
 func home_selected() -> void:
-  change_scene(MAIN_MENU)
+	change_scene(MAIN_MENU)
+
 
 ## Loads the planner scene for the specified scene ID.[br]
 ## [b]Parameters:[/b][br]
 ## [code]selected_id[/code] : [String] — the unique identifier of the scene to load.[br]
 ## [b]Returns:[/b] [void][br]
 func planner_selected(selected_id: String) -> void:
-  var new_scene_vm = vm.get_scene_by_id(selected_id)
-  var planning_scene = change_scene(PLANNING_SCENE)
-  planning_scene.set_scene_view_model(new_scene_vm)
+	var new_scene_vm = vm.get_scene_by_id(selected_id)
+	var planning_scene = change_scene(PLANNING_SCENE)
+	planning_scene.set_scene_view_model(new_scene_vm)
+
 
 ## Loads the sets manager scene.[br]
 ## [b]Returns:[/b] [void][br]
 func sets_selected() -> void:
-  change_scene(SETS_SCENE)
+	change_scene(SETS_SCENE)
+
 
 ## Loads the scene manager scene.[br]
 ## [b]Returns:[/b] [void][br]
 func scene_manager_selected() -> void:
-  var scene_manager_scene = change_scene(SCENE_MANAGER_SCENE)
-  scene_manager_scene.scene_selected.connect(vm.add_scene_builder)
+	var scene_manager_scene = change_scene(SCENE_MANAGER_SCENE)
+	scene_manager_scene.scene_selected.connect(vm.add_scene_builder)
+
 
 ## Loads the cloud manager scene.[br]
 ## [b]Returns:[/b] [void][br]
 func cloud_selected() -> void:
-  change_scene(CLOUD_SCENE)
+	change_scene(CLOUD_SCENE)
+
 
 ## Unloads the current scene and instantiates a new scene.[br]
 ## [b]Parameters:[/b][br]
 ## [code]new_scene[/code] : [PackedScene] — the scene to instantiate and render.[br]
 ## [b]Returns:[/b] [Node][br]
 func change_scene(new_scene: PackedScene) -> Node:
-  for i in range(content_container.get_child_count()):
-    content_container.get_child(i).queue_free()
-  var scene_instance = new_scene.instantiate()
-  content_container.add_child(scene_instance)
-  return scene_instance
+	for i in range(content_container.get_child_count()):
+		content_container.get_child(i).queue_free()
+	var scene_instance = new_scene.instantiate()
+	content_container.add_child(scene_instance)
+	return scene_instance

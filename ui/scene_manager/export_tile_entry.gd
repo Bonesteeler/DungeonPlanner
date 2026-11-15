@@ -12,9 +12,10 @@ var tile_id: String
 var count: int
 var source_path: String = ""
 
+
 ## The text to display for this entry: source path if present, tile id fallback.[br]
 ## [b]Returns:[/b] [String] — display text for the entry.[br]
 func display_text() -> String:
-    if source_path.is_empty():
-        return tile_id
-    return source_path
+	if source_path.is_empty():
+		return tile_id
+	return source_path

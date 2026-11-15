@@ -19,41 +19,43 @@ const VERTICAL_OFFSET: float = 25.0
 @onready var mesh_instance: MeshInstance3D = $%PreviewMesh
 @onready var rotator: Node3D = $Rotator
 
+
 ## Rotate the preview if rotation is enabled[br]
 ## [b]Parameters:[/b][br]
 ## [code]delta[/code] : [float] — time elapsed since last frame.[br]
 func _process(delta: float) -> void:
-  if rotating:
-    rotator.rotate_y(ROTATION_SPEED * delta)
+	if rotating:
+		rotator.rotate_y(ROTATION_SPEED * delta)
+
 
 ## Set the tile to preview and position camera automatically[br]
 ## [b]Parameters:[/b][br]
 ## [code]tile[/code] : [Tile] — tile to display in preview.[br]
 func set_tile(tile: Tile) -> void:
-  mesh_instance.mesh = load(tile.mesh_path)
-  var tile_position: Vector3 = Vector3(0, 0, 0)
-  if tile.x_size % 2 == 0:
-    tile_position.x = -25
-  if tile.y_size % 2 == 0:
-    tile_position.z = -25
-  mesh_instance.position = tile_position
+	mesh_instance.mesh = load(tile.mesh_path)
+	var tile_position: Vector3 = Vector3(0, 0, 0)
+	if tile.x_size % 2 == 0:
+		tile_position.x = -25
+	if tile.y_size % 2 == 0:
+		tile_position.z = -25
+	mesh_instance.position = tile_position
 
-  var max_size = max(tile.x_size, tile.y_size)
-  max_size = max(max_size, 1)
-  camera.position = Vector3(
-    0,
-    max_size * DISTANCE_PER_UNIT + VERTICAL_OFFSET,
-    max_size * DISTANCE_PER_UNIT
-  )
+	var max_size = max(tile.x_size, tile.y_size)
+	max_size = max(max_size, 1)
+	camera.position = Vector3(
+		0, max_size * DISTANCE_PER_UNIT + VERTICAL_OFFSET, max_size * DISTANCE_PER_UNIT
+	)
+
 
 ## Enable or disable rotation[br]
 ## [b]Parameters:[/b][br]
 ## [code]value[/code] : [bool] — whether rotation should be enabled.[br]
 func set_rotating(value: bool) -> void:
-  rotating = value
+	rotating = value
+
 
 ## Get image from current camera view[br]
 ## [b]Returns:[/b] [Image] — image captured from the camera's
 func get_image() -> Image:
-  var img: Image = camera.get_viewport().get_texture().get_image()
-  return img
+	var img: Image = camera.get_viewport().get_texture().get_image()
+	return img

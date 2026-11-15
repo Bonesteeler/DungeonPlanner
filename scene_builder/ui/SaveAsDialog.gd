@@ -9,12 +9,14 @@ signal saved_with_name(name: String)
 
 @onready var name_input: TextEdit = $SaveNameInput
 
+
 ## Initialize the dialog and connect the confirmed signal.[br]
 func _ready():
-  self.confirmed.connect(self.on_save)
+	self.confirmed.connect(self.on_save)
+
 
 ## Handle the save confirmation and emit the saved_with_name signal.[br]
 ## [b]Emits:[/b][br]
 ## - [code]saved_with_name(name: String)[/code] with the entered name[br]
 func on_save():
-  saved_with_name.emit(name_input.text)
+	saved_with_name.emit(name_input.text)

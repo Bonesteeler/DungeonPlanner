@@ -9,9 +9,10 @@ extends RefCounted
 ## [b]Signals:[/b][br]
 ## - [code]scene_builders_updated[/code]: Emitted when the scene builders change.[br]
 
-signal scene_builders_updated()
+signal scene_builders_updated
 
 var scene_builders: Array = []
+
 
 ## Adds a scene builder to the collection if its ID is not already present.[br]
 ## [b]Parameters:[/b][br]
@@ -19,28 +20,30 @@ var scene_builders: Array = []
 ## [b]Emits:[/b][br]
 ## - [code]scene_builders_updated[/code] if the scene builder was successfully added[br]
 func add_scene_builder(vm: SceneBuilderViewModel) -> void:
-  if has_scene_with_id(vm.scene.id):
-    return
-  scene_builders.append(vm)
-  vm.id_updated.connect(func(): scene_builders_updated.emit())
-  scene_builders_updated.emit()
+	if has_scene_with_id(vm.scene.id):
+		return
+	scene_builders.append(vm)
+	vm.id_updated.connect(func(): scene_builders_updated.emit())
+	scene_builders_updated.emit()
+
 
 ## Checks if a scene builder with the specified ID exists in the collection.[br]
 ## [b]Parameters:[/b][br]
 ## [code]id[/code] : [String] — the scene ID to search for.[br]
 ## [b]Returns:[/b] [bool][br]
 func has_scene_with_id(id: String) -> bool:
-  for vm in scene_builders:
-    if vm.scene.id == id:
-      return true
-  return false
+	for vm in scene_builders:
+		if vm.scene.id == id:
+			return true
+	return false
+
 
 ## Retrieves the scene builder with the specified ID.[br]
 ## [b]Parameters:[/b][br]
 ## [code]id[/code] : [String] — the scene ID to retrieve.[br]
 ## [b]Returns:[/b] [SceneBuilderViewModel] or [code]null[/code] if not found[br]
 func get_scene_by_id(id: String) -> SceneBuilderViewModel:
-  for vm in scene_builders:
-    if vm.scene.id == id:
-      return vm
-  return null
+	for vm in scene_builders:
+		if vm.scene.id == id:
+			return vm
+	return null

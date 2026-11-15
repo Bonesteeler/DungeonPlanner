@@ -8,9 +8,10 @@ extends Node
 ## [b]Signals:[/b][br]
 ## - [code]tile_changed()[/code]: Emitted when the tile is updated.[br]
 
-signal tile_changed()
+signal tile_changed
 
 var tile: Tile
+
 
 ## Update the tile and emit change signal if different[br]
 ## [b]Parameters:[/b][br]

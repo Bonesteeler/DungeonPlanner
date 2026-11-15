@@ -29,67 +29,72 @@ var shift_pressed = false
 
 @onready var camera = $Camera3D
 
+
 ## Update mouse button state and process zoom wheel[br]
 ## [b]Parameters:[/b][br]
 ## [code]event[/code] : [InputEventMouseButton] — mouse button event to process.[br]
 ## [b]Returns:[/b] [void][br]
 func handle_mouse_button(event: InputEventMouseButton):
-  var event_button = event.get_button_index()
-  if event_button == MOUSE_BUTTON_LEFT:
-    left_clicked = event.is_pressed()
-    return
-  # Zoom
-  if event_button == MOUSE_BUTTON_WHEEL_DOWN:
-    camera.size += camera.size * ZOOM_PERCENT
-    if camera.size > ZOOM_MAX:
-      camera.size = ZOOM_MAX
-  if event_button == MOUSE_BUTTON_WHEEL_UP:
-    camera.size -= camera.size * ZOOM_PERCENT
-    if camera.size < ZOOM_MIN:
-      camera.size = ZOOM_MIN
+	var event_button = event.get_button_index()
+	if event_button == MOUSE_BUTTON_LEFT:
+		left_clicked = event.is_pressed()
+		return
+	# Zoom
+	if event_button == MOUSE_BUTTON_WHEEL_DOWN:
+		camera.size += camera.size * ZOOM_PERCENT
+		if camera.size > ZOOM_MAX:
+			camera.size = ZOOM_MAX
+	if event_button == MOUSE_BUTTON_WHEEL_UP:
+		camera.size -= camera.size * ZOOM_PERCENT
+		if camera.size < ZOOM_MIN:
+			camera.size = ZOOM_MIN
+
 
 ## Apply panning or rotation based on current mouse button state[br]
 ## [b]Parameters:[/b][br]
 ## [code]event[/code] : [InputEventMouseMotion] — relative motion used for translation or rotation.[br]
 ## [b]Returns:[/b] [void][br]
 func handle_mouse_motion(event: InputEventMouseMotion):
-  # Pan
-  if left_clicked and shift_pressed:
-    var x_translation = - event.relative.x * TRANSFORM_SPEED * (ZOOM_COEFFICIENT * camera.size)
-    var z_translation = - event.relative.y * TRANSFORM_SPEED * (ZOOM_COEFFICIENT * camera.size)
-    transform = transform.translated_local(Vector3(x_translation, 0, z_translation))
-  # Rotate
-  if left_clicked and alt_pressed:
-    transform = transform.rotated(Vector3.UP, -event.relative.x * ROTATE_SPEED)
-    var current_euler = transform.basis.get_euler()
-    var rotation_amount = - event.relative.y * ROTATE_SPEED
-    var pitch_result = current_euler.x + rotation_amount
-    if pitch_result < PITCH_MIN:
-      rotation_amount = PITCH_MIN - current_euler.x
-    elif pitch_result > PITCH_MAX:
-      rotation_amount = PITCH_MAX - current_euler.x
-    transform = transform.rotated_local(Vector3.RIGHT, rotation_amount)
+	# Pan
+	if left_clicked and shift_pressed:
+		var x_translation = -event.relative.x * TRANSFORM_SPEED * (ZOOM_COEFFICIENT * camera.size)
+		var z_translation = -event.relative.y * TRANSFORM_SPEED * (ZOOM_COEFFICIENT * camera.size)
+		transform = transform.translated_local(Vector3(x_translation, 0, z_translation))
+	# Rotate
+	if left_clicked and alt_pressed:
+		transform = transform.rotated(Vector3.UP, -event.relative.x * ROTATE_SPEED)
+		var current_euler = transform.basis.get_euler()
+		var rotation_amount = -event.relative.y * ROTATE_SPEED
+		var pitch_result = current_euler.x + rotation_amount
+		if pitch_result < PITCH_MIN:
+			rotation_amount = PITCH_MIN - current_euler.x
+		elif pitch_result > PITCH_MAX:
+			rotation_amount = PITCH_MAX - current_euler.x
+		transform = transform.rotated_local(Vector3.RIGHT, rotation_amount)
+
 
 ## Update shift key state[br]
 ## [b]Parameters:[/b][br]
 ## [code]pressed[/code] : [bool] — true if the Shift key is pressed, false if released.[br]
 ## [b]Returns:[/b] [void][br]
 func set_shift_pressed(pressed: bool):
-  shift_pressed = pressed
+	shift_pressed = pressed
+
 
 ## Update alt key state[br]
 ## [b]Parameters:[/b][br]
 ## [code]pressed[/code] : [bool] — true if the Alt key is pressed, false if released.[br]
 ## [b]Returns:[/b] [void][br]
 func set_alt_pressed(pressed: bool):
-  alt_pressed = pressed 
+	alt_pressed = pressed
+
 
 ## Dispatch input events to mouse handlers[br]
 ## [b]Parameters:[/b][br]
 ## [code]event[/code] : [InputEvent] — raw input event from Godot's input system; routed to specific handlers.[br]
 ## [b]Returns:[/b] [void][br]
 func _input(event):
-  if event is InputEventMouseButton:
-    handle_mouse_button(event as InputEventMouseButton)
-  if event is InputEventMouseMotion:
-    handle_mouse_motion(event as InputEventMouseMotion)
+	if event is InputEventMouseButton:
+		handle_mouse_button(event as InputEventMouseButton)
+	if event is InputEventMouseMotion:
+		handle_mouse_motion(event as InputEventMouseMotion)

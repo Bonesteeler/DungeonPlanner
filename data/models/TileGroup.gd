@@ -22,8 +22,8 @@ var tiles: Array[Tile] = []
 
 
 func _init(collection_name, pathspec: String) -> void:
-  self.name = collection_name
-  self.path = pathspec
+	self.name = collection_name
+	self.path = pathspec
 
 
 ##
@@ -33,24 +33,24 @@ func _init(collection_name, pathspec: String) -> void:
 ##      Note it has no extension so it can be used for naming the .res file.
 ##
 func import_tile(stl_file_path: String):
-  var new_tile := Tile.new()
-  var dest_file = stl_file_path.get_file()
-  var dest_path = MESHES_PATH + name + "/" + dest_file + ".res"
+	var new_tile := Tile.new()
+	var dest_file = stl_file_path.get_file()
+	var dest_path = MESHES_PATH + name + "/" + dest_file + ".res"
 
-  var status = new_tile.create_tile(stl_file_path + ".stl", dest_path)
+	var status = new_tile.create_tile(stl_file_path + ".stl", dest_path)
 
-  if !(status == Tile.TileStatus.CREATED or status == Tile.TileStatus.CACHED):
-    push_error("Failed to import tile from ", stl_file_path + ".stl")
-    return null
+	if !(status == Tile.TileStatus.CREATED or status == Tile.TileStatus.CACHED):
+		push_error("Failed to import tile from ", stl_file_path + ".stl")
+		return null
 
-  new_tile.name = stl_file_path.get_file()
-  data[TileGroup.KEY_TILE_NAME] = new_tile.name
-  data[TileGroup.KEY_TILE_ID] = new_tile.id
-  data[TileGroup.KEY_TILE_RES_PATH] ="/".join([TILE_PATH, set_name, new_tile.name + ".res"])
-  data[TileGroup.KEY_TILE_SOURCE_PATH] = new_tile.source_path
-  data[TileGroup.KEY_TILE_X_SIZE] = new_tile.x_size
-  data[TileGroup.KEY_TILE_Y_SIZE] = new_tile.y_size
+	new_tile.name = stl_file_path.get_file()
+	data[TileGroup.KEY_TILE_NAME] = new_tile.name
+	data[TileGroup.KEY_TILE_ID] = new_tile.id
+	data[TileGroup.KEY_TILE_RES_PATH] = "/".join([TILE_PATH, set_name, new_tile.name + ".res"])
+	data[TileGroup.KEY_TILE_SOURCE_PATH] = new_tile.source_path
+	data[TileGroup.KEY_TILE_X_SIZE] = new_tile.x_size
+	data[TileGroup.KEY_TILE_Y_SIZE] = new_tile.y_size
 
-  tiles.append(new_tile)
-  call_deferred("emit_tile_imported")
-  return
+	tiles.append(new_tile)
+	call_deferred("emit_tile_imported")
+	return

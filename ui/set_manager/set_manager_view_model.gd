@@ -23,41 +23,46 @@ var tile_details_vm: TileDetailsViewModel
 @onready var tile_details = $%TileDetails
 @onready var tile_res: TileResources = TileSets
 
+
 ## Initialize all view models and bind them to views[br]
 func _ready():
-  var set_list_vm = SetListViewModel.new(tile_res)
-  set_list.set_vm(set_list_vm)
-  set_details_vm = SetDetailsViewModel.new()
-  set_details.set_vm(set_details_vm)
-  var import_tileset_vm = ImportTilesetViewModel.new(file_loader, photographer)
-  import_tileset.set_vm(import_tileset_vm)
-  tile_details_vm = TileDetailsViewModel.new()
-  tile_details.set_vm(tile_details_vm)
-  set_list.delete_set.connect(delete_set)
-  set_list.import_set.connect(import_set_started)
-  set_list.select_set.connect(select_set)
-  set_details.tile_selected.connect(set_tile_in_details)
+	var set_list_vm = SetListViewModel.new(tile_res)
+	set_list.set_vm(set_list_vm)
+	set_details_vm = SetDetailsViewModel.new()
+	set_details.set_vm(set_details_vm)
+	var import_tileset_vm = ImportTilesetViewModel.new(file_loader, photographer)
+	import_tileset.set_vm(import_tileset_vm)
+	tile_details_vm = TileDetailsViewModel.new()
+	tile_details.set_vm(tile_details_vm)
+	set_list.delete_set.connect(delete_set)
+	set_list.import_set.connect(import_set_started)
+	set_list.select_set.connect(select_set)
+	set_details.tile_selected.connect(set_tile_in_details)
+
 
 ## Show the import dialog[br]
 func import_set_started() -> void:
-  import_tileset.show_dialog()
+	import_tileset.show_dialog()
+
 
 ## Delete a tile set by name[br]
 ## [b]Parameters:[/b][br]
 ## [code]tile_set_name[/code] : [String] — name of the tile set to remove.[br]
 func delete_set(tile_set_name: String) -> void:
-  tile_res.remove_set(tile_set_name)
+	tile_res.remove_set(tile_set_name)
+
 
 ## Select and display a tile set by name[br]
 ## [b]Parameters:[/b][br]
 ## [code]tile_set_name[/code] : [String] — name of the tile set to display.[br]
 func select_set(tile_set_name: String) -> void:
-  var selected_set := tile_res.get_set(tile_set_name)
-  await photographer.generate_images_of_tiles(selected_set.tiles)
-  set_details_vm.set_current_set(selected_set)
+	var selected_set := tile_res.get_set(tile_set_name)
+	await photographer.generate_images_of_tiles(selected_set.tiles)
+	set_details_vm.set_current_set(selected_set)
+
 
 ## Update tile details view with a selected tile[br]
 ## [b]Parameters:[/b][br]
 ## [code]tile[/code] : [Tile] — tile to display in details panel.[br]
 func set_tile_in_details(tile: Tile) -> void:
-  tile_details_vm.update_tile(tile)
+	tile_details_vm.update_tile(tile)

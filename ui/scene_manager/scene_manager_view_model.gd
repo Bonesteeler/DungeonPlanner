@@ -7,8 +7,8 @@ extends RefCounted
 ## - [code]scenes_updated()[/code]: Emitted when the scene list changes.[br]
 ## - [code]recent_scenes_updated()[/code]: Emitted when recent scenes are modified.[br]
 
-signal scenes_updated()
-signal recent_scenes_updated()
+signal scenes_updated
+signal recent_scenes_updated
 
 const MAX_RECENT_SCENES = 10
 const TILES_AVAILABLE_TEXT = "All tiles available"
@@ -18,49 +18,57 @@ var save_manager: SceneSaveService
 var tile_resources: TileResources
 var _recent_scene_ids: Array[String] = []
 
+
 ## Initialize with a SceneSaveService instance and connect to its signals.[br]
 ## [b]Parameters:[/b][br]
 ## [code]manager[/code] : [SceneSaveService] — the save service to wrap.[br]
 ## [code]resources[/code] : [TileResources] — tile service.[br]
 func _init(manager: SceneSaveService, resources: TileResources = TileSets):
-    save_manager = manager
-    tile_resources = resources
-    save_manager.scene_added.connect(_on_scene_added)
-    tile_resources.tile_sets_changed.connect(_on_tile_sets_changed)
-    _load_recent_scenes()
+	save_manager = manager
+	tile_resources = resources
+	save_manager.scene_added.connect(_on_scene_added)
+	tile_resources.tile_sets_changed.connect(_on_tile_sets_changed)
+	_load_recent_scenes()
+
 
 ## Get all scenes sorted alphabetically by scene name.[br]
 ## [b]Returns:[/b] [Array[Scene]] — sorted array of scenes.[br]
 func get_scenes_alphabetically() -> Array[Scene]:
-    var sorted_scenes = save_manager.scenes.duplicate()
-    sorted_scenes.sort_custom(func(a: Scene, b: Scene): return a.scene_name.naturalnocasecmp_to(b.scene_name) < 0)
-    return sorted_scenes
+	var sorted_scenes = save_manager.scenes.duplicate()
+	sorted_scenes.sort_custom(
+		func(a: Scene, b: Scene): return a.scene_name.naturalnocasecmp_to(b.scene_name) < 0
+	)
+	return sorted_scenes
+
 
 ## Gets text reflecting tile import state.[br]
 ## [b]Parameters:[/b][br]
 ## [code]scene[/code] : [Scene] — the scene to check.[br]
 ## [b]Returns:[/b] [String] — display text for the scene item subtext.[br]
 func get_tiles_status_text(scene: Scene) -> String:
-    if get_missing_tile_ids(scene).is_empty():
-        return TILES_AVAILABLE_TEXT
-    return TILES_MISSING_TEXT
+	if get_missing_tile_ids(scene).is_empty():
+		return TILES_AVAILABLE_TEXT
+	return TILES_MISSING_TEXT
+
 
 ## Get the ids of tiles referenced by the scene that are not imported.[br]
 ## [b]Parameters:[/b][br]
 ## [code]scene[/code] : [Scene] — the scene to check.[br]
 ## [b]Returns:[/b] [Array[String]] — missing tile ids, empty when all tiles are available.[br]
 func get_missing_tile_ids(scene: Scene) -> Array[String]:
-    return tile_resources.get_missing_tile_ids(scene.data.get_unique_tile_ids())
+	return tile_resources.get_missing_tile_ids(scene.data.get_unique_tile_ids())
+
 
 ## Get recently edited scenes, ordered by most recent first.[br]
 ## [b]Returns:[/b] [Array[Scene]] — array of recently accessed scenes.[br]
 func get_recent_scenes() -> Array[Scene]:
-    var recent_scenes: Array[Scene] = []
-    for scene_id in _recent_scene_ids:
-        var scene = save_manager.find_scene_by_id(scene_id)
-        if scene != null:
-            recent_scenes.append(scene)
-    return recent_scenes
+	var recent_scenes: Array[Scene] = []
+	for scene_id in _recent_scene_ids:
+		var scene = save_manager.find_scene_by_id(scene_id)
+		if scene != null:
+			recent_scenes.append(scene)
+	return recent_scenes
+
 
 ## Mark a scene as recently accessed, moving it to the top of the recent list.[br]
 ## [b]Parameters:[/b][br]
@@ -68,93 +76,103 @@ func get_recent_scenes() -> Array[Scene]:
 ## [b]Emits:[/b][br]
 ## - [code]recent_scenes_updated()[/code][br]
 func mark_scene_as_recent(scene: Scene) -> void:
-    if scene.id == "":
-        return
-    
-    # Remove if already in list
-    var idx = _recent_scene_ids.find(scene.id)
-    if idx != -1:
-        _recent_scene_ids.remove_at(idx)
-    
-    # Add to front
-    _recent_scene_ids.insert(0, scene.id)
-    
-    # Trim to max size
-    if _recent_scene_ids.size() > MAX_RECENT_SCENES:
-        _recent_scene_ids.resize(MAX_RECENT_SCENES)
-    
-    _save_recent_scenes()
-    recent_scenes_updated.emit()
+	if scene.id == "":
+		return
+
+	# Remove if already in list
+	var idx = _recent_scene_ids.find(scene.id)
+	if idx != -1:
+		_recent_scene_ids.remove_at(idx)
+
+	# Add to front
+	_recent_scene_ids.insert(0, scene.id)
+
+	# Trim to max size
+	if _recent_scene_ids.size() > MAX_RECENT_SCENES:
+		_recent_scene_ids.resize(MAX_RECENT_SCENES)
+
+	_save_recent_scenes()
+	recent_scenes_updated.emit()
+
 
 ## Load a scene by name from the save manager.[br]
 ## [b]Parameters:[/b][br]
 ## [code]scene_name[/code] : [String] — name of the scene to load.[br]
 ## [b]Returns:[/b] [Scene] — the loaded scene.[br]
 func load_scene(scene_name: String) -> Scene:
-    var scene = save_manager.load_scene_from_user(scene_name)
-    mark_scene_as_recent(scene)
-    return scene
+	var scene = save_manager.load_scene_from_user(scene_name)
+	mark_scene_as_recent(scene)
+	return scene
+
 
 ## Save a scene and mark it as recently accessed.[br]
 ## [b]Parameters:[/b][br]
 ## [code]scene[/code] : [Scene] — the scene to save.[br]
 func save_scene(scene: Scene) -> void:
-    save_manager.save_scene_to_user(scene)
-    mark_scene_as_recent(scene)
+	save_manager.save_scene_to_user(scene)
+	mark_scene_as_recent(scene)
+
 
 ## Add a new scene to the save manager.[br]
 ## [b]Parameters:[/b][br]
 ## [code]scene[/code] : [Scene] — the scene to add.[br]
 func add_scene(scene: Scene) -> void:
-    save_manager.add_scene(scene)
-    mark_scene_as_recent(scene)
+	save_manager.add_scene(scene)
+	mark_scene_as_recent(scene)
+
 
 ## Notify listeners that scene data changed outside this view model, so consumers should rebuild.[br]
 ## [b]Emits:[/b][br]
 ## - [code]scenes_updated()[/code][br]
 ## - [code]recent_scenes_updated()[/code][br]
 func refresh_scenes() -> void:
-    scenes_updated.emit()
-    recent_scenes_updated.emit()
+	scenes_updated.emit()
+	recent_scenes_updated.emit()
+
 
 ## Get the total number of scenes.[br]
 ## [b]Returns:[/b] [int] — count of scenes.[br]
 func get_scene_count() -> int:
-    return save_manager.scenes.size()
+	return save_manager.scenes.size()
+
 
 ## Internal callback when SceneSaveService adds a scene.[br]
 func _on_scene_added() -> void:
-    scenes_updated.emit()
+	scenes_updated.emit()
+
 
 ## Internal callback when imported tile sets change, so scene items re-evaluate tile availability.[br]
 func _on_tile_sets_changed() -> void:
-    scenes_updated.emit()
-    recent_scenes_updated.emit()
+	scenes_updated.emit()
+	recent_scenes_updated.emit()
+
 
 ## Load recent scene IDs from persistent storage (stub).[br]
 func _load_recent_scenes() -> void:
-  var loaded_ids: Array[String] = SceneSaveService.load_recent_scene_ids()
+	var loaded_ids: Array[String] = SceneSaveService.load_recent_scene_ids()
 
-  var sanitized: Array[String] = []
-  for id in loaded_ids:
-    if sanitized.size() >= MAX_RECENT_SCENES:
-      break
-    if not save_manager.find_scene_by_id(id):
-      continue
-    if sanitized.has(id):
-      continue
-    sanitized.append(id)
+	var sanitized: Array[String] = []
+	for id in loaded_ids:
+		if sanitized.size() >= MAX_RECENT_SCENES:
+			break
+		if not save_manager.find_scene_by_id(id):
+			continue
+		if sanitized.has(id):
+			continue
+		sanitized.append(id)
 
-  _recent_scene_ids = sanitized
-  recent_scenes_updated.emit()
+	_recent_scene_ids = sanitized
+	recent_scenes_updated.emit()
+
 
 ## Save recent scene IDs to persistent storage (stub).[br]
 func _save_recent_scenes() -> void:
-  SceneSaveService.save_recent_scene_ids(_recent_scene_ids)
+	SceneSaveService.save_recent_scene_ids(_recent_scene_ids)
+
 
 ## Upload a scene to the scene api[br]
 ## [b]Parameters:[/b][br]## [code]scene_id[/code] : [String] — ID of the scene to upload.[br]
 func upload_scene(scene_id: String) -> void:
-    var scene := save_manager.find_scene_by_id(scene_id)
-    if scene != null:
-        await UploadSceneRequest.send(Network, scene)
+	var scene := save_manager.find_scene_by_id(scene_id)
+	if scene != null:
+		await UploadSceneRequest.send(Network, scene)
