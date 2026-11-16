@@ -1,4 +1,4 @@
-﻿class_name UploadSceneRequest
+class_name UploadSceneRequest
 extends RefCounted
 
 const PATH := "v1/scenes/add"
@@ -10,8 +10,12 @@ static func build(scene: Scene) -> Dictionary:
     "layers": serialize_layers(scene.data.layers),
   }
 
-## Sends the scene to the server; returns true when the server accepted it.
-static func send(network: NetworkService, scene: Scene) -> bool:
+## Sends the scene to the server with [code]author[/code]; returns if request was successful.
+## Scene must have an author to be sent.
+static func send(network: NetworkService, scene: Scene, author: String) -> bool:
+  if author.is_empty():
+    return false
+  scene.author = author
   var response := await network.request(PATH, HTTPClient.METHOD_POST, build(scene), true)
   return response.ok
 

@@ -16,10 +16,12 @@ const SCENE_LIST_URL_TEMPLATE := "v1/scenes/list/%d"
 const DEFAULT_PAGE_SIZE := 5
 
 var network: NetworkService
+var profile: ProfileViewModel
 
 
-func _init(network_service: NetworkService = Network) -> void:
+func _init(network_service: NetworkService = Network, profile_vm: ProfileViewModel = null) -> void:
 	network = network_service
+	profile = profile_vm
 
 
 ## Request a paginated list of scenes from the server.[br]
@@ -44,17 +46,31 @@ func request_scene_list(start_idx: int = 0) -> void:
 	scene_list_updated.emit(result)
 
 
-## Upload a local scene to the server by ID.[br]
+## Upload a local scene to the server by ID, with the logged in username as author.[br]
 ## [b]Parameters:[/b][br]
 ## [code]scene_id[/code] : [String] — ID of the local scene to upload.[br]
 func upload_scene(scene_id: String) -> void:
 	for scene in LocalSceneService.scenes:
 		if scene.id == scene_id:
-			if await UploadSceneRequest.send(network, scene):
+			var author := await _get_author()
+			if author.is_empty():
+				upload_failure.emit(scene.scene_name)
+				return
+			if await UploadSceneRequest.send(network, scene, author):
 				upload_success.emit(scene.scene_name)
 			else:
 				upload_failure.emit(scene.scene_name)
 			return
+
+
+## The logged in username, fetching the profile when it is not cached yet.[br]
+## [b]Returns:[/b] [String] — the username, or an empty string when unavailable.[br]
+func _get_author() -> String:
+	if profile == null:
+		return ""
+	if profile.get_username().is_empty() and profile.is_logged_in():
+		await profile.fetch_profile()
+	return profile.get_username()
 
 
 ## Import a scene from the server into local storage.[br]
