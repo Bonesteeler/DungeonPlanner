@@ -20,8 +20,6 @@ class FakeNetwork:
 
 
 var net: FakeNetwork
-var auth: AuthService
-var profile: ProfileViewModel
 var vm: CloudManagerViewModel
 
 
@@ -36,10 +34,7 @@ func _response(status: int, json: Variant = null) -> NetworkService.Response:
 func before_each() -> void:
 	net = FakeNetwork.new()
 	add_child_autofree(net)
-	auth = autofree(AuthService.new())
-	profile = ProfileViewModel.new(net, auth)
-	profile._username = "Tester"
-	vm = CloudManagerViewModel.new(net, profile)
+	vm = CloudManagerViewModel.new(net)
 	watch_signals(vm)
 
 
@@ -109,7 +104,6 @@ func test_upload_scene_posts_authenticated_request_body() -> void:
 		net.calls[0].payload,
 		{
 			"name": "My Scene",
-			"author": "Tester",
 			"layers":
 			[
 				{
@@ -144,17 +138,6 @@ func test_upload_scene_emits_failure() -> void:
 func test_upload_scene_ignores_unknown_id() -> void:
 	await vm.upload_scene("missing")
 	assert_eq(net.calls.size(), 0)
-
-
-func test_upload_scene_without_username_does_not_request() -> void:
-	var scene := _local_scene()
-	LocalSceneService.scenes.append(scene)
-	profile._username = ""
-	await vm.upload_scene("scene-1")
-	LocalSceneService.scenes.erase(scene)
-	assert_eq(net.calls.size(), 0)
-	assert_signal_emitted_with_parameters(vm, "upload_failure", ["My Scene"])
-	assert_signal_not_emitted(vm, "upload_success")
 
 
 func _remove_imported(scene_name: String) -> void:

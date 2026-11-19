@@ -6,16 +6,11 @@ const PATH := "v1/scenes/add"
 static func build(scene: Scene) -> Dictionary:
   return {
     "name": scene.scene_name,
-    "author": scene.author,
     "layers": serialize_layers(scene.data.layers),
   }
 
-## Sends the scene to the server with [code]author[/code]; returns if request was successful.
-## Scene must have an author to be sent.
-static func send(network: NetworkService, scene: Scene, author: String) -> bool:
-  if author.is_empty():
-    return false
-  scene.author = author
+## Sends the scene to the server; returns if request was successful.
+static func send(network: NetworkService, scene: Scene) -> bool:
   var response := await network.request(PATH, HTTPClient.METHOD_POST, build(scene), true)
   return response.ok
 

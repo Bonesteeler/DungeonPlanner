@@ -16,7 +16,6 @@ const TILES_MISSING_TEXT = "Missing tiles"
 
 var save_manager: LocalSceneService
 var tile_resources: TileResources
-var profile: ProfileViewModel
 var _recent_scene_ids: Array[String] = []
 
 
@@ -24,13 +23,9 @@ var _recent_scene_ids: Array[String] = []
 ## [b]Parameters:[/b][br]
 ## [code]manager[/code] : [LocalSceneService] — the save service to wrap.[br]
 ## [code]resources[/code] : [TileResources] — tile service.[br]
-## [code]profile_vm[/code] : [ProfileViewModel] — profile used to resolve the upload author.[br]
-func _init(
-	manager: LocalSceneService, resources: TileResources = TileSets, profile_vm: ProfileViewModel = null
-):
+func _init(manager: LocalSceneService, resources: TileResources = TileSets):
 	save_manager = manager
 	tile_resources = resources
-	profile = profile_vm
 	save_manager.scene_added.connect(_on_scene_added)
 	tile_resources.tile_sets_changed.connect(_on_tile_sets_changed)
 	_load_recent_scenes()
@@ -175,24 +170,10 @@ func _save_recent_scenes() -> void:
 	LocalSceneService.save_recent_scene_ids(_recent_scene_ids)
 
 
-## Upload a scene to the scene api, with the logged in username as author. Skipped when no
-## username is available.[br]
+## Upload a scene to the scene api.[br]
 ## [b]Parameters:[/b][br]## [code]scene_id[/code] : [String] — ID of the scene to upload.[br]
 func upload_scene(scene_id: String) -> void:
 	var scene := save_manager.find_scene_by_id(scene_id)
 	if scene == null:
 		return
-	var author := await _get_author()
-	if author.is_empty():
-		return
-	await UploadSceneRequest.send(Network, scene, author)
-
-
-## The logged in username, fetching the profile when it is not cached yet.[br]
-## [b]Returns:[/b] [String] — the username, or an empty string when unavailable.[br]
-func _get_author() -> String:
-	if profile == null:
-		return ""
-	if profile.get_username().is_empty() and profile.is_logged_in():
-		await profile.fetch_profile()
-	return profile.get_username()
+	await UploadSceneRequest.send(Network, scene)

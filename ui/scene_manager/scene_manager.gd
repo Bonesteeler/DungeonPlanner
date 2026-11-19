@@ -20,7 +20,7 @@ var view_model: SceneManagerViewModel
 
 
 func _ready() -> void:
-	view_model = SceneManagerViewModel.new(LocalSceneService, TileSets, ProfileViewModel.new())
+	view_model = SceneManagerViewModel.new(LocalSceneService, TileSets)
 
 	scene_selector.set_vm(view_model)
 	scene_selector.scene_selected.connect(_on_scene_selected)

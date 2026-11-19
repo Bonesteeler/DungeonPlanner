@@ -19,7 +19,7 @@ var profile_view_model: ProfileViewModel
 
 func _ready() -> void:
 	profile_view_model = ProfileViewModel.new()
-	view_model = CloudManagerViewModel.new(Network, profile_view_model)
+	view_model = CloudManagerViewModel.new(Network)
 
 	log_in_profile.log_in_pressed.connect(_on_log_in_pressed)
 	sign_up_profile.set_signup_state()
