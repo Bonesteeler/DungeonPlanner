@@ -7,6 +7,7 @@ extends Node
 ## - [b]scenes[/b]: Array of [code]Scene[/code] objects currently discovered in the save folder and managed in-memory.[br]
 
 signal scene_added
+signal scene_deleted(scene_id: String)
 
 const LOCAL_SCENES_PATH = "user://SavedScenes/LocalScenes/"
 const SAVED_SCENES_PATH = "user://SavedScenes/"
@@ -110,11 +111,14 @@ func add_scene(scene: Scene) -> void:
 
 ## Remove a Scene in memory and from disk.[br]
 ## [code]file_name[/code] : [String] — base filename (without .json) of the scene to delete from user://SavedScenes/.[br]
+## [b]Emits:[/b][br]
+## - [code]scene_deleted(scene_id)[/code] for each removed scene.[br]
 func delete_scene(file_name: String) -> void:
 	var local_path = LOCAL_SCENES_PATH + file_name + ".json"
 	OS.move_to_trash(ProjectSettings.globalize_path(local_path))
 	var idx = scenes.find_custom(func(s): return s.scene_name == file_name)
 	while idx != -1:
+		scene_deleted.emit(scenes[idx].id)
 		scenes.remove_at(idx)
 		idx = scenes.find_custom(func(s): return s.scene_name == file_name)
 

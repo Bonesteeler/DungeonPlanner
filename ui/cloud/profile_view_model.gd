@@ -10,15 +10,18 @@ signal signed_out
 
 const LOGIN_URL := "auth/login"
 const SIGNUP_URL := "auth/signup"
+const PROFILE_URL := "auth/profile"
 
 var network: NetworkService
 var auth: AuthService
+var _username: String = ""
+var _email: String = ""
 
 
 func _init(network_service: NetworkService = Network, auth_service: AuthService = Auth) -> void:
 	network = network_service
 	auth = auth_service
-	auth.signed_out.connect(signed_out.emit)
+	auth.signed_out.connect(_on_signed_out)
 
 
 ## True if a session is stored.[br]
@@ -28,7 +31,12 @@ func is_logged_in() -> bool:
 
 ## The email of the logged in user, or an empty string.[br]
 func get_email() -> String:
-	return auth.get_email()
+	return _email
+
+
+## The username of the logged in user, or an empty string.[br]
+func get_username() -> String:
+	return _username
 
 
 ## Logs in and stores the returned session.[br]
@@ -57,6 +65,17 @@ func log_out() -> void:
 	auth.sign_out()
 
 
+## Fetches the profile from the server and caches the username and email.[br]
+## [b]Returns:[/b] [bool] — true if the profile was fetched; the cached values stay blank otherwise.[br]
+func fetch_profile() -> bool:
+	var response := await network.request(PROFILE_URL, HTTPClient.METHOD_GET)
+	if not response.ok or not (response.json is Dictionary):
+		return false
+	_username = response.json.get("username", "")
+	_email = response.json.get("email", "")
+	return true
+
+
 func _authenticate(path: String, payload: Dictionary) -> bool:
 	var response := await network.request(path, HTTPClient.METHOD_POST, payload, false, true)
 	if not response.ok or not (response.json is Dictionary):
@@ -66,4 +85,13 @@ func _authenticate(path: String, payload: Dictionary) -> bool:
 	var refresh_token: String = data.get("refresh_token", "")
 	if access_token.is_empty() or refresh_token.is_empty():
 		return false
-	return auth.set_session(access_token, refresh_token, payload.get("email", ""))
+	if not auth.set_session(access_token, refresh_token):
+		return false
+	await fetch_profile()
+	return true
+
+
+func _on_signed_out() -> void:
+	_username = ""
+	_email = ""
+	signed_out.emit()

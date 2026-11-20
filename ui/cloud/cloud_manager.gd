@@ -18,8 +18,8 @@ var profile_view_model: ProfileViewModel
 
 
 func _ready() -> void:
-	view_model = CloudManagerViewModel.new()
 	profile_view_model = ProfileViewModel.new()
+	view_model = CloudManagerViewModel.new(Network)
 
 	log_in_profile.log_in_pressed.connect(_on_log_in_pressed)
 	sign_up_profile.set_signup_state()
@@ -28,6 +28,7 @@ func _ready() -> void:
 	profile_view_model.signed_out.connect(_on_signed_out)
 	auth_toggle_button.pressed.connect(_on_auth_toggle_pressed)
 	if profile_view_model.is_logged_in():
+		await profile_view_model.fetch_profile()
 		_show_logged_in()
 	else:
 		_show_login_form()
@@ -84,7 +85,7 @@ func _refresh_scene_list() -> void:
 
 func _show_logged_in() -> void:
 	log_in_profile.clear_password()
-	log_in_profile.set_logged_in_state(profile_view_model.get_email())
+	log_in_profile.set_logged_in_state(profile_view_model.get_username())
 	log_in_profile.visible = true
 	sign_up_profile.visible = false
 	auth_toggle_button.visible = false

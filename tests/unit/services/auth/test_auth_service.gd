@@ -194,29 +194,3 @@ func test_set_session_after_sign_out_emits_signed_in() -> void:
 	watch_signals(auth)
 	auth.set_session(_token(7200), "refresh2")
 	assert_signal_emitted(auth, "signed_in")
-
-
-func test_email_is_stored_persisted_and_loaded() -> void:
-	auth.set_session(_token(), "refresh", "a@b.c")
-	assert_eq(auth.get_email(), "a@b.c")
-	var other := _new_auth()
-	other._load()
-	assert_eq(other.get_email(), "a@b.c")
-
-
-func test_refresh_without_email_keeps_existing_email() -> void:
-	auth.set_session(_token(), "refresh", "a@b.c")
-	auth.set_session(_token(7200), "refresh2")
-	assert_eq(auth.get_email(), "a@b.c")
-
-
-func test_sign_out_clears_email() -> void:
-	auth.set_session(_token(), "refresh", "a@b.c")
-	auth.sign_out()
-	assert_eq(auth.get_email(), "")
-
-
-func test_empty_tokens_clear_email() -> void:
-	auth.set_session(_token(), "refresh", "a@b.c")
-	auth.set_session("", "")
-	assert_eq(auth.get_email(), "")

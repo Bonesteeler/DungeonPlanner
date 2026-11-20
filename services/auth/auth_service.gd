@@ -17,7 +17,6 @@ signal signed_out
 const STORAGE_PATH := "user://auth.cfg"
 const STORAGE_SECTION := "auth"
 const REFRESH_TOKEN := "refresh_token"
-const EMAIL := "email"
 const EXPIRY_BUFFER_SECONDS := 30
 ## Matches unpadded standard base64.
 static var _BASE64_PATTERN := RegEx.create_from_string("^[A-Za-z0-9+/]+$")
@@ -25,7 +24,6 @@ static var _BASE64_PATTERN := RegEx.create_from_string("^[A-Za-z0-9+/]+$")
 var _storage_path := STORAGE_PATH
 var _access_token: String = ""
 var _refresh_token: String = ""
-var _email: String = ""
 ## Unix time at which the access token expires.
 var _access_token_expires_at: int = 0
 
@@ -39,13 +37,12 @@ func has_session() -> bool:
 	return not _refresh_token.is_empty()
 
 
-## Stores an access token in memory and persists the refresh token and email.[br]
+## Stores an access token in memory and persists the refresh token.[br]
 ## [b]Parameters:[/b][br]
 ## [code]access_token[/code] : [String] — The new access token.[br]
 ## [code]refresh_token[/code] : [String] — The new refresh token.[br]
-## [code]email[/code] : [String] — The signed in user's email.[br]
 ## [b]Returns:[/b] [bool] — false if a token was empty or the access token's expiry could not be read; the session is cleared.[br]
-func set_session(access_token: String, refresh_token: String, email: String = "") -> bool:
+func set_session(access_token: String, refresh_token: String) -> bool:
 	var expires_at := _read_expiry(access_token)
 	if refresh_token.is_empty() or expires_at < 0:
 		sign_out()
@@ -54,8 +51,6 @@ func set_session(access_token: String, refresh_token: String, email: String = ""
 	_access_token = access_token
 	_refresh_token = refresh_token
 	_access_token_expires_at = expires_at
-	if not email.is_empty():
-		_email = email
 	_save()
 	if was_active:
 		tokens_refreshed.emit()
@@ -68,7 +63,6 @@ func set_session(access_token: String, refresh_token: String, email: String = ""
 func sign_out() -> void:
 	_access_token = ""
 	_refresh_token = ""
-	_email = ""
 	_access_token_expires_at = 0
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(_storage_path))
 	signed_out.emit()
@@ -84,11 +78,6 @@ func get_access_token() -> String:
 ## Returns the stored refresh token, or an empty string if there is none.[br]
 func get_refresh_token() -> String:
 	return _refresh_token
-
-
-## Returns the stored email, or an empty string if there is none.[br]
-func get_email() -> String:
-	return _email
 
 
 ## Returns the JWT's [code]exp[/code] claim, or -1 if it cannot be read.[br]
@@ -123,7 +112,6 @@ func _is_access_token_valid() -> bool:
 func _save() -> void:
 	var config := ConfigFile.new()
 	config.set_value(STORAGE_SECTION, REFRESH_TOKEN, _refresh_token)
-	config.set_value(STORAGE_SECTION, EMAIL, _email)
 	config.save_encrypted_pass(_storage_path, OS.get_unique_id())
 
 
@@ -132,4 +120,3 @@ func _load() -> void:
 	if config.load_encrypted_pass(_storage_path, OS.get_unique_id()) != OK:
 		return
 	_refresh_token = config.get_value(STORAGE_SECTION, REFRESH_TOKEN, "")
-	_email = config.get_value(STORAGE_SECTION, EMAIL, "")

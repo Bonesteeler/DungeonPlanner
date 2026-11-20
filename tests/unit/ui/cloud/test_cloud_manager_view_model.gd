@@ -104,7 +104,6 @@ func test_upload_scene_posts_authenticated_request_body() -> void:
 		net.calls[0].payload,
 		{
 			"name": "My Scene",
-			"author": "Tester",
 			"layers":
 			[
 				{

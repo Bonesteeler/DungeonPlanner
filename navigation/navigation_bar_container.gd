@@ -20,7 +20,9 @@ var vm: NavigationBarViewModel
 
 ## Initializes the navigation bar and loads the home scene.
 func _ready() -> void:
+	get_window().min_size = Vector2i(1024, 600)
 	vm = NavigationBarViewModel.new()
+	LocalSceneService.scene_deleted.connect(vm.remove_scene_builder)
 	navigation_bar.set_vm(vm)
 	home_selected()
 

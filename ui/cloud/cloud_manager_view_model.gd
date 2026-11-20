@@ -44,7 +44,7 @@ func request_scene_list(start_idx: int = 0) -> void:
 	scene_list_updated.emit(result)
 
 
-## Upload a local scene to the server by ID.[br]
+## Upload a local scene to the server .[br]
 ## [b]Parameters:[/b][br]
 ## [code]scene_id[/code] : [String] — ID of the local scene to upload.[br]
 func upload_scene(scene_id: String) -> void:
