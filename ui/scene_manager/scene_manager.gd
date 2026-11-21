@@ -9,7 +9,7 @@ const ERROR_STRING_TEMPLATE = 'The scene "%s" is missing the following tiles:\n\
 
 signal scene_selected(vm: SceneBuilderViewModel)
 
-var confirmation_dialog_target: String
+var confirmation_dialog_target_id: String
 var view_model: SceneManagerViewModel
 
 @onready var confirmation_dialog: ConfirmationDialog = $%ConfirmationDialog
@@ -52,14 +52,14 @@ func _on_new_scene_requested() -> void:
 
 ## Show confirmation dialog before deleting a recent scene[br]
 ## [b]Parameters:[/b][br]
-## [code]scene_name[/code] : [String] — name of the scene to delete.[br]
+## [code]scene_id[/code] : [String] — ID of the scene to delete.[br]
 ## [b]Returns:[/b] [void][br]
-func _on_delete_scene_requested(scene_name: String) -> void:
-	confirmation_dialog_target = scene_name
+func _on_delete_scene_requested(scene_id: String) -> void:
+	confirmation_dialog_target_id = scene_id
 	confirmation_dialog.confirmed.connect(delete_scene_confirmed)
-	confirmation_dialog.dialog_text = (
-		DELETE_CONFIRMATION_STRING_TEMPLATE % confirmation_dialog_target
-	)
+	var scene := LocalSceneService.find_scene_by_id(scene_id)
+	var display_name := scene.scene_name if scene != null else scene_id
+	confirmation_dialog.dialog_text = DELETE_CONFIRMATION_STRING_TEMPLATE % display_name
 	confirmation_dialog.popup_centered()
 
 
@@ -67,7 +67,7 @@ func _on_delete_scene_requested(scene_name: String) -> void:
 ## [b]Returns:[/b] [void][br]
 func delete_scene_confirmed() -> void:
 	confirmation_dialog.confirmed.disconnect(delete_scene_confirmed)
-	LocalSceneService.delete_scene(confirmation_dialog_target)
+	LocalSceneService.delete_scene(confirmation_dialog_target_id)
 	view_model.refresh_scenes()
 
 
