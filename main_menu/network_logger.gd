@@ -2,7 +2,7 @@ class_name NetworkLogger
 extends RefCounted
 ## NetworkLogger
 ##
-## [i]Logs HTTP network events to the Godot console and [code]user://logs/network.log[/code].[/i][br]
+## [i]Logs HTTP network events to the Godot console and a per-session file.
 ## [b]Configuration:[/b][br]
 ## Read [code]user://logs/network_logger.cfg[/code] on construction. Missing file or key defaults to [code]NONE[/code] (silent).[br]
 
@@ -28,9 +28,9 @@ func _get_level_string(level: LogLevel) -> String:
 			return "UNKNOWN"
 
 
-const _CONFIG_PATH := _LOG_DIR + "/network_logger.cfg"
-const _LOG_PATH := _LOG_DIR + "/network.log"
-const _LOG_DIR := "user://logs"
+const _CONFIG_PATH := "user://logs/network_logger.cfg"
+const _LOG_DIR := "user://logs/network"
+const _MAX_SESSION_LOGS := 5
 const _MIN_LEVEL_KEY := "min_level"
 const _SECTION_KEY := "logger"
 
@@ -41,11 +41,32 @@ var _log_file: FileAccess
 func _init() -> void:
 	_load_config()
 	DirAccess.make_dir_recursive_absolute(_LOG_DIR)
-	_log_file = FileAccess.open(_LOG_PATH, FileAccess.READ_WRITE)
+	var log_path := _LOG_DIR + "/session_%s.log" % _session_timestamp()
+	_log_file = FileAccess.open(log_path, FileAccess.READ_WRITE)
 	if _log_file:
 		_log_file.seek_end(0)
 	else:
-		_log_file = FileAccess.open(_LOG_PATH, FileAccess.WRITE)
+		_log_file = FileAccess.open(log_path, FileAccess.WRITE)
+	_prune_old_sessions()
+
+
+## Filesystem-safe UTC timestamp; sorts chronologically as plain text.
+func _session_timestamp() -> String:
+	return Time.get_datetime_string_from_system(true).replace(":", "-").replace("T", "_")
+
+
+func _prune_old_sessions() -> void:
+	var dir := DirAccess.open(_LOG_DIR)
+	if not dir:
+		push_warning("NetworkLogger: cannot list %s for pruning" % _LOG_DIR)
+		return
+	var logs: Array[String] = []
+	for file in dir.get_files():
+		if file.begins_with("session_") and file.ends_with(".log"):
+			logs.append(file)
+	logs.sort()
+	for i in logs.size() - _MAX_SESSION_LOGS:
+		DirAccess.remove_absolute(_LOG_DIR + "/" + logs[i])
 
 
 func _load_config() -> void:
