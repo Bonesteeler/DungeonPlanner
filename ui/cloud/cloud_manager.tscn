@@ -4,8 +4,8 @@
 [ext_resource type="PackedScene" uid="uid://donlinescn1aa" path="res://ui/cloud/online_scenes.tscn" id="2_online"]
 [ext_resource type="PackedScene" uid="uid://cvxs1m5lbqvrl" path="res://ui/cloud/upload_scenes.tscn" id="3_upload"]
 [ext_resource type="PackedScene" uid="uid://cihnerxqeb2k8" path="res://ui/cloud/profile.tscn" id="3_vlje8"]
-[ext_resource type="PackedScene" path="res://ui/scene_manager/export_dialog.tscn" id="5_export"]
-[ext_resource type="Texture2D" path="res://ui/background_gradient.tres" id="4_bg"]
+[ext_resource type="Texture2D" uid="uid://ygoi21hceo4g" path="res://ui/background_gradient.tres" id="4_bg"]
+[ext_resource type="PackedScene" uid="uid://bb4trba85r3vk" path="res://ui/scene_manager/export_dialog.tscn" id="5_export"]
 
 [node name="CloudManager" type="MarginContainer"]
 anchors_preset = 15
@@ -60,6 +60,7 @@ layout_mode = 2
 
 [node name="SignUpProfile" parent="MarginContainer/VBoxContainer/HBoxContainer/RightColumn" instance=ExtResource("3_vlje8")]
 unique_name_in_owner = true
+visible = false
 layout_mode = 2
 
 [node name="AuthToggleButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/RightColumn"]

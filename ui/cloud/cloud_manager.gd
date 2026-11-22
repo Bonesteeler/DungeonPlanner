@@ -27,6 +27,8 @@ func _ready() -> void:
 	log_in_profile.log_out_pressed.connect(profile_view_model.log_out)
 	profile_view_model.signed_out.connect(_on_signed_out)
 	auth_toggle_button.pressed.connect(_on_auth_toggle_pressed)
+	# Show login by default before checking if the user is already logged in
+	_show_login_form()
 	if profile_view_model.is_logged_in():
 		await profile_view_model.fetch_profile()
 		_show_logged_in()
