@@ -20,12 +20,27 @@ var x_size: int = 0
 var y_size: int = 0
 
 
+## Check that a mesh resource path stays inside [code]user://Meshes/[/code] and uses the [code].res[/code] extension.[br]
+## [b]Parameters:[/b][br]
+## [code]path[/code] : [String] — path to validate; [code]..[/code] and [code].[/code] segments are resolved before checking.[br]
+## [b]Returns:[/b] [bool] — [code]true[/code] if the path is confined to the meshes directory and ends in [code].res[/code].[br]
+static func is_valid_mesh_path(path: String) -> bool:
+	var simplified := path.simplify_path()
+	return (
+		simplified.begins_with(DragonbiteTileSet.MESHES_PATH)
+		and simplified.get_extension() == "res"
+	)
+
+
 ## Load tile metadata from an imported JSON dictionary and verify the mesh resource exists.[br]
 ## [b]Parameters:[/b][br]
 ## [code]json[/code] : [Dictionary] — JSON payload to be imported[br]
-## [b]Returns:[/b] [TileStatus] — [b]CACHED[/b] if the resource exists and metadata was loaded, [b]CACHE_MISS[/b] if the mesh resource was not found.[br]
+## [b]Returns:[/b] [TileStatus] — [b]CACHED[/b] if the resource exists and metadata was loaded, [b]CACHE_MISS[/b] if the mesh resource was not found or its path is invalid.[br]
 func load_imported_tile(json: Dictionary) -> TileStatus:
 	var res_path = json.get(DragonbiteTileSet.KEY_TILE_RES_PATH, "")
+	if !is_valid_mesh_path(res_path):
+		push_error("Invalid mesh path: ", res_path)
+		return TileStatus.CACHE_MISS
 	if !FileAccess.file_exists(res_path):
 		return TileStatus.CACHE_MISS
 	name = json.get(DragonbiteTileSet.KEY_TILE_NAME, "")
@@ -44,9 +59,12 @@ func load_imported_tile(json: Dictionary) -> TileStatus:
 ## Convert an STL file into a Godot ArrayMesh and save it to the provided destination path.[br]
 ## [b]Parameters:[/b][br]
 ## [code]source_path[/code] : [String] — filesystem path to the source .stl file to import.[br]
-## [code]destination_path[/code] : [String] — filesystem path where the resulting [code]ArrayMesh[/code] resource should be saved (e.g. user://meshes/tile.meshres).[br]
-## [b]Returns:[/b] [TileStatus] — [b]CREATED[/b] on successful import and save, [b]CACHED[/b] if destination already exists, [b]NOT_FOUND[/b] if the source file is missing or a required directory failed to be created.[br]
+## [code]destination_path[/code] : [String] — filesystem path where the resulting [code]ArrayMesh[/code] resource should be saved.[br]
+## [b]Returns:[/b] [TileStatus] — [b]CREATED[/b] on successful import and save, [b]CACHED[/b] if destination already exists, [b]NOT_FOUND[/b] if the source file is missing, the destination path is invalid, or a required directory failed to be created.[br]
 func create_tile(source_path: String, destination_path: String) -> TileStatus:
+	if !is_valid_mesh_path(destination_path):
+		push_error("Invalid mesh destination path: ", destination_path)
+		return TileStatus.NOT_FOUND
 	if !FileAccess.file_exists(source_path):
 		push_error("Source file does not exist: ", source_path)
 		return TileStatus.NOT_FOUND

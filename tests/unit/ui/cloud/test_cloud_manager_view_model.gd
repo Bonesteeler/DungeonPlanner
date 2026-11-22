@@ -103,6 +103,7 @@ func test_upload_scene_posts_authenticated_request_body() -> void:
 	assert_eq(
 		net.calls[0].payload,
 		{
+			"id": "scene-1",
 			"name": "My Scene",
 			"layers":
 			[

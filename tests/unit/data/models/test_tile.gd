@@ -1,6 +1,6 @@
 extends GutTest
 
-var base_dir := "user://test_tile"
+var base_dir := "user://Meshes/test_tile"
 
 var ascii_stl := """solid test
 facet normal 0 0 1
@@ -116,3 +116,71 @@ func test_load_imported_tile_without_source_path_defaults_to_empty() -> void:
 	)
 	assert_eq(status, Tile.TileStatus.CACHED, "Existing mesh resource should return CACHED")
 	assert_eq(tile.source_path, "", "source_path should default to empty for old set definitions")
+
+
+func test_load_imported_tile_rejects_path_outside_meshes_dir() -> void:
+	var res_path := "user://other/tile.res"
+	var tile := Tile.new()
+	var status = (
+		tile
+		. load_imported_tile(
+			{
+				DragonbiteTileSet.KEY_TILE_RES_PATH: res_path,
+				DragonbiteTileSet.KEY_TILE_NAME: "tile",
+				DragonbiteTileSet.KEY_TILE_ID: "abc123",
+			}
+		)
+	)
+	assert_eq(status, Tile.TileStatus.CACHE_MISS, "Path outside user://Meshes/ should be rejected")
+	assert_push_error("Invalid mesh path", "Rejected path should have errored")
+	assert_eq(tile.mesh_path, "", "mesh_path should not be set for a rejected path")
+
+
+func test_load_imported_tile_rejects_path_traversal() -> void:
+	var res_path := "user://Meshes/../other/tile.res"
+	var tile := Tile.new()
+	var status = (
+		tile
+		. load_imported_tile(
+			{
+				DragonbiteTileSet.KEY_TILE_RES_PATH: res_path,
+				DragonbiteTileSet.KEY_TILE_NAME: "tile",
+				DragonbiteTileSet.KEY_TILE_ID: "abc123",
+			}
+		)
+	)
+	assert_eq(status, Tile.TileStatus.CACHE_MISS, "Traversal outside user://Meshes/ should be rejected")
+	assert_push_error("Invalid mesh path", "Rejected path should have errored")
+	assert_eq(tile.mesh_path, "", "mesh_path should not be set for a rejected path")
+
+
+func test_load_imported_tile_rejects_non_res_extension() -> void:
+	var res_path := base_dir + "/tile.tres"
+	File.write_file_as_text(res_path, "mesh resource placeholder")
+	var tile := Tile.new()
+	var status = (
+		tile
+		. load_imported_tile(
+			{
+				DragonbiteTileSet.KEY_TILE_RES_PATH: res_path,
+				DragonbiteTileSet.KEY_TILE_NAME: "tile",
+				DragonbiteTileSet.KEY_TILE_ID: "abc123",
+			}
+		)
+	)
+	assert_eq(status, Tile.TileStatus.CACHE_MISS, "Non-.res extension should be rejected")
+	assert_push_error("Invalid mesh path", "Rejected path should have errored")
+	assert_eq(tile.mesh_path, "", "mesh_path should not be set for a rejected path")
+
+
+func test_create_tile_rejects_destination_outside_meshes_dir() -> void:
+	var source_path := base_dir + "/source.stl"
+	File.write_file_as_text(source_path, ascii_stl)
+	var destination_path := "user://other/tile.res"
+	var tile := Tile.new()
+	var status = tile.create_tile(source_path, destination_path)
+	assert_eq(status, Tile.TileStatus.NOT_FOUND, "Invalid destination should return NOT_FOUND")
+	assert_push_error("Invalid mesh destination path", "Rejected destination should have errored")
+	assert_false(
+		FileAccess.file_exists(destination_path), "No file should be written outside user://Meshes/"
+	)
