@@ -5,6 +5,7 @@ const PATH := "v1/scenes/add"
 
 static func build(scene: Scene) -> Dictionary:
   return {
+    "id": scene.id,
     "name": scene.scene_name,
     "layers": serialize_layers(scene.data.layers),
   }

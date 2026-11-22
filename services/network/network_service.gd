@@ -3,6 +3,9 @@ extends Node
 ## NetworkService
 ##
 ## [i]Makes HTTP calls to the server, optionally authenticated.[/i][br]
+## The server URL is read from the [code]dungeon_planner/server_url[/code] project setting
+## (editor: localhost, default: staging, [code]prod[/code] export feature: production).
+## Cleartext HTTP is refused for any host except localhost.[br]
 ## Authenticated calls read the access token from [code]Auth[/code]. If the token is missing/expired
 ## or the server answers 401, the tokens are refreshed once and the call is retried. If the refresh
 ## fails, the session is signed out.[br]
@@ -15,8 +18,10 @@ signal _refresh_finished(success: bool)
 
 const DEFAULT_TIMEOUT := 30
 const REDACTED := "[redacted]"
-const DOMAIN := "http://localhost:8080/"
-const REFRESH_URL := DOMAIN + "auth/refresh"
+const SERVER_URL_SETTING := "dungeon_planner/server_url"
+const DEFAULT_DOMAIN := "http://localhost:8080/"
+const REFRESH_PATH := "auth/refresh"
+const LOCAL_HOSTS: Array[String] = ["localhost", "127.0.0.1", "::1"]
 
 
 ## Result of a network call.[br]
@@ -29,12 +34,51 @@ class Response:
 
 
 var auth: AuthService = Auth
+var domain: String = DEFAULT_DOMAIN
 var _logger := NetworkLogger.new()
 var _is_refreshing := false
+var _domain_valid := true
+
+
+func _init() -> void:
+	var configured: Variant = ProjectSettings.get_setting_with_override(SERVER_URL_SETTING)
+	if configured is String and not configured.is_empty():
+		domain = configured
+	else:
+		domain = DEFAULT_DOMAIN
+	if not _is_domain_allowed(domain):
+		push_error(
+			"Refusing server URL '%s'. " % domain
+		)
+		_domain_valid = false
+	domain = _normalize_domain(domain)
 
 
 func _ready() -> void:
 	await _do_refresh()
+
+
+## True for https URLs, and for http URLs whose host is localhost.[br]
+static func _is_domain_allowed(url: String) -> bool:
+	var host := _extract_host(url)
+	if host.is_empty():
+		return false
+	if url.begins_with("https://"):
+		return true
+	return url.begins_with("http://") and host in LOCAL_HOSTS
+
+
+## Extracts the host from an http(s) URL, without the port or any path.[br]
+static func _extract_host(url: String) -> String:
+	var rest := url.trim_prefix("http://").trim_prefix("https://")
+	var authority := rest.get_slice("/", 0)
+	if authority.begins_with("["):
+		return authority.get_slice("]", 0).trim_prefix("[")
+	return authority.get_slice(":", 0)
+
+
+static func _normalize_domain(url: String) -> String:
+	return url if url.ends_with("/") else url + "/"
 
 
 ## Performs a request and returns a [Response].[br]
@@ -51,7 +95,9 @@ func request(
 	authenticated: bool = true,
 	sensitive: bool = false
 ) -> Response:
-	var url := path if path.begins_with("http") else DOMAIN + path.trim_prefix("/")
+	if not _domain_valid:
+		return Response.new()
+	var url := path if path.begins_with("http") else domain + path.trim_prefix("/")
 	if not authenticated:
 		return await _send(url, method, payload, "", sensitive)
 
@@ -134,11 +180,13 @@ func _refresh_tokens() -> bool:
 
 
 func _do_refresh() -> bool:
+	if not _domain_valid:
+		return false
 	var refresh_token: String = auth.get_refresh_token()
 	if refresh_token.is_empty():
 		return false
 	var response := await _send(
-		REFRESH_URL, HTTPClient.METHOD_POST, {"refresh_token": refresh_token}, "", true
+		domain + REFRESH_PATH, HTTPClient.METHOD_POST, {"refresh_token": refresh_token}, "", true
 	)
 	if not response.ok or not (response.json is Dictionary):
 		return false

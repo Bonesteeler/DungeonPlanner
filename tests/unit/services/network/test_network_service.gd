@@ -26,11 +26,14 @@ class FakeNetwork:
 				"sensitive": sensitive
 			}
 		)
-		if hold_refresh and url == NetworkService.REFRESH_URL:
+		if hold_refresh and url == _get_refresh_url():
 			await release_refresh
 		if queue.is_empty():
 			return NetworkService.Response.new()
 		return queue.pop_front()
+
+	func _get_refresh_url() -> String:
+		return domain + REFRESH_PATH
 
 
 var net: FakeNetwork
@@ -92,12 +95,12 @@ func after_each() -> void:
 
 func test_relative_path_is_prefixed_with_domain() -> void:
 	await net.request("v1/scenes", HTTPClient.METHOD_GET, null, false)
-	assert_eq(net.calls[0].url, NetworkService.DOMAIN + "v1/scenes")
+	assert_eq(net.calls[0].url, net.domain + "v1/scenes")
 
 
 func test_leading_slash_is_trimmed() -> void:
 	await net.request("/v1/scenes", HTTPClient.METHOD_GET, null, false)
-	assert_eq(net.calls[0].url, NetworkService.DOMAIN + "v1/scenes")
+	assert_eq(net.calls[0].url, net.domain + "v1/scenes")
 
 
 func test_absolute_url_is_not_prefixed() -> void:
@@ -147,7 +150,7 @@ func test_expired_token_refreshes_before_sending() -> void:
 	var response := await net.request("v1/x", HTTPClient.METHOD_GET)
 	assert_true(response.ok)
 	assert_eq(net.calls.size(), 2)
-	assert_eq(net.calls[0].url, NetworkService.REFRESH_URL)
+	assert_eq(net.calls[0].url, net._get_refresh_url())
 	assert_eq(net.calls[0].method, HTTPClient.METHOD_POST)
 	assert_eq(net.calls[0].payload, {"refresh_token": "old_refresh"})
 	assert_eq(net.calls[0].token, "")
@@ -179,8 +182,8 @@ func test_401_refreshes_and_retries_once_with_new_token() -> void:
 	assert_true(response.ok)
 	assert_eq(net.calls.size(), 3)
 	assert_eq(net.calls[0].token, _valid_token)
-	assert_eq(net.calls[1].url, NetworkService.REFRESH_URL)
-	assert_eq(net.calls[2].url, NetworkService.DOMAIN + "v1/x")
+	assert_eq(net.calls[1].url, net._get_refresh_url())
+	assert_eq(net.calls[2].url, net.domain + "v1/x")
 	assert_eq(net.calls[2].token, _new_token)
 
 
@@ -269,7 +272,7 @@ func test_concurrent_requests_share_a_single_refresh() -> void:
 	net.release_refresh.emit()
 	await wait_until(func(): return _results.size() == 2, 2.0)
 	var refresh_calls := net.calls.filter(
-		func(entry): return entry.url == NetworkService.REFRESH_URL
+		func(entry): return entry.url == net._get_refresh_url()
 	)
 	assert_eq(refresh_calls.size(), 1, "Only one refresh call expected")
 	assert_eq(_results.size(), 2)

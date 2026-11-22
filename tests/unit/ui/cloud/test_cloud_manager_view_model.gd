@@ -103,6 +103,7 @@ func test_upload_scene_posts_authenticated_request_body() -> void:
 	assert_eq(
 		net.calls[0].payload,
 		{
+			"id": "scene-1",
 			"name": "My Scene",
 			"layers":
 			[
@@ -142,8 +143,8 @@ func test_upload_scene_ignores_unknown_id() -> void:
 
 func _remove_imported(scene_name: String) -> void:
 	for scene in LocalSceneService.scenes.filter(func(s): return s.scene_name == scene_name):
+		DirAccess.remove_absolute(LocalSceneService.LOCAL_SCENES_PATH + scene.id + ".json")
 		LocalSceneService.scenes.erase(scene)
-	DirAccess.remove_absolute(LocalSceneService.LOCAL_SCENES_PATH + scene_name + ".json")
 
 
 func test_import_scene_fetches_full_scene_by_id() -> void:
@@ -166,14 +167,34 @@ func test_import_scene_saves_fetched_scene_locally() -> void:
 	var saved := LocalSceneService.scenes.filter(
 		func(s): return s.scene_name == "Cloud Import Test"
 	)
-	var file_exists := FileAccess.file_exists(
-		LocalSceneService.LOCAL_SCENES_PATH + "Cloud Import Test.json"
+	var file_exists := (
+		saved.size() == 1
+		and FileAccess.file_exists(LocalSceneService.LOCAL_SCENES_PATH + saved[0].id + ".json")
 	)
 	var partial_saved := LocalSceneService.scenes.any(func(s): return s.scene_name == "Partial")
 	_remove_imported("Cloud Import Test")
 	assert_eq(saved.size(), 1)
-	assert_true(file_exists)
+	assert_true(file_exists, "Should save the scene to <id>.json")
 	assert_false(partial_saved)
+
+
+func test_import_scene_with_traversal_name_saves_inside_local_dir() -> void:
+	var partial := Scene.new()
+	partial.id = "scene-99"
+	net.response = _response(200, {"id": "scene-99", "name": "../../evil_import", "layers": []})
+	await vm.import_scene(partial)
+	var saved := LocalSceneService.scenes.filter(
+		func(s): return s.scene_name == "../../evil_import"
+	)
+	var saved_inside := (
+		saved.size() == 1
+		and FileAccess.file_exists(LocalSceneService.LOCAL_SCENES_PATH + saved[0].id + ".json")
+	)
+	var escaped_exists := FileAccess.file_exists("user://evil_import.json")
+	_remove_imported("../../evil_import")
+	assert_eq(saved.size(), 1)
+	assert_true(saved_inside, "Should save to <id>.json inside the local scenes directory")
+	assert_false(escaped_exists, "Should not write outside the save directory")
 
 
 func test_import_scene_does_not_save_on_failure() -> void:

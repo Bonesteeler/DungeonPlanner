@@ -29,6 +29,12 @@ gdscript/warnings/integer_division=0
 
 project/assembly_name="DungeonPlanner"
 
+[dungeon_planner]
+
+server_url="https://stg-dungeon-planner-backend.herokuapp.com/"
+server_url.editor="http://localhost:8080/"
+server_url.prod="https://dungeon-planner-backend.herokuapp.com/"
+
 [editor_plugins]
 
 enabled=PackedStringArray("res://addons/gut/plugin.cfg")

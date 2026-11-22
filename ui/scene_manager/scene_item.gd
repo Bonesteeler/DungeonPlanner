@@ -1,7 +1,7 @@
 class_name SceneItem
 extends MarginContainer
 
-signal delete_pressed(scene_name: String)
+signal delete_pressed(scene_id: String)
 signal scene_selected(scene_id: String)
 signal upload_pressed(scene_id: String)
 signal export_pressed(scene_id: String)
@@ -64,7 +64,7 @@ func forward_scene_selected() -> void:
 
 
 func forward_delete_pressed() -> void:
-	delete_pressed.emit(scene_name)
+	delete_pressed.emit(scene_id)
 
 
 func forward_upload_pressed() -> void:

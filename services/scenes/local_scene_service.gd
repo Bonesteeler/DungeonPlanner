@@ -13,10 +13,21 @@ const LOCAL_SCENES_PATH = "user://SavedScenes/LocalScenes/"
 const SAVED_SCENES_PATH = "user://SavedScenes/"
 const RECENT_SCENE_IDS_FILE = "recent_scene_ids.json"
 
+static var _uuid_regex := RegEx.create_from_string(
+	"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+)
+
 var scenes: Array[Scene] = []
 
 
+## Check whether [code]value[/code] is a canonical UUID (8-4-4-4-12 lowercase hex).[br]
+## Only UUIDs are used as on-disk filenames, so path separators and dot segments can never reach the filesystem.[br]
+static func _is_uuid(value: String) -> bool:
+	return _uuid_regex.search(value) != null
+
+
 ## Ensure the save directory exists and populate [code]scenes[/code] from any existing JSON files.[br]
+## Saved files are named [code]<scene id>.json[/code].[br]
 ## [b]Emits:[/b][br]
 ## - [code]scene_added()[/code] when a saved scene is discovered and added to the in-memory list during initialization.[br]
 func _init():
@@ -38,38 +49,18 @@ func _init():
 	saved_scenes_dir.list_dir_end()
 
 
-## Load a TileLayout from a JSON file path.[br]
-## [b]Parameters:[/b][br]
-## [code]file_path[/code] : [String] — absolute or relative filesystem path to a .json file containing a serialized TileLayout.[br]
-## [b]Returns:[/b] [TileLayout] — a deserialized TileLayout. Returns a new empty [code]TileLayout[/code] if the file cannot be opened.[br]
-func load_scene_from_json(file_path: String) -> TileLayout:
-	var file = FileAccess.open(file_path, FileAccess.READ)
-	if file == null:
-		return TileLayout.new()
-	var json_string = file.get_as_text()
-	var parsed_scene = TileLayoutSerializer.deserialize(json_string)
-	file.close()
-	var file_name = file_path.get_file().trim_suffix(".json")
-	parsed_scene.scene_name = file_name
-	return parsed_scene
-
-
 ## Load a saved Scene from the user save directory.[br]
 ## [b]Parameters:[/b][br]
 ## [code]file_name[/code] : [String] — base filename (without .json) of the saved scene under user://SavedScenes/.[br]
-## [b]Returns:[/b] [Scene] — the deserialized Scene. If the file cannot be opened, a new [code]Scene[/code] with [code]scene_name[/code] set to [code]file_name[/code] is returned. If the file is corrupt, it is deleted and [code]null[/code] is returned.[br]
+## [b]Returns:[/b] [Scene] — the deserialized Scene. If the file is invalid, it is deleted and [code]null[/code] is returned.[br]
 func load_scene_from_user(file_name: String) -> Scene:
+	if not _is_uuid(file_name):
+		push_error("Invalid scene id: %s" % file_name)
+		return null
 	var file = FileAccess.open(LOCAL_SCENES_PATH + file_name + ".json", FileAccess.READ)
 	if file == null:
-		push_error(
-			(
-				"Failed to open saved scene:%s with error %s"
-				% [file_name, str(FileAccess.get_open_error())]
-			)
-		)
-		var new_scene = Scene.new()
-		new_scene.id = UUID.v7()
-		return new_scene
+		push_error("Failed to open saved scene: %s" % file_name)
+		return null
 	var json_string = file.get_as_text()
 	var parsed_scene = SceneSerializer.deserialize(json_string)
 	file.close()
@@ -85,11 +76,22 @@ func load_scene_from_user(file_name: String) -> Scene:
 
 
 ## Serialize and write a Scene to the user save directory as JSON.[br]
+## If the scene's id is missing or invalid, a fresh UUID is assigned before saving.[br]
 ## [b]Parameters:[/b][br]
-## [code]scene[/code] : [Scene] — the Scene instance to serialize and persist. The Scene's [code]scene_name[/code] is used for the filename.[br]
+## [code]scene[/code] : [Scene] — the Scene instance to serialize and persist.[br]
 func save_scene_to_user(scene: Scene) -> void:
+	if not _is_uuid(scene.id):
+		scene.id = UUID.v7()
 	var json_string = SceneSerializer.serialize(scene)
-	var file = FileAccess.open(LOCAL_SCENES_PATH + scene.scene_name + ".json", FileAccess.WRITE)
+	var file = FileAccess.open(LOCAL_SCENES_PATH + scene.id + ".json", FileAccess.WRITE)
+	if file == null:
+		push_error(
+			(
+				"Failed to save scene %s with error %s"
+				% [scene.id, str(FileAccess.get_open_error())]
+			)
+		)
+		return
 	file.store_string(json_string)
 	file.close()
 
@@ -100,7 +102,7 @@ func save_scene_to_user(scene: Scene) -> void:
 ## [b]Emits:[/b][br]
 ## - [code]scene_added()[/code] after the scene is added or updated and saved.[br]
 func add_scene(scene: Scene) -> void:
-	var idx = scenes.find_custom(func(s): return s.scene_name == scene.scene_name)
+	var idx = scenes.find_custom(func(s): return s.id == scene.id)
 	if idx == -1:
 		scenes.append(scene)
 	else:
@@ -110,17 +112,20 @@ func add_scene(scene: Scene) -> void:
 
 
 ## Remove a Scene in memory and from disk.[br]
-## [code]file_name[/code] : [String] — base filename (without .json) of the scene to delete from user://SavedScenes/.[br]
+## [code]scene_id[/code] : [String] — id of the scene to delete.[br]
 ## [b]Emits:[/b][br]
 ## - [code]scene_deleted(scene_id)[/code] for each removed scene.[br]
-func delete_scene(file_name: String) -> void:
-	var local_path = LOCAL_SCENES_PATH + file_name + ".json"
+func delete_scene(scene_id: String) -> void:
+	if not _is_uuid(scene_id):
+		push_error("Refusing to delete scene with invalid id: %s" % scene_id)
+		return
+	var local_path = LOCAL_SCENES_PATH + scene_id + ".json"
 	OS.move_to_trash(ProjectSettings.globalize_path(local_path))
-	var idx = scenes.find_custom(func(s): return s.scene_name == file_name)
+	var idx = scenes.find_custom(func(s): return s.id == scene_id)
 	while idx != -1:
 		scene_deleted.emit(scenes[idx].id)
 		scenes.remove_at(idx)
-		idx = scenes.find_custom(func(s): return s.scene_name == file_name)
+		idx = scenes.find_custom(func(s): return s.id == scene_id)
 
 
 ## Find a scene by its ID.[br]
