@@ -147,14 +147,36 @@ func convert_ascii(file: FileAccess) -> Array:
 ## Parses a binary STL file from the provided [code]FileAccess[/code] and returns an array of Triangle objects.[br]
 ## [b]Parameters:[/b][br]
 ## - [code]file: FileAccess[/code] - An already-opened binary STL file handle.[br]
-## [b]Returns:[/b] [code]Array[/code] - An array of [code]Triangle[/code] instances.[br]
+## [b]Returns:[/b] [code]Array[/code] - An array of [code]Triangle[/code] instances. Returns an empty array if the declared facets do not fit in the file.[br]
 func convert_binary(file: FileAccess) -> Array:
+	const HEADER_SIZE = 80
+	const FACET_COUNT_SIZE = 4
+	const FACET_SIZE = 50
+	const DATA_OFFSET = HEADER_SIZE + FACET_COUNT_SIZE
+
+	var file_size = file.get_length()
+	if file_size < DATA_OFFSET:
+		push_error("Invalid binary STL: file is too short to contain a facet")
+		return []
+
 	#Skip header
-	file.seek(80)
+	file.seek(HEADER_SIZE)
 
 	#Read file
 	var triangles = []
 	var facet_count = file.get_32()
+	var required_size = DATA_OFFSET + facet_count * FACET_SIZE
+	if required_size > file_size:
+		push_error(
+			"Invalid binary STL facet count: ",
+			facet_count,
+			" facets require ",
+			required_size,
+			" bytes, but the file contains ",
+			file_size
+		)
+		return []
+
 	for i in range(facet_count):
 		var triangle = Triangle.new()
 		var normal_x = file.get_float()
